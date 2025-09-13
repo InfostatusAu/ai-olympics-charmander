@@ -1,12 +1,13 @@
 from datetime import datetime
 import uuid
+from enum import Enum as PythonEnum
 from sqlalchemy import Column, String, DateTime, Enum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
-class ProspectStatus(Enum):
+class ProspectStatus(PythonEnum):
     IN_PROGRESS = "in_progress"
     RESEARCHED = "researched"
 

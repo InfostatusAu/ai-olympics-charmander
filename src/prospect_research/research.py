@@ -296,7 +296,7 @@ async def research_prospect(company_identifier: str) -> Dict[str, Any]:
         background=research_data["background"],
         recent_news="\n".join([f"- {news}" for news in research_data["recent_news"]]) if research_data["recent_news"] else "- No recent news found",
         tech_stack=", ".join(research_data["tech_stack"]) if research_data["tech_stack"] else "Technology stack not identified",
-        decision_makers="\n".join([f"- {dm['name']} ({dm['title']})") for dm in research_data["decision_makers"]]) if research_data["decision_makers"] else "- Decision makers not identified",
+        decision_makers="\n".join([f"- {dm['name']} ({dm['title']})" for dm in research_data["decision_makers"]]) if research_data["decision_makers"] else "- Decision makers not identified",
         pain_points="\n".join([f"- {pp}" for pp in research_data["pain_points"]]),
         linkedin_info=research_data["linkedin_info"],
         apollo_info=research_data["apollo_info"],
