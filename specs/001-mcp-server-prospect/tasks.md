@@ -61,9 +61,9 @@
 - [x] T014 [P] Database CLI commands in src/database/cli.py
 
 ### File Manager Library  
-- [ ] T015 [P] File system operations in src/file_manager/storage.py
-- [ ] T016 [P] Markdown template management in src/file_manager/templates.py
-- [ ] T017 [P] File management CLI in src/file_manager/cli.py
+- [x] T015 [P] File system operations in src/file_manager/storage.py
+- [x] T016 [P] Markdown template management in src/file_manager/templates.py
+- [x] T017 [P] File management CLI in src/file_manager/cli.py
 
 ### Prospect Research Library
 - [ ] T018 AI research logic and markdown generation in src/prospect_research/research.py
