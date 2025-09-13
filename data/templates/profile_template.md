@@ -1,40 +1,30 @@
-## Mini Profile – {{ company_name }}
+# Prospect Mini Profile: {company_name}
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| **Company Name** | Name of the company | "{{ company_name_example }}" |
-| **Size** | Number of employees | {{ size_example }} |
-| **Revenue Range** | Estimated revenue | {{ revenue_range_example }} |
-| **Industry** | Sector | {{ industry_example }} |
-| **Location** | Main location | {{ location_example }} |
-| **Hiring Signals** | Job postings | {{ hiring_signals_example }} |
-| **Tech Adoption** | Cloud/AI/automation | {{ tech_adoption_example }} |
-| **Public & PR Signals** | Press/news | {{ public_pr_signals_example }} |
-| **Funding & Growth** | Funding info | {{ funding_growth_example }} |
-| **Tender/Compliance** | Gov contracts | {{ tender_compliance_example }} |
-| **Decision-Makers** | Key roles | {{ decision_makers_example }} |
-| **Engagement Potential** | Activity | {{ engagement_potential_example }} |
-| **Notes** | Other info | {{ notes_example }} |
-| **Pain point(s)** | Inferred/observable outstanding, relevant pain point(s) that Infostatus might help/solve | {{ pain_points_example }} |
+## Company Overview
+
+| Field           | Value                                      |
+| :-------------- | :----------------------------------------- |
+| Company Name    | {company_name}                             |
+| Domain          | {domain}                                   |
+| Industry        | {industry}                                 |
+| Company Size    | {company_size}                             |
+| Headquarters    | {headquarters}                             |
+| Key Contact     | {key_contact}                              |
+| Contact Title   | {contact_title}                            |
+
+## Business Intelligence
+
+| Field                 | Value                                      |
+| :-------------------- | :----------------------------------------- |
+| Recent News Summary   | {recent_news_summary}                      |
+| Tech Stack Summary    | {tech_stack_summary}                       |
+| Pain Points Summary   | {pain_points_summary}                      |
 
 ## Conversation Strategy
 
-### Primary Talking Points
-1. **🎯 {{ talking_point_1_title }}** ({{ talking_point_1_relevance }} relevance)
-   "{{ talking_point_1_text }}"
-
-2. **☁️ {{ talking_point_2_title }}** ({{ talking_point_2_relevance }} relevance)  
-   "{{ talking_point_2_text }}"
-
-3. **🤖 {{ talking_point_3_title }}** ({{ talking_point_3_relevance }} relevance)
-   "{{ talking_point_3_text }}"
-
-### Conversation Openers
-- **Recent TechCrunch Feature**: "{{ opener_techcrunch }}"
-- **CTO LinkedIn Activity**: "{{ opener_cto_linkedin }}"
-- **Funding Announcement**: "{{ opener_funding }}"
-
----
-*Profile generated: {{ profile_generated_timestamp }}*
-*Source: {{ source_research_file }}*
-*Confidence score: {{ confidence_score }}*
+| Field                 | Value                                      |
+| :-------------------- | :----------------------------------------- |
+| Conversation Starter 1| {conversation_starter_1}                   |
+| Conversation Starter 2| {conversation_starter_2}                   |
+| Value Proposition     | {value_proposition}                        |
+| Relevance Score       | {relevance_score}                          |
