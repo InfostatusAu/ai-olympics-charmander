@@ -2,18 +2,7 @@
 
 **Date**: September 13, 2025  
 **Feature**: Prospect Research Automation Engine  
-**Phase*3. **📊 Document Processing Scale** (Relevance: 89%)
-   "With TechCorp's rapid growth to 150 employees, manual document workflows become expensive quickly. We've seen similar companies reduce processing costs by 60% while improving accuracy."
-
-**Complete Intelligence Package Ready!**
-- Research report: 24.5 KB of comprehensive intelligence
-- Profile + Strategy: 14.7 KB with structured table and personalized talking points
-- All files saved with `{prospect_id}_` naming convention for future reference
-
-TechCorp Inc is now ready for personalized outreach with complete markdown intelligence package.
-```
-
-**Expected Result**: Complete prospect intelligence package ready for sales engagement with structured 14-field profile table and integrated conversation strategy.ation Guide and User Stories  
+**Phase**: Implementation Guide and User Stories  
 **Update**: Simplified Markdown-First Architecture
 
 ## Overview
@@ -178,7 +167,7 @@ AI Assistant: ✅ Step 2 Complete - Profile + Strategy markdown generated:
 - Research report: 24.5 KB of comprehensive intelligence
 - Structured profile: Key decision makers and pain points identified  
 - Personalized talking points: 8 conversation starters with relevance scores
-- All files saved in `/data/prospects/techcorp-inc/` for future reference
+- All files saved in `/data/prospects/` with `{prospect_id}_` naming convention for future reference
 
 TechCorp Inc is now ready for personalized outreach with complete markdown intelligence package.
 ```
@@ -458,10 +447,6 @@ Would you like me to complete the missing workflow steps for any of these prospe
 
 **Expected Result**: Targeted prospect list with content-based matching and clear next actions for 2-step workflow.
 
-### Story 5: Complete End-to-End Workflow  
-**Goal**: Full prospect discovery to outreach preparation with markdown intelligence
-
-**AI Assistant Conversation**:
 ### Story 6: Complete End-to-End Workflow  
 **Goal**: Full prospect discovery to outreach preparation with markdown intelligence
 
@@ -562,22 +547,21 @@ Now generating structured profile + conversation strategy...
 ### Functional Validation  
 Each user story above can be executed as an integration test:
 
-1. **3-Step Workflow Test**: Validate complete research → profile → talking points workflow with markdown file generation
-2. **Tool Discovery Test**: Verify AI assistant can discover all 5 simplified MCP tools
+1. **2-Step Workflow Test**: Validate complete research → profile+strategy workflow with markdown file generation
+2. **Tool Discovery Test**: Verify AI assistant can discover all MCP tools (research_prospect, create_profile, get_prospect_data, search_prospects)
 3. **Research Quality Test**: Confirm research_prospect generates comprehensive markdown reports with proper file structure
-4. **Profile Generation Test**: Ensure generate_profile creates structured Mini Profile markdown from research files
-5. **Talking Points Test**: Validate create_talking_points generates relevant conversation starters from profile markdown
-6. **Data Retrieval Test**: Ensure get_prospect_data returns complete prospect metadata and file contents
-7. **Search Functionality Test**: Validate search_prospects filters by metadata and searches markdown content
-8. **File System Test**: Confirm proper directory structure and markdown file persistence
-9. **Workflow Status Test**: Verify file existence determines workflow completion status
-10. **Error Handling Test**: Verify graceful handling of missing files and invalid inputs
+4. **Profile Generation Test**: Ensure create_profile creates structured Mini Profile markdown from research files
+5. **Data Retrieval Test**: Ensure get_prospect_data returns complete prospect metadata and file contents
+6. **Search Functionality Test**: Validate search_prospects filters by metadata and searches markdown content
+7. **File System Test**: Confirm proper directory structure and markdown file persistence
+8. **Workflow Status Test**: Verify file existence determines workflow completion status
+9. **Error Handling Test**: Verify graceful handling of missing files and invalid inputs
 
 ### Performance Validation
 - **Response Time**: All tool calls complete within <200ms (excluding external API calls)
-- **Workflow Completion**: Full 3-step process completes within <30 seconds
+- **Workflow Completion**: Full 2-step process completes within <30 seconds
 - **File Generation**: Markdown files created within <100ms per step
-- **Content Quality**: Research reports average >20KB, profile summaries >7KB
+- **Content Quality**: Research reports average >20KB, profile summaries >12KB
 - **Search Performance**: Content search across all prospects completes within <500ms
 
 ### File System Validation
@@ -588,12 +572,10 @@ Each user story above can be executed as an integration test:
 
 ## Troubleshooting
 
-## Troubleshooting
-
 ### Common Workflow Issues
 
 **Issue**: Workflow step fails with "research file not found"
-**Solution**: Ensure research_prospect completed successfully before generate_profile. Check `/data/prospects/{company-name}/research.md` exists
+**Solution**: Ensure research_prospect completed successfully before create_profile. Check `/data/prospects/{prospect_id}_research.md` exists
 
 **Issue**: Profile generation produces empty or minimal content
 **Solution**: Verify research.md file has sufficient content (>15KB recommended). Re-run research with deeper focus areas
@@ -663,4 +645,4 @@ After completing this quickstart:
 
 For detailed implementation guide, see [Implementation Tasks](./tasks.md) (available after running `/tasks` command).
 
-This quickstart demonstrates the complete value proposition of the simplified 3-step workflow: transforming basic company information into rich markdown intelligence files with minimal database complexity, all integrated seamlessly with AI assistant workflows.
+This quickstart demonstrates the complete value proposition of the simplified 2-step workflow: transforming basic company information into rich markdown intelligence files with minimal database complexity, all integrated seamlessly with AI assistant workflows.

@@ -189,9 +189,8 @@ AI Agent → MCP Client → MCP Server → File Operations + SQLite
 
 ### Tool Flow
 1. **research_prospect**: Company data → SQLite record + research.md file
-2. **generate_profile**: research.md → profile.md file  
-3. **create_talking_points**: profile.md → talking_points.md file
-4. **get_prospect_data**: SQLite + all markdown files → complete prospect context
+2. **create_profile**: research.md → profile.md file
+3. **get_prospect_data**: SQLite + all markdown files → complete prospect context
 5. **search_prospects**: SQLite query + optional file content search
 
 ### Error Handling and Recovery

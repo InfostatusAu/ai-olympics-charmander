@@ -37,64 +37,68 @@
 ## User Scenarios & Testing *(mandatory)*
 
 ### Primary User Story
-A sales representative using an AI assistant (like Claude, VS Code Copilot, or LM Studio) needs to identify and research qualified prospects for cold calling. The MCP server provides specialized tools that the AI assistant can discover and invoke automatically to automate prospect research, enabling the sales rep to receive comprehensive prospect intelligence through natural language conversations with their AI assistant.
+A sales representative using an AI assistant (like Gemini CLI, VS Code Copilot, or Claude) needs to transform company information into actionable sales intelligence through a streamlined 2-step research workflow. The MCP server provides specialized tools that generate rich markdown files containing comprehensive research reports and structured profile + conversation strategy content, enabling the sales rep to receive copy-paste ready sales intelligence through natural language conversations with their AI assistant.
 
 ### Acceptance Scenarios
-1. **Given** an AI assistant connected to the MCP server, **When** a sales rep asks to find new prospects matching their ideal customer profile, **Then** the AI assistant discovers and calls the find_new_prospect tool to return qualified leads
-2. **Given** a prospect has been identified, **When** the sales rep asks for detailed research on the prospect, **Then** the AI assistant calls the research_prospect tool to compile comprehensive intelligence
-3. **Given** prospect research has been completed, **When** the sales rep wants to save the prospect data, **Then** the AI assistant calls the save_prospect tool to store the profile in the server's database
-4. **Given** prospects are stored in the database, **When** the sales rep needs to retrieve prospect information, **Then** the AI assistant calls the retrieve_prospect tool to access saved prospect data
-5. **Given** the MCP server exposes prospect resources, **When** the AI assistant needs context about saved prospects, **Then** it can access prospect resources to provide enriched responses to the sales rep
-6. **Given** the prospect database changes, **When** new prospects are added or updated, **Then** the MCP server notifies connected AI assistants about resource updates
+1. **Given** an AI assistant connected to the MCP server, **When** a sales rep provides a company name or domain, **Then** the AI assistant calls the research_prospect tool to generate a comprehensive markdown research report
+2. **Given** a research markdown file has been generated, **When** the sales rep asks for a structured profile and talking points, **Then** the AI assistant calls the create_profile tool to transform research into a Mini Profile table with conversation strategy
+3. **Given** prospect data exists in the system, **When** the sales rep needs to retrieve complete prospect information, **Then** the AI assistant calls the get_prospect_data tool to access all metadata and markdown files
+4. **Given** multiple prospects are stored in the database, **When** the sales rep needs to search prospects by criteria or content, **Then** the AI assistant calls the search_prospects tool to find prospects matching specified filters
+5. **Given** the MCP server exposes prospect resources, **When** the AI assistant needs context about saved prospects, **Then** it can access prospect resources via URI to provide enriched responses with markdown content
+6. **Given** the simplified 2-step workflow, **When** a sales rep completes both research and profile steps, **Then** they receive human-readable markdown files ready for copy-paste into emails, presentations, or CRM systems
 
 ### Edge Cases
-- What happens when no prospects match the ideal customer profile criteria in the find_new_prospect tool?
-- How does the research_prospect tool handle prospects with incomplete or outdated information?
-- What occurs when external data sources are unavailable during tool execution?
-- How does the save_prospect tool respond when attempting to save duplicate prospect entries?
-- What happens when the retrieve_prospect tool tries to access prospects that have been deleted?
-- How does the MCP server handle tool calls with invalid or malformed parameters?
-- What occurs when AI assistants lose connection to the MCP server during tool execution?
-- How does the server handle concurrent tool calls from multiple AI assistant connections?
+- What happens when company information is insufficient or outdated for the research_prospect tool?
+- How does the create_profile tool handle research markdown files with incomplete or missing sections?
+- What occurs when external data sources are unavailable during research generation?
+- How does the research_prospect tool respond when no substantial research data can be found for a company?
+- What happens when the create_profile tool tries to process research files that are corrupted or improperly formatted?
+- How does the MCP server handle tool calls with invalid company identifiers or malformed parameters?
+- What occurs when AI assistants lose connection to the MCP server during the 2-step workflow execution?
+- How does the server handle concurrent tool calls for the same prospect from multiple AI assistant connections?
+- What happens when the file system lacks sufficient storage space for generating markdown files?
+- How does the system handle prospects with extremely common company names that could result in research ambiguity?
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
-- **FR-001**: MCP Server MUST implement the Model Context Protocol specification for client-server communication
-- **FR-002**: MCP Server MUST declare tools capability to expose prospect research functionality to AI assistants
-- **FR-003**: MCP Server MUST provide a find_new_prospect tool that accepts ICP parameters and returns qualified leads
-- **FR-004**: find_new_prospect tool MUST include JSON schema validation for input parameters
-- **FR-005**: find_new_prospect tool MUST return structured results with prospect data in standardized format
-- **FR-006**: MCP Server MUST provide a research_prospect tool that accepts prospect identifiers and returns comprehensive intelligence
-- **FR-007**: research_prospect tool MUST gather company background, decision maker information, recent news, and pain points
-- **FR-008**: research_prospect tool MUST return results in multiple content types (text, structured data, resource links)
-- **FR-009**: MCP Server MUST provide a save_prospect tool that persists prospect profiles to the server's database
-- **FR-010**: save_prospect tool MUST validate prospect data before storage and return confirmation of successful save
-- **FR-011**: MCP Server MUST provide a retrieve_prospect tool that queries stored prospect data
-- **FR-012**: retrieve_prospect tool MUST support search and filtering capabilities for prospect retrieval
-- **FR-013**: MCP Server MUST declare resources capability to expose prospect database as contextual resources
-- **FR-014**: MCP Server MUST provide resources for individual prospect profiles accessible via URI
-- **FR-015**: MCP Server MUST implement proper JSON-RPC 2.0 error handling for tool failures
-- **FR-016**: MCP Server MUST support tools/list requests to advertise available prospect research tools
-- **FR-017**: MCP Server MUST support tools/call requests to execute prospect research operations
-- **FR-018**: MCP Server MUST implement security validation for all tool inputs and resource access
-- **FR-019**: MCP Server MUST support connection management for multiple AI assistant clients
-- **FR-020**: MCP Server MUST notify clients when prospect resources change (if listChanged capability enabled)
-- **FR-021**: All tools MUST include proper metadata (name, title, description, inputSchema) for AI assistant discovery
-- **FR-022**: System MUST source prospect data from [NEEDS CLARIFICATION: specific external data sources not defined]
-- **FR-023**: System MUST support ideal customer profile criteria [NEEDS CLARIFICATION: specific criteria fields not defined]
-- **FR-024**: System MUST handle data persistence [NEEDS CLARIFICATION: storage backend and retention policies not specified]
-- **FR-025**: System MUST implement access controls [NEEDS CLARIFICATION: authentication and authorization requirements not specified]
+- **FR-001**: MCP Server MUST implement the Model Context Protocol specification version "2025-06-18" for client-server communication
+- **FR-002**: MCP Server MUST declare tools capability to expose 4 specialized prospect research tools to AI assistants
+- **FR-003**: MCP Server MUST provide a research_prospect tool that accepts company identifiers and generates comprehensive markdown research reports
+- **FR-004**: research_prospect tool MUST include JSON schema validation for company domain or name input parameters
+- **FR-005**: research_prospect tool MUST create structured markdown files containing company background, recent news, technology stack, decision makers, and pain points
+- **FR-006**: MCP Server MUST provide a create_profile tool that transforms research markdown into structured Mini Profile tables with conversation strategy
+- **FR-007**: create_profile tool MUST generate exactly 14 standardized profile fields in markdown table format as specified
+- **FR-008**: create_profile tool MUST include personalized talking points with relevance scores and conversation openers
+- **FR-009**: MCP Server MUST provide a get_prospect_data tool that retrieves prospect metadata with all associated markdown files
+- **FR-010**: get_prospect_data tool MUST support content inclusion options and specific file type filtering
+- **FR-011**: MCP Server MUST provide a search_prospects tool that queries prospect database by metadata and markdown content
+- **FR-012**: search_prospects tool MUST support filtering by company name, domain, research status, and content search across files
+- **FR-013**: MCP Server MUST declare resources capability to expose prospect data and markdown files as contextual resources
+- **FR-014**: MCP Server MUST provide resources for individual prospect data, file contents, and ICP definition accessible via URI patterns
+- **FR-015**: MCP Server MUST implement proper JSON-RPC 2.0 error handling with structured error responses for tool failures
+- **FR-016**: MCP Server MUST support tools/list requests to advertise all 4 prospect research tools with complete schemas
+- **FR-017**: MCP Server MUST support tools/call requests to execute the simplified 2-step research workflow efficiently
+- **FR-018**: MCP Server MUST implement input validation for all tool parameters and resource access requests
+- **FR-019**: MCP Server MUST support connection management for multiple AI assistant clients with concurrent access
+- **FR-020**: MCP Server MUST manage file system operations for markdown generation, storage, and retrieval
+- **FR-021**: All tools MUST include comprehensive metadata (name, title, description, inputSchema) for AI assistant discovery and execution
+- **FR-022**: System MUST persist prospect metadata in SQLite database with minimal schema for tracking research status
+- **FR-023**: System MUST store all AI-generated content as human-readable markdown files in organized directory structure
+- **FR-024**: System MUST support a streamlined 2-step workflow: research generation followed by profile + strategy creation
+- **FR-025**: System MUST enable copy-paste ready output for sales teams through structured markdown formatting
 
 ### Key Entities *(include if feature involves data)*
-- **MCP Server**: The core server implementing Model Context Protocol to expose prospect research capabilities to AI assistants
-- **MCP Tools**: Four specialized tools (find_new_prospect, research_prospect, save_prospect, retrieve_prospect) that AI assistants can discover and invoke
-- **MCP Resources**: URI-addressable prospect data and database contents accessible to AI assistants for context
-- **Prospect**: Represents a potential customer with company information, contact details, research findings, and qualification status
-- **Ideal Customer Profile (ICP)**: Defines criteria for qualifying prospects including company size, industry, location, and other qualifying characteristics  
-- **Research Intelligence**: Comprehensive data about a prospect including company background, decision makers, recent news, pain points, and contextual insights
-- **Tool Schema**: JSON Schema definitions that describe input parameters and expected outputs for each MCP tool
-- **AI Assistant Client**: The connected AI application (Claude, VS Code Copilot, LM Studio) that discovers and calls MCP tools on behalf of users
+- **MCP Server**: The core server implementing Model Context Protocol to expose 4 specialized prospect research tools to AI assistants
+- **MCP Tools**: Four focused tools (research_prospect, create_profile, get_prospect_data, search_prospects) that AI assistants can discover and invoke for the 2-step workflow
+- **MCP Resources**: URI-addressable prospect data, markdown files, and ICP definition accessible to AI assistants for contextual intelligence
+- **Prospect**: Minimal database entity with UUID, company name, domain, research status, and timestamps for workflow tracking
+- **Research Markdown**: AI-generated comprehensive research reports containing company background, recent developments, technology stack, decision makers, and pain points
+- **Profile Markdown**: AI-generated structured Mini Profile tables (14 standardized fields) combined with personalized conversation strategy and talking points
+- **Workflow Status**: File-based progress tracking using markdown file existence to determine completion of 2-step research workflow
+- **Tool Schema**: JSON Schema definitions that describe input parameters and expected outputs for each of the 4 MCP tools
+- **AI Assistant Client**: The connected AI application (Gemini CLI, VS Code Copilot, Claude) that discovers and calls MCP tools on behalf of sales users
+- **File System Storage**: Organized directory structure storing all AI-generated markdown content as human-readable files for copy-paste usage
 
 ---
 
@@ -102,17 +106,17 @@ A sales representative using an AI assistant (like Claude, VS Code Copilot, or L
 *GATE: Automated checks run during main() execution*
 
 ### Content Quality
-- [ ] No implementation details (languages, frameworks, APIs)
-- [ ] Focused on user value and business needs
-- [ ] Written for non-technical stakeholders
-- [ ] All mandatory sections completed
+- [x] No implementation details (languages, frameworks, APIs) - focuses on markdown-first user value
+- [x] Focused on user value and business needs (copy-paste ready sales intelligence)
+- [x] Written for non-technical stakeholders (sales teams and business users)
+- [x] All mandatory sections completed with simplified 2-step workflow
 
 ### Requirement Completeness
-- [ ] No [NEEDS CLARIFICATION] markers remain
-- [ ] Requirements are testable and unambiguous  
-- [ ] Success criteria are measurable
-- [ ] Scope is clearly bounded
-- [ ] Dependencies and assumptions identified
+- [x] No [NEEDS CLARIFICATION] markers remain (simplified approach resolved all ambiguities)
+- [x] Requirements are testable and unambiguous  
+- [x] Success criteria are measurable (2-step workflow with markdown output)
+- [x] Scope is clearly bounded (4 MCP tools, file-based storage)
+- [x] Dependencies and assumptions identified (SQLite, file system, AI assistants)
 
 ---
 
@@ -122,10 +126,10 @@ A sales representative using an AI assistant (like Claude, VS Code Copilot, or L
 - [x] User description parsed
 - [x] Key concepts extracted  
 - [x] MCP protocol research completed
-- [x] Ambiguities marked with clarification needs
-- [x] User scenarios defined with MCP context
-- [x] Requirements updated for MCP compliance
-- [x] Entities identified including MCP components
-- [ ] Review checklist passed (pending clarification resolution)
+- [x] Simplified markdown-first approach defined
+- [x] User scenarios updated for 2-step workflow
+- [x] Requirements updated for simplified architecture
+- [x] Entities identified including markdown file system
+- [x] Review checklist passed - simplified approach eliminates all clarification needs
 
 ---
