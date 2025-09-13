@@ -1,1 +1,0 @@
-# Project-level instruction for Gemini CLI

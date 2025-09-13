@@ -1,0 +1,1196 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "MCP Prospect Research Server",
+    "description": "Model Context Protocol server for automated prospect research and intelligence gathering",
+    "version": "1.0.0",
+    "contact": {
+      "name": "MCP Prospect Research API",
+      "url": "https://github.com/example/mcp-prospect-server"
+    }
+  },
+  "servers": [
+    {
+      "url": "mcp://localhost",
+      "description": "Local MCP server via JSON-RPC 2.0"
+    }
+  ],
+  "paths": {
+    "/tools/find_new_prospect": {
+      "post": {
+        "summary": "Find New Prospect",
+        "description": "Discover qualified leads matching ideal customer profile criteria",
+        "operationId": "findNewProspect",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FindNewProspectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful prospect discovery",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindNewProspectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tools/research_prospect": {
+      "post": {
+        "summary": "Research Prospect",
+        "description": "Compile comprehensive intelligence including company background, decision makers, and pain points",
+        "operationId": "researchProspect",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResearchProspectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful prospect research",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchProspectResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Prospect not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPError"
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Research timeout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tools/save_prospect": {
+      "post": {
+        "summary": "Save Prospect",
+        "description": "Persist prospect profile and research data to database",
+        "operationId": "saveProspect",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveProspectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Prospect saved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaveProspectResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate prospect exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tools/retrieve_prospect": {
+      "post": {
+        "summary": "Retrieve Prospect",
+        "description": "Query stored prospect data with search and filtering capabilities",
+        "operationId": "retrieveProspect",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RetrieveProspectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful prospect retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RetrieveProspectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No results found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FindNewProspectRequest": {
+        "type": "object",
+        "required": ["icp_name"],
+        "properties": {
+          "icp_name": {
+            "type": "string",
+            "description": "Name of the Ideal Customer Profile to match against",
+            "minLength": 1,
+            "maxLength": 255,
+            "example": "tech-startups-v1"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of prospects to return",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10
+          },
+          "exclude_domains": {
+            "type": "array",
+            "description": "Company domains to exclude from results",
+            "items": {
+              "type": "string",
+              "format": "hostname"
+            },
+            "maxItems": 50,
+            "example": ["competitor1.com", "competitor2.com"]
+          },
+          "additional_criteria": {
+            "$ref": "#/components/schemas/AdditionalCriteria"
+          }
+        }
+      },
+      "AdditionalCriteria": {
+        "type": "object",
+        "description": "Additional filtering criteria beyond ICP",
+        "properties": {
+          "min_employees": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 50
+          },
+          "max_employees": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 500
+          },
+          "industries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["Software", "Technology"]
+          },
+          "locations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["San Francisco", "New York"]
+          }
+        }
+      },
+      "FindNewProspectResponse": {
+        "type": "object",
+        "properties": {
+          "prospects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProspectSummary"
+            }
+          },
+          "total_found": {
+            "type": "integer",
+            "description": "Total prospects matching criteria"
+          },
+          "icp_matched": {
+            "type": "string",
+            "description": "ICP name used for matching"
+          },
+          "search_metadata": {
+            "$ref": "#/components/schemas/SearchMetadata"
+          }
+        }
+      },
+      "ProspectSummary": {
+        "type": "object",
+        "properties": {
+          "company_name": {
+            "type": "string",
+            "example": "TechCorp Inc"
+          },
+          "domain": {
+            "type": "string",
+            "format": "hostname",
+            "example": "techcorp.com"
+          },
+          "industry": {
+            "type": "string",
+            "example": "Software"
+          },
+          "employee_count": {
+            "type": "integer",
+            "example": 150
+          },
+          "location": {
+            "type": "string",
+            "example": "San Francisco, CA"
+          },
+          "match_score": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 100,
+            "example": 85.5
+          },
+          "matching_criteria": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["employee_count", "industry", "location"]
+          },
+          "website_url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://techcorp.com"
+          }
+        }
+      },
+      "SearchMetadata": {
+        "type": "object",
+        "properties": {
+          "sources_used": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["apollo", "clearbit"]
+          },
+          "search_time_ms": {
+            "type": "integer",
+            "example": 1250
+          },
+          "rate_limits_hit": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "ResearchProspectRequest": {
+        "type": "object",
+        "required": ["prospect_identifier"],
+        "properties": {
+          "prospect_identifier": {
+            "$ref": "#/components/schemas/ProspectIdentifier"
+          },
+          "research_depth": {
+            "type": "string",
+            "enum": ["basic", "standard", "comprehensive"],
+            "default": "standard",
+            "description": "Level of research detail to gather"
+          },
+          "focus_areas": {
+            "type": "array",
+            "description": "Specific research areas to prioritize",
+            "items": {
+              "type": "string",
+              "enum": [
+                "company_background",
+                "decision_makers",
+                "recent_news",
+                "pain_points",
+                "competitive_analysis",
+                "technology_stack",
+                "funding_history"
+              ]
+            },
+            "uniqueItems": true,
+            "maxItems": 7
+          },
+          "update_existing": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to update existing prospect data"
+          }
+        }
+      },
+      "ProspectIdentifier": {
+        "type": "object",
+        "description": "Identifier for the prospect to research",
+        "oneOf": [
+          {
+            "required": ["domain"],
+            "properties": {
+              "domain": {
+                "type": "string",
+                "format": "hostname",
+                "description": "Company domain name",
+                "example": "techcorp.com"
+              }
+            }
+          },
+          {
+            "required": ["company_name"],
+            "properties": {
+              "company_name": {
+                "type": "string",
+                "description": "Company name if domain unknown",
+                "example": "TechCorp Inc"
+              }
+            }
+          },
+          {
+            "required": ["prospect_id"],
+            "properties": {
+              "prospect_id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "UUID of existing prospect record",
+                "example": "123e4567-e89b-12d3-a456-426614174000"
+              }
+            }
+          }
+        ]
+      },
+      "ResearchProspectResponse": {
+        "type": "object",
+        "properties": {
+          "prospect_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "company_profile": {
+            "$ref": "#/components/schemas/CompanyProfile"
+          },
+          "decision_makers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactPerson"
+            }
+          },
+          "research_findings": {
+            "$ref": "#/components/schemas/ResearchFindings"
+          },
+          "research_metadata": {
+            "$ref": "#/components/schemas/ResearchMetadata"
+          }
+        }
+      },
+      "CompanyProfile": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "TechCorp Inc"
+          },
+          "domain": {
+            "type": "string",
+            "format": "hostname",
+            "example": "techcorp.com"
+          },
+          "industry": {
+            "type": "string",
+            "example": "Software Development"
+          },
+          "employee_count": {
+            "type": "integer",
+            "example": 150
+          },
+          "founded_year": {
+            "type": "integer",
+            "example": 2018
+          },
+          "headquarters": {
+            "type": "string",
+            "example": "San Francisco, CA"
+          },
+          "description": {
+            "type": "string",
+            "example": "Leading provider of AI-powered analytics tools"
+          }
+        }
+      },
+      "ContactPerson": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Jane Smith"
+          },
+          "title": {
+            "type": "string",
+            "example": "Chief Technology Officer"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "jane.smith@techcorp.com"
+          },
+          "linkedin_url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://linkedin.com/in/janesmith"
+          },
+          "decision_level": {
+            "type": "string",
+            "enum": ["primary", "secondary", "influencer"],
+            "example": "primary"
+          }
+        }
+      },
+      "ResearchFindings": {
+        "type": "object",
+        "properties": {
+          "pain_points": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Struggling with data integration complexity",
+              "Manual reporting processes taking too long"
+            ]
+          },
+          "recent_news": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NewsItem"
+            }
+          },
+          "technology_stack": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["AWS", "Python", "React", "PostgreSQL"]
+          },
+          "competitive_landscape": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["DataCorp", "AnalyticsPro"]
+          }
+        }
+      },
+      "NewsItem": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "TechCorp Raises $10M Series A"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://techcrunch.com/techcorp-funding"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-08-15"
+          },
+          "summary": {
+            "type": "string",
+            "example": "Funding to expand AI capabilities"
+          }
+        }
+      },
+      "ResearchMetadata": {
+        "type": "object",
+        "properties": {
+          "research_depth": {
+            "type": "string",
+            "enum": ["basic", "standard", "comprehensive"]
+          },
+          "sources_used": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["firecrawl", "apollo", "linkedin"]
+          },
+          "confidence_score": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "example": 0.85
+          },
+          "last_updated": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-09-13T10:30:00Z"
+          },
+          "research_time_ms": {
+            "type": "integer",
+            "example": 3500
+          }
+        }
+      },
+      "SaveProspectRequest": {
+        "type": "object",
+        "required": ["prospect_data"],
+        "properties": {
+          "prospect_data": {
+            "$ref": "#/components/schemas/ProspectData"
+          },
+          "contact_persons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactPersonInput"
+            }
+          },
+          "research_notes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResearchNoteInput"
+            }
+          },
+          "icp_matches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ICPMatch"
+            }
+          },
+          "overwrite_existing": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to overwrite existing prospect with same domain"
+          }
+        }
+      },
+      "ProspectData": {
+        "type": "object",
+        "required": ["company_name", "domain"],
+        "properties": {
+          "company_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "example": "TechCorp Inc"
+          },
+          "domain": {
+            "type": "string",
+            "format": "hostname",
+            "example": "techcorp.com"
+          },
+          "industry": {
+            "type": "string",
+            "maxLength": 100,
+            "example": "Software"
+          },
+          "employee_count": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 150
+          },
+          "location": {
+            "type": "string",
+            "maxLength": 255,
+            "example": "San Francisco, CA"
+          },
+          "website_url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://techcorp.com"
+          },
+          "description": {
+            "type": "string",
+            "example": "Leading AI analytics platform"
+          },
+          "qualification_status": {
+            "type": "string",
+            "enum": ["qualified", "unqualified", "pending", "contacted"],
+            "example": "qualified"
+          },
+          "research_data": {
+            "type": "object",
+            "description": "Flexible research findings storage"
+          },
+          "pain_points": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["data integration", "manual processes"]
+          }
+        }
+      },
+      "ContactPersonInput": {
+        "type": "object",
+        "required": ["full_name"],
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "example": "Jane Smith"
+          },
+          "job_title": {
+            "type": "string",
+            "maxLength": 255,
+            "example": "Chief Technology Officer"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "jane@techcorp.com"
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 50,
+            "example": "+1-555-123-4567"
+          },
+          "linkedin_url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://linkedin.com/in/janesmith"
+          },
+          "decision_maker_level": {
+            "type": "string",
+            "enum": ["primary", "secondary", "influencer"],
+            "example": "primary"
+          }
+        }
+      },
+      "ResearchNoteInput": {
+        "type": "object",
+        "required": ["note_type", "title", "content"],
+        "properties": {
+          "note_type": {
+            "type": "string",
+            "enum": [
+              "company_background",
+              "recent_news",
+              "pain_points",
+              "competitive_analysis",
+              "decision_makers",
+              "technology_stack"
+            ],
+            "example": "recent_news"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "example": "Series A Funding Announcement"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 10,
+            "example": "TechCorp announced $10M Series A funding to expand AI capabilities"
+          },
+          "source_url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://techcrunch.com/techcorp-funding"
+          },
+          "source_type": {
+            "type": "string",
+            "enum": ["api", "firecrawl", "playwright", "manual"],
+            "example": "firecrawl"
+          },
+          "confidence_score": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0,
+            "example": 0.9
+          }
+        }
+      },
+      "ICPMatch": {
+        "type": "object",
+        "required": ["icp_name", "match_score"],
+        "properties": {
+          "icp_name": {
+            "type": "string",
+            "example": "tech-startups-v1"
+          },
+          "match_score": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 100.0,
+            "example": 85.5
+          },
+          "matching_criteria": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["employee_count", "industry"]
+          }
+        }
+      },
+      "SaveProspectResponse": {
+        "type": "object",
+        "properties": {
+          "prospect_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "operation": {
+            "type": "string",
+            "enum": ["created", "updated"],
+            "example": "created"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/SaveSummary"
+          },
+          "validation_warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["Email format questionable for contact: john@domain"]
+          },
+          "save_metadata": {
+            "$ref": "#/components/schemas/SaveMetadata"
+          }
+        }
+      },
+      "SaveSummary": {
+        "type": "object",
+        "properties": {
+          "company_name": {
+            "type": "string",
+            "example": "TechCorp Inc"
+          },
+          "domain": {
+            "type": "string",
+            "example": "techcorp.com"
+          },
+          "contact_persons_saved": {
+            "type": "integer",
+            "example": 2
+          },
+          "research_notes_saved": {
+            "type": "integer",
+            "example": 5
+          },
+          "icp_matches_linked": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "SaveMetadata": {
+        "type": "object",
+        "properties": {
+          "saved_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-09-13T10:30:00Z"
+          },
+          "database_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "save_time_ms": {
+            "type": "integer",
+            "example": 150
+          }
+        }
+      },
+      "RetrieveProspectRequest": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "$ref": "#/components/schemas/ProspectQuery"
+          },
+          "include": {
+            "type": "array",
+            "description": "Related data to include in response",
+            "items": {
+              "type": "string",
+              "enum": ["contact_persons", "research_notes", "icp_matches", "all"]
+            },
+            "default": ["contact_persons"]
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortOptions"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationOptions"
+          }
+        }
+      },
+      "ProspectQuery": {
+        "type": "object",
+        "properties": {
+          "prospect_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Specific prospect UUID to retrieve"
+          },
+          "domain": {
+            "type": "string",
+            "format": "hostname",
+            "description": "Company domain to search for"
+          },
+          "company_name": {
+            "type": "string",
+            "description": "Company name (supports partial matching)"
+          },
+          "qualification_status": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["qualified", "unqualified", "pending", "contacted"]
+            },
+            "description": "Filter by qualification status"
+          },
+          "industries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Filter by industry"
+          },
+          "employee_count_range": {
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "max": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          },
+          "icp_matches": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Filter by ICP names"
+          },
+          "updated_since": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Only return prospects updated after this timestamp"
+          },
+          "search_text": {
+            "type": "string",
+            "description": "Full-text search across company name, description, research notes"
+          }
+        }
+      },
+      "SortOptions": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": ["company_name", "updated_at", "qualification_status", "employee_count"],
+            "default": "updated_at"
+          },
+          "direction": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "default": "desc"
+          }
+        }
+      },
+      "PaginationOptions": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          }
+        }
+      },
+      "RetrieveProspectResponse": {
+        "type": "object",
+        "properties": {
+          "prospects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DetailedProspect"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationResponse"
+          },
+          "query_metadata": {
+            "$ref": "#/components/schemas/QueryMetadata"
+          }
+        }
+      },
+      "DetailedProspect": {
+        "type": "object",
+        "properties": {
+          "prospect_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "company_name": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string",
+            "format": "hostname"
+          },
+          "industry": {
+            "type": "string"
+          },
+          "employee_count": {
+            "type": "integer"
+          },
+          "location": {
+            "type": "string"
+          },
+          "qualification_status": {
+            "type": "string",
+            "enum": ["qualified", "unqualified", "pending", "contacted"]
+          },
+          "pain_points": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "contact_persons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactPerson"
+            }
+          },
+          "research_notes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResearchNote"
+            }
+          },
+          "icp_matches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ICPMatch"
+            }
+          }
+        }
+      },
+      "ResearchNote": {
+        "type": "object",
+        "properties": {
+          "note_type": {
+            "type": "string",
+            "enum": [
+              "company_background",
+              "recent_news",
+              "pain_points",
+              "competitive_analysis",
+              "decision_makers",
+              "technology_stack"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "source_type": {
+            "type": "string",
+            "enum": ["api", "firecrawl", "playwright", "manual"]
+          },
+          "confidence_score": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PaginationResponse": {
+        "type": "object",
+        "properties": {
+          "total_count": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "offset": {
+            "type": "integer"
+          },
+          "has_more": {
+            "type": "boolean"
+          }
+        }
+      },
+      "QueryMetadata": {
+        "type": "object",
+        "properties": {
+          "query_time_ms": {
+            "type": "integer"
+          },
+          "filters_applied": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "total_prospects_in_db": {
+            "type": "integer"
+          }
+        }
+      },
+      "MCPError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "integer",
+                "example": -32000
+              },
+              "message": {
+                "type": "string",
+                "example": "Tool execution failed"
+              },
+              "data": {
+                "type": "object",
+                "properties": {
+                  "tool_name": {
+                    "type": "string",
+                    "example": "find_new_prospect"
+                  },
+                  "error_type": {
+                    "type": "string",
+                    "example": "RateLimitExceeded"
+                  },
+                  "details": {
+                    "type": "string",
+                    "example": "Apollo API rate limit exceeded. Retry in 3600 seconds."
+                  },
+                  "retry_after": {
+                    "type": "integer",
+                    "example": 3600
+                  },
+                  "error_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
