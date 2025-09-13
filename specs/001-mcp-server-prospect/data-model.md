@@ -1,6 +1,6 @@
 # Data Model: Prospect Research Automation Engine
 
-**Date**: September 13, 2025  
+**Date**: September 13, 2025 ### 7. IdealCustomerProfile (ICP)
 **Feature**: MCP Server Prospect Research  
 **Phase**: 1 - Data Model and Entity Design
 
@@ -21,28 +21,37 @@ Primary entity representing a potential customer with comprehensive research dat
 - `qualification_status`: ENUM('qualified', 'unqualified', 'pending', 'contacted')
 - `research_data`: JSONB (Flexible research findings storage)
 - `pain_points`: TEXT[]
+- `workflow_status`: ENUM('initial', 'researching', 'research_complete', 'analyzing', 'profile_complete', 'generating_points', 'workflow_complete') DEFAULT 'initial'
 - `created_at`: TIMESTAMP WITH TIME ZONE
 - `updated_at`: TIMESTAMP WITH TIME ZONE
 - `last_researched_at`: TIMESTAMP WITH TIME ZONE
+- `profile_completed_at`: TIMESTAMP WITH TIME ZONE
+- `talking_points_completed_at`: TIMESTAMP WITH TIME ZONE
 
 **Relationships**:
 - One-to-Many with ContactPerson
 - One-to-Many with ResearchNote
+- One-to-One with ProspectProfile
+- One-to-Many with TalkingPoint
 - Many-to-Many with IdealCustomerProfile
 
 **Validation Rules**:
 - company_name: Required, 1-255 characters
 - domain: Valid domain format, unique
 - qualification_status: Must be one of enum values
+- workflow_status: Must be one of enum values, default 'initial'
 - employee_count: Positive integer or null
 - research_data: Valid JSON structure
 
 **State Transitions**:
 ```
+initial → researching → research_complete → analyzing → profile_complete → generating_points → workflow_complete
+
+Also supports:
 pending → qualified (via research_prospect tool)
 pending → unqualified (via research_prospect tool)
 qualified → contacted (via manual update)
-any → pending (via re-research)
+any → initial (via re-research - resets workflow)
 ```
 
 ### 2. ContactPerson
@@ -98,7 +107,69 @@ Defines criteria for qualifying prospects during find_new_prospect operations.
 - min_employee_count: Positive integer or null
 - max_employee_count: Greater than min_employee_count when both provided
 
-### 4. ResearchNote
+### 4. ProspectProfile
+**NEW ENTITY**: Stores structured Mini Profile data generated from unstructured research in Step 2 of the workflow.
+
+**Fields**:
+- `id`: UUID (Primary Key)
+- `prospect_id`: UUID (Foreign Key to Prospect, Unique)
+- `company_name`: VARCHAR(255) (Denormalized for quick access)
+- `employee_count`: INTEGER
+- `revenue_range`: VARCHAR(50) (e.g., "$100M-$500M", "Unknown")
+- `industry`: VARCHAR(100)
+- `location`: VARCHAR(255)
+- `hiring_signals`: TEXT (Job postings, hiring activity)
+- `tech_adoption`: TEXT (Cloud/AI/automation usage)
+- `public_pr_signals`: TEXT (Press releases, news mentions)
+- `funding_growth`: TEXT (Funding rounds, growth indicators)
+- `tender_compliance`: TEXT (Government contracts, compliance)
+- `decision_makers`: TEXT (Key decision-maker roles and contacts)
+- `engagement_potential`: TEXT (Social media, industry engagement)
+- `general_notes`: TEXT (Additional observations)
+- `infostatus_pain_points`: TEXT (Pain points Infostatus can address)
+- `confidence_score`: DECIMAL(3,2) (0.00-1.00, profile completeness/accuracy)
+- `generated_by`: VARCHAR(50) (AI model/version used for generation)
+- `created_at`: TIMESTAMP WITH TIME ZONE
+- `updated_at`: TIMESTAMP WITH TIME ZONE
+
+**Relationships**:
+- One-to-One with Prospect
+
+**Validation Rules**:
+- prospect_id: Required, unique foreign key
+- company_name: Required, 1-255 characters
+- confidence_score: Between 0.00 and 1.00
+- At least 5 profile fields must be populated (not null/empty)
+
+### 5. TalkingPoint
+**NEW ENTITY**: Stores personalized conversation starters generated in Step 3 of the workflow.
+
+**Fields**:
+- `id`: UUID (Primary Key)
+- `prospect_id`: UUID (Foreign Key to Prospect)
+- `category`: ENUM('personal_professional', 'industry_trends', 'technology_opportunities', 'company_developments', 'solution_alignment')
+- `title`: VARCHAR(255) (Brief talking point headline)
+- `content`: TEXT (Detailed conversation starter)
+- `relevance_score`: DECIMAL(3,2) (0.00-1.00, relevance to prospect)
+- `source_data`: JSONB (Reference to profile fields that inspired this point)
+- `usage_count`: INTEGER DEFAULT 0 (Track how often used)
+- `last_used_at`: TIMESTAMP WITH TIME ZONE
+- `is_active`: BOOLEAN DEFAULT TRUE
+- `generated_by`: VARCHAR(50) (AI model/version used for generation)
+- `created_at`: TIMESTAMP WITH TIME ZONE
+- `updated_at`: TIMESTAMP WITH TIME ZONE
+
+**Relationships**:
+- Many-to-One with Prospect
+
+**Validation Rules**:
+- prospect_id: Required foreign key
+- category: Must be one of enum values
+- title: Required, 1-255 characters
+- content: Required, minimum 20 characters
+- relevance_score: Between 0.00 and 1.00
+
+### 6. ResearchNote
 Stores detailed research findings and intelligence gathered for prospects.
 
 **Fields**:
@@ -123,7 +194,7 @@ Stores detailed research findings and intelligence gathered for prospects.
 - confidence_score: Between 0.00 and 1.00
 - note_type: Must be one of enum values
 
-### 5. DataSource
+### 8. DataSource
 Tracks external data sources and their performance for data acquisition.
 
 **Fields**:
@@ -147,7 +218,7 @@ Tracks external data sources and their performance for data acquisition.
 - success_rate: Between 0.00 and 100.00
 - avg_response_time_ms: Positive integer
 
-### 6. ProspectICP (Junction Table)
+### 9. ProspectICP (Junction Table)
 Links prospects to the ICP criteria they match.
 
 **Fields**:
@@ -164,6 +235,8 @@ Links prospects to the ICP criteria they match.
 ```
 Prospect (1) ←→ (N) ContactPerson
 Prospect (1) ←→ (N) ResearchNote
+Prospect (1) ←→ (1) ProspectProfile
+Prospect (1) ←→ (N) TalkingPoint
 Prospect (N) ←→ (N) IdealCustomerProfile [via ProspectICP]
 IdealCustomerProfile (1) ←→ (N) ProspectICP
 DataSource (independent tracking table)
@@ -176,12 +249,24 @@ DataSource (independent tracking table)
 - `idx_prospect_domain` on Prospect(domain)
 - `idx_prospect_industry` on Prospect(industry)
 - `idx_prospect_qualification_status` on Prospect(qualification_status)
+- `idx_prospect_workflow_status` on Prospect(workflow_status)
 - `idx_prospect_updated_at` on Prospect(updated_at)
 
 ### Research Indexes
 - `idx_research_note_prospect_id` on ResearchNote(prospect_id)
 - `idx_research_note_type` on ResearchNote(note_type)
 - `idx_research_note_created_at` on ResearchNote(created_at)
+
+### Profile Indexes
+- `idx_prospect_profile_prospect_id` on ProspectProfile(prospect_id)
+- `idx_prospect_profile_confidence` on ProspectProfile(confidence_score)
+- `idx_prospect_profile_industry` on ProspectProfile(industry)
+
+### Talking Point Indexes
+- `idx_talking_point_prospect_id` on TalkingPoint(prospect_id)
+- `idx_talking_point_category` on TalkingPoint(category)
+- `idx_talking_point_relevance` on TalkingPoint(relevance_score)
+- `idx_talking_point_active` on TalkingPoint(is_active)
 
 ### Contact Indexes
 - `idx_contact_person_prospect_id` on ContactPerson(prospect_id)
@@ -194,7 +279,9 @@ DataSource (independent tracking table)
 
 ### Composite Indexes
 - `idx_prospect_status_updated` on Prospect(qualification_status, updated_at)
+- `idx_prospect_workflow_updated` on Prospect(workflow_status, updated_at)
 - `idx_research_prospect_type` on ResearchNote(prospect_id, note_type)
+- `idx_talking_point_prospect_category` on TalkingPoint(prospect_id, category)
 
 ## Data Migration Strategy
 
@@ -203,6 +290,13 @@ DataSource (independent tracking table)
 - Insert default ICP templates for common use cases
 - Create initial data source configurations
 - Set up database functions for search optimization
+
+### Version 1.1.0 - Workflow Enhancement
+- Add ProspectProfile table for structured Mini Profiles
+- Add TalkingPoint table for personalized conversation starters
+- Add workflow_status tracking to Prospect table
+- Add workflow completion timestamp fields
+- Create indexes for new workflow-related queries
 
 ### Future Migrations
 - Add full-text search indexes for content fields
@@ -245,6 +339,40 @@ DataSource (independent tracking table)
 }
 ```
 
+### ProspectProfile.source_data (references for profile generation)
+```json
+{
+  "research_note_ids": ["uuid1", "uuid2", "uuid3"],
+  "primary_sources": ["company_website", "linkedin", "recent_news"],
+  "data_completeness": {
+    "hiring_signals": 0.8,
+    "tech_adoption": 0.6,
+    "funding_growth": 0.9
+  },
+  "generation_metadata": {
+    "model_version": "gpt-4",
+    "processing_time_ms": 3200,
+    "confidence_factors": ["multiple_sources", "recent_data"]
+  }
+}
+```
+
+### TalkingPoint.source_data (profile field references)
+```json
+{
+  "profile_fields_used": ["tech_adoption", "public_pr_signals"],
+  "research_note_references": ["uuid1", "uuid2"],
+  "personalization_factors": [
+    "company_stage",
+    "decision_maker_activity"
+  ],
+  "conversation_context": {
+    "best_timing": "recent_company_announcement",
+    "conversation_starter": "technology_trends"
+  }
+}
+```
+
 ### ResearchNote.metadata
 ```json
 {
@@ -261,17 +389,29 @@ DataSource (independent tracking table)
 ### Business Rules
 1. A Prospect must have at least one ContactPerson before being marked as qualified
 2. ResearchNote content must be substantive (minimum length requirements)
-3. ICP criteria must include at least one required field
-4. DataSource performance metrics are updated asynchronously
+3. ProspectProfile can only be created after research_complete workflow status
+4. TalkingPoint generation requires completed ProspectProfile
+5. ICP criteria must include at least one required field
+6. DataSource performance metrics are updated asynchronously
+
+### Workflow Constraints
+- workflow_status must progress sequentially (no skipping steps)
+- ProspectProfile.prospect_id must be unique (one profile per prospect)
+- TalkingPoint.prospect_id must reference existing prospect
+- profile_completed_at timestamp set when workflow_status reaches 'profile_complete'
+- talking_points_completed_at timestamp set when workflow_status reaches 'workflow_complete'
 
 ### Referential Integrity
-- Cascade delete: Prospect → ContactPerson, ResearchNote
+- Cascade delete: Prospect → ContactPerson, ResearchNote, ProspectProfile, TalkingPoint
 - Restrict delete: IdealCustomerProfile (if linked to prospects)
 - Soft delete: DataSource (mark inactive instead of delete)
+- Soft delete: TalkingPoint (mark is_active=false instead of delete)
 
 ### Performance Constraints
 - Prospect.research_data JSONB size limited to 1MB
 - Maximum 100 ResearchNote entries per Prospect
+- Maximum 20 TalkingPoint entries per Prospect
+- ProspectProfile fields have reasonable text length limits (500-2000 chars each)
 - ICP.criteria complexity limited to prevent query performance issues
 
-This data model supports all MCP tool operations while maintaining data integrity and performance for multi-client access patterns.
+This data model supports the complete 3-step workflow while maintaining data integrity and performance for multi-client access patterns. The new entities enable structured prospect intelligence generation while preserving all existing research capabilities.
