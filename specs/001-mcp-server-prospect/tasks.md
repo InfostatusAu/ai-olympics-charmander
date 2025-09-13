@@ -39,10 +39,10 @@
 - **Tests**: `tests/contract/`, `tests/integration/`, `tests/unit/`
 
 ## Phase 3.1: Setup
-- [ ] T001 Create simplified project structure per implementation plan
-- [ ] T002 Initialize Python project with MCP SDK, SQLite, Click dependencies
-- [ ] T003 [P] Configure pytest + pytest-asyncio for TDD with real dependencies
-- [ ] T004 [P] Set up data directory structure: data/prospects/, data/database/
+- [x] T001 Create simplified project structure per implementation plan
+- [x] T002 Initialize Python project with MCP SDK, SQLite, Click dependencies
+- [x] T003 [P] Configure pytest + pytest-asyncio for TDD with real dependencies
+- [x] T004 [P] Set up data directory structure: data/prospects/, data/database/
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
