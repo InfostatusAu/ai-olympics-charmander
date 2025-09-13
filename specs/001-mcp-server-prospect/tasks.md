@@ -66,9 +66,9 @@
 - [x] T017 [P] File management CLI in src/file_manager/cli.py
 
 ### Prospect Research Library
-- [ ] T018 AI research logic and markdown generation in src/prospect_research/research.py
-- [ ] T019 Profile + strategy generation in src/prospect_research/profile.py  
-- [ ] T020 [P] Research CLI commands in src/prospect_research/cli.py
+- [x] T018 AI research logic and markdown generation in src/prospect_research/research.py
+- [x] T019 Profile + strategy generation in src/prospect_research/profile.py  
+- [x] T020 [P] Research CLI commands in src/prospect_research/cli.py
 
 ### MCP Server Library
 - [ ] T021 MCP tool implementations (4 tools) in src/mcp_server/tools.py

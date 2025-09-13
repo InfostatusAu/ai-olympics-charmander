@@ -20,3 +20,14 @@ def read_markdown_file(file_path: str) -> str:
 def file_exists(file_path: str) -> bool:
     """Checks if a file exists."""
     return os.path.exists(file_path)
+
+async def save_markdown_report(prospect_id: str, filename: str, content: str):
+    """Saves a markdown report to the prospects directory."""
+    report_dir = os.path.join("data", "prospects", prospect_id)
+    create_directory(report_dir)
+    file_path = os.path.join(report_dir, filename)
+    save_markdown_file(file_path, content)
+
+async def get_prospect_report_path(prospect_id: str, filename: str) -> str:
+    """Returns the absolute path to a prospect report."""
+    return os.path.abspath(os.path.join("data", "prospects", prospect_id, filename))
