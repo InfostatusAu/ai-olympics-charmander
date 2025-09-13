@@ -1,82 +1,213 @@
-# Data Model: Prospect Research Automation Engine
+# Data Model## Core Entity: Prospect
 
-**Date**: September 13, 2025 ### 7. IdealCustomerProfile (ICP)
+Ultra-minimal database entity for basic tracking only.
+
+**Fields**:
+- `id`: TEXT (Primary Key, UUID format)
+- `company_name`: TEXT (Required)
+- `domain`: TEXT (Unique)
+- `research_status`: TEXT DEFAULT 'pending' (pending, researched, failed)
+- `created_at`: DATETIME DEFAULT CURRENT_TIMESTAMP
+- `updated_at`: DATETIME DEFAULT CURRENT_TIMESTAMP
+
+**That's it!** No complex relationships, no JSON blobs, no workflow tracking.
+
+**SQLite Schema**:
+```sql
+CREATE TABLE prospects (
+    id TEXT PRIMARY KEY,
+    company_name TEXT NOT NULL,
+    domain TEXT UNIQUE,
+    research_status TEXT DEFAULT 'pending',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_prospects_domain ON prospects(domain);
+CREATE INDEX idx_prospects_status ON prospects(research_status);
+```Prospect Research (Markdown-First)
+
+**Date**: September 13, 2025  
 **Feature**: MCP Server Prospect Research  
-**Phase**: 1 - Data Model and Entity Design
+**Phase**: 1 - Minimal Data Model for AI-Generated Reports
 
-## Core Entities
+## Design Philosophy
 
-### 1. Prospect
-Primary entity representing a potential customer with comprehensive research data.
+**PRIMARY OUTPUT**: AI-generated markdown reports with research findings  
+**DATABASE ROLE**: Minimal metadata tracking only  
+**DEV EFFORT**: Focus on AI logic, not complex database operations  
 
-**Fields**:
-- `id`: UUID (Primary Key)
-- `company_name`: VARCHAR(255) (Required, Indexed)
-- `domain`: VARCHAR(255) (Unique, Indexed)
-- `industry`: VARCHAR(100) (Indexed)
-- `employee_count`: INTEGER
-- `location`: VARCHAR(255)
-- `website_url`: TEXT
-- `description`: TEXT
-- `qualification_status`: ENUM('qualified', 'unqualified', 'pending', 'contacted')
-- `research_data`: JSONB (Flexible research findings storage)
-- `pain_points`: TEXT[]
-- `workflow_status`: ENUM('initial', 'researching', 'research_complete', 'analyzing', 'profile_complete', 'generating_points', 'workflow_complete') DEFAULT 'initial'
-- `created_at`: TIMESTAMP WITH TIME ZONE
-- `updated_at`: TIMESTAMP WITH TIME ZONE
-- `last_researched_at`: TIMESTAMP WITH TIME ZONE
-- `profile_completed_at`: TIMESTAMP WITH TIME ZONE
-- `talking_points_completed_at`: TIMESTAMP WITH TIME ZONE
+## Core Entity: Prospect
 
-**Relationships**:
-- One-to-Many with ContactPerson
-- One-to-Many with ResearchNote
-- One-to-One with ProspectProfile
-- One-to-Many with TalkingPoint
-- Many-to-Many with IdealCustomerProfile
-
-**Validation Rules**:
-- company_name: Required, 1-255 characters
-- domain: Valid domain format, unique
-- qualification_status: Must be one of enum values
-- workflow_status: Must be one of enum values, default 'initial'
-- employee_count: Positive integer or null
-- research_data: Valid JSON structure
-
-**State Transitions**:
-```
-initial → researching → research_complete → analyzing → profile_complete → generating_points → workflow_complete
-
-Also supports:
-pending → qualified (via research_prospect tool)
-pending → unqualified (via research_prospect tool)
-qualified → contacted (via manual update)
-any → initial (via re-research - resets workflow)
-```
-
-### 2. ContactPerson
-Represents decision makers and key contacts at prospect companies.
+Ultra-minimal database entity for basic tracking only.
 
 **Fields**:
 - `id`: UUID (Primary Key)
-- `prospect_id`: UUID (Foreign Key to Prospect)
-- `full_name`: VARCHAR(255) (Required)
-- `job_title`: VARCHAR(255)
-- `email`: VARCHAR(255) (Indexed)
-- `phone`: VARCHAR(50)
-- `linkedin_url`: TEXT
-- `decision_maker_level`: ENUM('primary', 'secondary', 'influencer')
-- `contact_data`: JSONB (Additional contact information)
+- `company_name`: VARCHAR(255) (Required)
+- `domain`: VARCHAR(255) (Unique)
+- `status`: ENUM('researched', 'in_progress') DEFAULT 'in_progress'
 - `created_at`: TIMESTAMP WITH TIME ZONE
 - `updated_at`: TIMESTAMP WITH TIME ZONE
 
-**Relationships**:
-- Many-to-One with Prospect
+**That's it!** No complex relationships, no workflow tracking, no JSON blobs.
 
-**Validation Rules**:
-- full_name: Required, 1-255 characters
-- email: Valid email format when provided
-- decision_maker_level: Must be one of enum values
+## File System: AI-Generated Markdown Content
+
+The real value is in AI-generated markdown files stored in the filesystem:
+
+### File Structure
+```
+/data/
+├── icp.md                                    # Single ICP definition (version controlled)
+├── prospects/
+│   ├── {prospect_id}_research.md            # Step 1: Raw research findings
+│   ├── {prospect_id}_profile.md             # Step 2: Structured mini profile  
+│   └── {prospect_id}_talking_points.md      # Step 3: Conversation starters
+└── templates/                                # Markdown templates for consistency
+    ├── research_template.md
+    ├── profile_template.md
+    └── talking_points_template.md
+```
+
+### 1. Research Report (`/data/prospects/{prospect_id}_research.md`)
+**Purpose**: Comprehensive unstructured research findings from Step 1  
+**Generated by**: `research_prospect` tool  
+**Content**: Company background, recent news, technology stack, decision makers, pain points
+
+**Example Structure**:
+```markdown
+# Company Research: {Company Name}
+
+## Company Overview
+- **Industry**: Technology/SaaS
+- **Size**: 150-200 employees  
+- **Location**: San Francisco, CA
+- **Website**: https://company.com
+
+## Recent Developments
+- Raised $15M Series A in March 2024
+- Launched new AI features in Q2 2024
+- Expanded to European market
+
+## Technology Stack
+- Cloud-native on AWS
+- React/Node.js application
+- PostgreSQL database
+
+## Decision Makers
+- **CEO**: John Smith (LinkedIn: /in/johnsmith)
+- **CTO**: Jane Doe (LinkedIn: /in/janedoe)
+- **VP Engineering**: Bob Wilson
+
+## Pain Points Identified
+- Manual data processing workflows
+- Scaling customer support
+- Integration challenges with legacy systems
+
+## Sources
+- Company website: https://company.com/about
+- TechCrunch article: https://techcrunch.com/company-funding
+- LinkedIn profiles and posts
+- Recent job postings
+
+---
+*Research completed: 2025-09-13T10:30:00Z*  
+*Research status: Comprehensive*  
+*Confidence score: 0.85*
+```
+
+### 2. Mini Profile (`/data/prospects/{prospect_id}_profile.md`)
+**Purpose**: Structured 13-field analysis from Step 2  
+**Generated by**: `generate_profile` tool  
+**Content**: Standardized profile template with key business intelligence
+
+**Example Structure**:
+```markdown
+# Mini Profile: {Company Name}
+
+| Field | Value |
+|-------|--------|
+| **Company** | TechCorp Inc |
+| **Industry** | SaaS/AI |
+| **Size** | 150-200 employees |
+| **Revenue** | $10M-$25M (estimated) |
+| **Location** | San Francisco, CA |
+| **Funding** | Series A, $15M (March 2024) |
+| **Tech Stack** | AWS, React, Node.js |
+| **Hiring Signals** | Hiring Data Scientists, AI Engineers (5 open positions) |
+| **Tech Adoption** | AWS migration, AI/ML pipeline implementation |
+| **Recent PR** | Featured in TechCrunch for AI innovation |
+| **Decision Makers** | CEO John Smith, CTO Jane Doe |
+| **Engagement Signals** | CTO posted about AI compliance challenges |
+| **Infostatus Fit** | High - automation needs, manual workflow pain points |
+
+## Key Pain Points
+- Manual data processing workflows consuming 20+ hours/week
+- Document handling inefficiencies in customer onboarding
+- Scaling challenges with current manual processes
+
+## Engagement Timing
+- Q4 budget planning cycle
+- Recent funding provides investment capacity
+- Active hiring suggests growth phase priorities
+
+---
+*Profile generated: 2025-09-13T11:15:00Z*  
+*Source: {prospect_id}_research.md*  
+*Confidence score: 0.83*
+```
+
+### 3. Talking Points (`/data/prospects/{prospect_id}_talking_points.md`)
+**Purpose**: Personalized conversation starters from Step 3  
+**Generated by**: `create_talking_points` tool  
+**Content**: Categorized conversation openers with relevance scoring
+
+**Example Structure**:
+```markdown
+# Conversation Starters: {Company Name}
+
+## 🎯 Business Challenges
+**Relevance: High | Timing: Immediate**
+- "I noticed you recently raised Series A funding - many companies at your stage struggle with scaling their data operations manually. How is TechCorp handling the increased data volume?"
+- "With your expansion to Europe, data compliance and automated reporting becomes crucial..."
+
+## 🔧 Technology Opportunities  
+**Relevance: High | Timing: Q4 Planning**
+- "Your AWS-native stack is perfect for our API integration - we can have you up and running in under a week..."
+- "React developers love our TypeScript SDK - it integrates seamlessly with your existing frontend..."
+
+## 📰 Recent Company News
+**Relevance: Medium | Timing: Follow recent announcement**
+- "Congratulations on the $15M Series A! That's a strong validation of your AI features. As you scale, have you considered automating your data pipeline?"
+- "I saw the announcement about your European expansion - data localization must be top of mind..."
+
+## 👥 Personal/Professional Connections
+**Relevance: Medium | Timing: Warm introduction**
+- "I noticed John Smith previously worked at DataCorp - we've helped several of their alumni companies optimize their data workflows..."
+- "Jane Doe's background in distributed systems is impressive - she'll appreciate our scalable architecture..."
+
+## ✅ Solution Alignment
+**Relevance: High | Timing: Pain point discussion**
+- "Companies your size typically see 40% time savings when they automate manual data processes - what's your biggest bottleneck right now?"
+- "Our customer success team has worked with 50+ companies in your space - we know exactly what challenges you're facing..."
+
+## 🎯 Best Opening Lines
+1. **Series A congratulations + automation pain point** (Relevance: 0.92)
+2. **AWS migration + document processing** (Relevance: 0.88)  
+3. **Hiring Data Scientists + time optimization** (Relevance: 0.85)
+
+---
+*Talking points generated: 2025-09-13T11:45:00Z*  
+*Source: {prospect_id}_profile.md*  
+*Categories: 5 | Total points: 12 | Conversation openers: 3*
+```
+
+### 4. ICP Reference (`/data/icp.md`)
+**Purpose**: Ideal Customer Profile criteria for prospect evaluation  
+**Managed by**: Business team (version controlled)  
+**Used by**: `find_new_prospect` and research tools for qualification
+
+**Content**: Existing ICP definition from `/gemini-docs/ICP.md`
 
 ### 3. IdealCustomerProfile (ICP)
 Defines criteria for qualifying prospects during find_new_prospect operations.
@@ -230,188 +361,64 @@ Links prospects to the ICP criteria they match.
 
 **Composite Primary Key**: (prospect_id, icp_id)
 
-## Database Schema Relationships
+## Simplified MCP Tools
 
-```
-Prospect (1) ←→ (N) ContactPerson
-Prospect (1) ←→ (N) ResearchNote
-Prospect (1) ←→ (1) ProspectProfile
-Prospect (1) ←→ (N) TalkingPoint
-Prospect (N) ←→ (N) IdealCustomerProfile [via ProspectICP]
-IdealCustomerProfile (1) ←→ (N) ProspectICP
-DataSource (independent tracking table)
-```
+### 1. `research_prospect`
+- **Input**: company name or domain
+- **Database**: Create/update minimal prospect record with research_status='researched'
+- **File Output**: Rich markdown research report saved to `/data/prospects/{id}_research.md`
 
-## Indexes for Performance
+### 2. `generate_profile` 
+- **Input**: prospect_id
+- **File Input**: Read `/data/prospects/{id}_research.md` for analysis
+- **File Output**: Structured markdown profile saved to `/data/prospects/{id}_profile.md`
 
-### Primary Indexes
-- `idx_prospect_company_name` on Prospect(company_name)
-- `idx_prospect_domain` on Prospect(domain)
-- `idx_prospect_industry` on Prospect(industry)
-- `idx_prospect_qualification_status` on Prospect(qualification_status)
-- `idx_prospect_workflow_status` on Prospect(workflow_status)
-- `idx_prospect_updated_at` on Prospect(updated_at)
+### 3. `create_talking_points`
+- **Input**: prospect_id  
+- **File Input**: Read `/data/prospects/{id}_profile.md` for personalization
+- **File Output**: Conversation starters saved to `/data/prospects/{id}_talking_points.md`
 
-### Research Indexes
-- `idx_research_note_prospect_id` on ResearchNote(prospect_id)
-- `idx_research_note_type` on ResearchNote(note_type)
-- `idx_research_note_created_at` on ResearchNote(created_at)
+### 4. `get_prospect_data`
+- **Input**: prospect_id
+- **Database**: Read prospect metadata
+- **File Operations**: Return paths and content of all generated markdown files
+- **Output**: Combined prospect data with file contents
 
-### Profile Indexes
-- `idx_prospect_profile_prospect_id` on ProspectProfile(prospect_id)
-- `idx_prospect_profile_confidence` on ProspectProfile(confidence_score)
-- `idx_prospect_profile_industry` on ProspectProfile(industry)
+### 5. `search_prospects`
+- **Input**: search criteria
+- **Database**: Query prospect metadata  
+- **File Operations**: Optionally search within markdown content
+- **Output**: Matching prospects with file paths
 
-### Talking Point Indexes
-- `idx_talking_point_prospect_id` on TalkingPoint(prospect_id)
-- `idx_talking_point_category` on TalkingPoint(category)
-- `idx_talking_point_relevance` on TalkingPoint(relevance_score)
-- `idx_talking_point_active` on TalkingPoint(is_active)
+## Architecture Benefits
 
-### Contact Indexes
-- `idx_contact_person_prospect_id` on ContactPerson(prospect_id)
-- `idx_contact_person_email` on ContactPerson(email)
+✅ **Minimal Database Complexity**: Just one simple table with 6 fields  
+✅ **Focus on AI Logic**: 90% effort on content generation, 10% on persistence  
+✅ **Human-Readable Output**: Markdown files can be directly read and shared  
+✅ **Version Control Friendly**: Text files can be tracked in git  
+✅ **Fast Development**: No complex migrations or relationships  
+✅ **Easy Debugging**: Open markdown files to see exactly what AI generated  
+✅ **Copy-Paste Ready**: Content ready for emails, presentations, CRM  
+✅ **Template-Driven**: Consistent formatting across all outputs  
 
-### ICP Indexes
-- `idx_icp_name` on IdealCustomerProfile(name)
-- `idx_icp_is_active` on IdealCustomerProfile(is_active)
-- `idx_prospect_icp_match_score` on ProspectICP(match_score)
+## Implementation Approach
 
-### Composite Indexes
-- `idx_prospect_status_updated` on Prospect(qualification_status, updated_at)
-- `idx_prospect_workflow_updated` on Prospect(workflow_status, updated_at)
-- `idx_research_prospect_type` on ResearchNote(prospect_id, note_type)
-- `idx_talking_point_prospect_category` on TalkingPoint(prospect_id, category)
+### Database Responsibilities
+- **Prospect metadata tracking**: Basic company info and research status
+- **Search and filtering**: Find prospects by domain, company name, status
+- **Duplicate prevention**: Ensure we don't research the same company twice
 
-## Data Migration Strategy
+### File System Responsibilities  
+- **Rich content storage**: Comprehensive research findings and analysis
+- **Human-readable outputs**: Formatted for direct business use
+- **AI-generated intelligence**: Research, profiles, and talking points
+- **Template consistency**: Standardized formatting across all outputs
 
-### Version 1.0.0 - Initial Schema
-- Create all core tables with proper constraints
-- Insert default ICP templates for common use cases
-- Create initial data source configurations
-- Set up database functions for search optimization
+### State Management
+- **Research status**: Tracked in database (`pending`, `researched`, `failed`)
+- **Workflow progress**: Determined by file existence
+  - Research complete: `{id}_research.md` exists
+  - Profile complete: `{id}_profile.md` exists  
+  - Talking points complete: `{id}_talking_points.md` exists
 
-### Version 1.1.0 - Workflow Enhancement
-- Add ProspectProfile table for structured Mini Profiles
-- Add TalkingPoint table for personalized conversation starters
-- Add workflow_status tracking to Prospect table
-- Add workflow completion timestamp fields
-- Create indexes for new workflow-related queries
-
-### Future Migrations
-- Add full-text search indexes for content fields
-- Implement data archival strategy for old research
-- Add audit trail tables for compliance
-- Create materialized views for analytics
-
-## JSONB Field Structures
-
-### Prospect.research_data
-```json
-{
-  "company_overview": {
-    "founded_year": 2020,
-    "headquarters": "San Francisco, CA",
-    "funding_rounds": [...],
-    "key_metrics": {...}
-  },
-  "competitive_landscape": [...],
-  "technology_stack": [...],
-  "recent_developments": [...]
-}
-```
-
-### IdealCustomerProfile.criteria
-```json
-{
-  "required": {
-    "employee_count_range": [50, 500],
-    "industries": ["technology", "software"],
-    "locations": ["North America", "Europe"]
-  },
-  "preferred": {
-    "technologies": ["AWS", "Kubernetes"],
-    "company_stage": ["growth", "established"]
-  },
-  "exclusions": {
-    "industries": ["gambling", "tobacco"]
-  }
-}
-```
-
-### ProspectProfile.source_data (references for profile generation)
-```json
-{
-  "research_note_ids": ["uuid1", "uuid2", "uuid3"],
-  "primary_sources": ["company_website", "linkedin", "recent_news"],
-  "data_completeness": {
-    "hiring_signals": 0.8,
-    "tech_adoption": 0.6,
-    "funding_growth": 0.9
-  },
-  "generation_metadata": {
-    "model_version": "gpt-4",
-    "processing_time_ms": 3200,
-    "confidence_factors": ["multiple_sources", "recent_data"]
-  }
-}
-```
-
-### TalkingPoint.source_data (profile field references)
-```json
-{
-  "profile_fields_used": ["tech_adoption", "public_pr_signals"],
-  "research_note_references": ["uuid1", "uuid2"],
-  "personalization_factors": [
-    "company_stage",
-    "decision_maker_activity"
-  ],
-  "conversation_context": {
-    "best_timing": "recent_company_announcement",
-    "conversation_starter": "technology_trends"
-  }
-}
-```
-
-### ResearchNote.metadata
-```json
-{
-  "extraction_method": "firecrawl",
-  "processing_time_ms": 1250,
-  "content_length": 2048,
-  "language_detected": "en",
-  "sentiment_score": 0.65
-}
-```
-
-## Data Validation and Constraints
-
-### Business Rules
-1. A Prospect must have at least one ContactPerson before being marked as qualified
-2. ResearchNote content must be substantive (minimum length requirements)
-3. ProspectProfile can only be created after research_complete workflow status
-4. TalkingPoint generation requires completed ProspectProfile
-5. ICP criteria must include at least one required field
-6. DataSource performance metrics are updated asynchronously
-
-### Workflow Constraints
-- workflow_status must progress sequentially (no skipping steps)
-- ProspectProfile.prospect_id must be unique (one profile per prospect)
-- TalkingPoint.prospect_id must reference existing prospect
-- profile_completed_at timestamp set when workflow_status reaches 'profile_complete'
-- talking_points_completed_at timestamp set when workflow_status reaches 'workflow_complete'
-
-### Referential Integrity
-- Cascade delete: Prospect → ContactPerson, ResearchNote, ProspectProfile, TalkingPoint
-- Restrict delete: IdealCustomerProfile (if linked to prospects)
-- Soft delete: DataSource (mark inactive instead of delete)
-- Soft delete: TalkingPoint (mark is_active=false instead of delete)
-
-### Performance Constraints
-- Prospect.research_data JSONB size limited to 1MB
-- Maximum 100 ResearchNote entries per Prospect
-- Maximum 20 TalkingPoint entries per Prospect
-- ProspectProfile fields have reasonable text length limits (500-2000 chars each)
-- ICP.criteria complexity limited to prevent query performance issues
-
-This data model supports the complete 3-step workflow while maintaining data integrity and performance for multi-client access patterns. The new entities enable structured prospect intelligence generation while preserving all existing research capabilities.
+This approach prioritizes **AI-generated value** over database complexity, making the system easier to build, maintain, and debug while providing rich, actionable outputs for sales teams.
