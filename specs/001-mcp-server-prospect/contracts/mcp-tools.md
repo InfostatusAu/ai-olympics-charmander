@@ -8,19 +8,18 @@
 ## MCP Server Capabilities
 
 The server implements simplified MCP capabilities focused on AI-generated markdown outputs:
-- **tools**: 5 streamlined prospect research tools
+- **tools**: 4 streamlined prospect research tools
 - **resources**: File-based prospect data access
 - **logging**: Essential operation logging
 - **prompts**: Research workflow templates
 
 ## Simplified Tool Overview
 
-The MCP server provides 5 focused tools supporting markdown-first prospect research:
+The MCP server provides 4 focused tools supporting markdown-first prospect research:
 
 ### Core Workflow Tools
 - `research_prospect` - Step 1: Gather research, output markdown
-- `generate_profile` - Step 2: Create structured profile markdown  
-- `create_talking_points` - Step 3: Generate conversation starters markdown
+- `create_profile` - Step 2: Create combined profile + talking points strategy markdown
 
 ### Data Access Tools
 - `get_prospect_data` - Retrieve prospect with all markdown files
@@ -93,16 +92,16 @@ Compiles comprehensive research and generates markdown research report.
 }
 ```
 
-### 2. generate_profile (Step 2: Analysis)
+### 2. create_profile (Step 2: Analysis & Strategy)
 
-Transforms research markdown into structured Mini Profile markdown.
+Transforms research markdown into structured Mini Profile with talking points strategy.
 
 **Tool Schema**:
 ```json
 {
-  "name": "generate_profile",
-  "title": "Generate Profile",
-  "description": "Step 2: Transform research markdown into structured Mini Profile template",
+  "name": "create_profile", 
+  "title": "Create Profile",
+  "description": "Step 2: Transform research markdown into structured Mini Profile table with conversation strategy",
   "inputSchema": {
     "type": "object",
     "properties": {
@@ -121,64 +120,8 @@ Transforms research markdown into structured Mini Profile markdown.
             "funding_status", "decision_makers", "pain_points"
           ]
         }
-      }
-    },
-    "required": ["prospect_id"],
-    "additionalProperties": false
-  }
-}
-```
-
-**Response Format**:
-```json
-{
-  "prospect_id": "123e4567-e89b-12d3-a456-426614174000",
-  "files_processed": {
-    "input_file": "/data/prospects/123e4567_research.md",
-    "output_file": "/data/prospects/123e4567_profile.md",
-    "file_size_kb": 8.5
-  },
-  "profile_summary": {
-    "fields_populated": 13,
-    "confidence_score": 0.83,
-    "key_findings": ["Series A funding", "AWS migration", "AI hiring"],
-    "infostatus_fit_score": 0.88,
-    "generation_time_ms": 2100
-  }
-}
-```
-
-### 3. create_talking_points (Step 3: Personalization)
-
-Generates personalized conversation starters from Mini Profile markdown.
-
-**Tool Schema**:
-```json
-{
-  "name": "create_talking_points",
-  "title": "Create Talking Points",
-  "description": "Step 3: Generate personalized conversation starters from Mini Profile",
-  "inputSchema": {
-    "type": "object",
-    "properties": {
-      "prospect_id": {
-        "type": "string",
-        "format": "uuid",
-        "description": "UUID of prospect to create talking points for"
       },
-      "categories": {
-        "type": "array",
-        "description": "Categories of talking points to generate",
-        "items": {
-          "type": "string",
-          "enum": [
-            "business_challenges", "technology_opportunities", "recent_news",
-            "personal_connections", "solution_alignment"
-          ]
-        },
-        "default": ["business_challenges", "technology_opportunities", "solution_alignment"]
-      },
-      "max_points": {
+      "max_talking_points": {
         "type": "integer",
         "minimum": 3,
         "maximum": 15,
@@ -197,21 +140,64 @@ Generates personalized conversation starters from Mini Profile markdown.
 {
   "prospect_id": "123e4567-e89b-12d3-a456-426614174000",
   "files_processed": {
-    "input_file": "/data/prospects/123e4567_profile.md",
-    "output_file": "/data/prospects/123e4567_talking_points.md",
-    "file_size_kb": 12.3
+    "input_file": "/data/prospects/123e4567_research.md",
+    "output_file": "/data/prospects/123e4567_profile.md",
+    "file_size_kb": 18.7
   },
-  "talking_points_summary": {
-    "total_generated": 8,
-    "categories_covered": ["business_challenges", "technology_opportunities", "solution_alignment"],
-    "conversation_openers": 3,
-    "avg_relevance_score": 0.88,
-    "generation_time_ms": 1800
+  "profile_summary": {
+    "mini_profile_fields": 14,
+    "talking_points_generated": 8,
+    "confidence_score": 0.83,
+    "key_findings": ["Series A funding", "AWS migration", "AI hiring"],
+    "infostatus_fit_score": 0.88,
+    "generation_time_ms": 2800
   }
 }
 ```
 
-### 4. get_prospect_data
+**Generated File Format**:
+The tool creates a single `{prospect_id}_profile.md` file containing:
+
+1. **Mini Profile Table** (exactly as specified):
+```markdown
+## Mini Profile – Example Company
+
+| Field | Description | Example |
+|-------|-------------|---------|
+| **Company Name** | Name of the company | "ABC Financial Services" |
+| **Size** | Number of employees | 300 |
+| **Revenue Range** | Estimated revenue | $120M |
+| **Industry** | Sector | Financial Services |
+| **Location** | Main location | Sydney, NSW |
+| **Hiring Signals** | Job postings | Hiring "Data Scientist" & "Head of Innovation" |
+| **Tech Adoption** | Cloud/AI/automation | Migrating to AWS, exploring predictive analytics |
+| **Public & PR Signals** | Press/news | AFR: "ABC invests in AI fraud detection" |
+| **Funding & Growth** | Funding info | Series B $15M in 2023 |
+| **Tender/Compliance** | Gov contracts | Listed in NSW eTendering for financial IT project |
+| **Decision-Makers** | Key roles | CIO & CFO identified |
+| **Engagement Potential** | Activity | CFO LinkedIn post on AI compliance |
+| **Notes** | Other info | Member of FinTech Australia |
+| **Pain point(s)** | Inferred/observable outstanding, relevant pain point(s) that Infostatus might help/solve | From recent interactions with banking documents automation tasks, probably this prospect needs to speed up their paperwork in banking domain. |
+```
+
+2. **Conversation Strategy Section**:
+```markdown
+## Conversation Strategy
+
+### Primary Talking Points
+1. **🎯 Pain Point Focus** (94% relevance)
+   "I noticed ABC is investing in AI fraud detection. Document processing speed is often a bottleneck in real-time fraud systems..."
+
+2. **☁️ Technology Alignment** (91% relevance)  
+   "Your AWS migration creates perfect timing for document automation integration..."
+
+### Conversation Openers
+- CFO LinkedIn engagement opportunity
+- Recent press coverage discussion points
+- Technology partnership alignment
+```
+
+### 3. get_prospect_data
 
 Retrieves prospect metadata with all generated markdown files.
 
@@ -239,9 +225,9 @@ Retrieves prospect metadata with all generated markdown files.
         "description": "Specific file types to retrieve",
         "items": {
           "type": "string",
-          "enum": ["research", "profile", "talking_points"]
+          "enum": ["research", "profile"]
         },
-        "default": ["research", "profile", "talking_points"]
+        "default": ["research", "profile"]
       }
     },
     "required": ["prospect_id"],
@@ -271,24 +257,17 @@ Retrieves prospect metadata with all generated markdown files.
     "profile": {
       "path": "/data/prospects/123e4567_profile.md",
       "exists": true,
-      "size_kb": 8.5,
+      "size_kb": 18.7,
       "created_at": "2025-09-13T11:15:00Z",
-      "content": "# Mini Profile: TechCorp Inc\n\n| Field | Value |\n...",
-      "confidence_score": 0.83
-    },
-    "talking_points": {
-      "path": "/data/prospects/123e4567_talking_points.md",
-      "exists": true,
-      "size_kb": 12.3,
-      "created_at": "2025-09-13T11:45:00Z",
-      "content": "# Conversation Starters: TechCorp Inc\n\n## 🎯 Business Challenges...",
-      "total_points": 8
+      "content": "## Mini Profile – TechCorp Inc\n\n| Field | Description | Example |\n...\n\n## Conversation Strategy\n...",
+      "mini_profile_fields": 14,
+      "talking_points_count": 8
     }
   }
 }
 ```
 
-### 5. search_prospects
+### 4. search_prospects
 
 Searches prospects by metadata and optionally file content.
 
@@ -360,10 +339,8 @@ Searches prospects by metadata and optionally file content.
       "files": {
         "research_exists": true,
         "profile_exists": true,
-        "talking_points_exists": true,
         "research_path": "/data/prospects/123e4567_research.md",
-        "profile_path": "/data/prospects/123e4567_profile.md",
-        "talking_points_path": "/data/prospects/123e4567_talking_points.md"
+        "profile_path": "/data/prospects/123e4567_profile.md"
       }
     }
   ],
@@ -386,8 +363,7 @@ Resources are URI-addressable prospect data accessible to AI assistants for cont
 - `prospect://prospects/{prospect_id}` - Individual prospect with all files
 - `prospect://prospects/` - List of all prospects (paginated)
 - `prospect://files/{prospect_id}/research` - Research markdown file
-- `prospect://files/{prospect_id}/profile` - Profile markdown file  
-- `prospect://files/{prospect_id}/talking_points` - Talking points markdown file
+- `prospect://files/{prospect_id}/profile` - Combined profile + strategy markdown file
 - `prospect://search?q={query}` - Search results resource
 - `prospect://icp` - ICP definition from /data/icp.md
 
@@ -405,10 +381,10 @@ Resources are URI-addressable prospect data accessible to AI assistants for cont
 ```json
 {
   "uri": "prospect://files/123e4567-e89b-12d3-a456-426614174000/profile", 
-  "name": "TechCorp Inc Mini Profile",
-  "description": "Structured Mini Profile markdown file",
+  "name": "TechCorp Inc Profile & Strategy",
+  "description": "Combined Mini Profile table and conversation strategy markdown",
   "mimeType": "text/markdown",
-  "text": "# Mini Profile: TechCorp Inc\n\n| Field | Value |\n..."
+  "text": "## Mini Profile – TechCorp Inc\n\n| Field | Description | Example |\n...\n\n## Conversation Strategy\n..."
 }
 ```
 
@@ -455,4 +431,4 @@ All tools follow JSON-RPC 2.0 error format:
 - `ResearchTimeout`: External API timeout
 - `InsufficientData`: Not enough research data found
 
-This simplified contract specification focuses on markdown-first outputs while maintaining MCP protocol compliance, enabling AI assistants to work with rich, human-readable prospect intelligence.
+This simplified contract specification focuses on markdown-first outputs with merged profile+strategy files, maintaining MCP protocol compliance while enabling AI assistants to work with rich, human-readable prospect intelligence in a streamlined 2-step workflow.

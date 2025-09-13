@@ -55,17 +55,17 @@
         }
       }
     },
-    "/tools/generate_profile": {
+    "/tools/create_profile": {
       "post": {
-        "summary": "Generate Profile (Step 2)",
-        "description": "Transform research markdown into structured Mini Profile template",
-        "operationId": "generateProfile",
+        "summary": "Create Profile (Step 2)",
+        "description": "Transform research markdown into structured Mini Profile table with conversation strategy",
+        "operationId": "createProfile",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GenerateProfileRequest"
+                "$ref": "#/components/schemas/CreateProfileRequest"
               }
             }
           }
@@ -76,52 +76,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GenerateProfileResponse"
+                  "$ref": "#/components/schemas/CreateProfileResponse"
                 }
               }
             }
           },
           "404": {
             "description": "Research file not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/tools/create_talking_points": {
-      "post": {
-        "summary": "Create Talking Points (Step 3)",
-        "description": "Generate personalized conversation starters from Mini Profile",
-        "operationId": "createTalkingPoints",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateTalkingPointsRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Talking points created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateTalkingPointsResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Profile file not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -305,7 +266,7 @@
           }
         }
       },
-      "GenerateProfileRequest": {
+      "CreateProfileRequest": {
         "type": "object",
         "required": ["prospect_id"],
         "properties": {
@@ -321,10 +282,17 @@
               "enum": ["revenue_estimation", "hiring_signals", "tech_adoption", "funding_status", "decision_makers", "pain_points"]
             },
             "description": "Profile fields to emphasize"
+          },
+          "max_talking_points": {
+            "type": "integer",
+            "minimum": 3,
+            "maximum": 15,
+            "default": 8,
+            "description": "Maximum number of talking points to generate"
           }
         }
       },
-      "GenerateProfileResponse": {
+      "CreateProfileResponse": {
         "type": "object",
         "properties": {
           "prospect_id": {
@@ -340,7 +308,7 @@
               },
               "output_file": {
                 "type": "string",
-                "description": "Generated profile markdown file path"
+                "description": "Generated combined profile+strategy markdown file path"
               },
               "file_size_kb": {
                 "type": "number"
@@ -350,9 +318,13 @@
           "profile_summary": {
             "type": "object",
             "properties": {
-              "fields_populated": {
+              "mini_profile_fields": {
                 "type": "integer",
-                "description": "Number of profile fields populated"
+                "description": "Number of mini profile fields populated"
+              },
+              "talking_points_generated": {
+                "type": "integer",
+                "description": "Number of talking points generated"
               },
               "confidence_score": {
                 "type": "number",
@@ -366,82 +338,6 @@
                 }
               },
               "infostatus_fit_score": {
-                "type": "number",
-                "minimum": 0.0,
-                "maximum": 1.0
-              },
-              "generation_time_ms": {
-                "type": "integer"
-              }
-            }
-          }
-        }
-      },
-      "CreateTalkingPointsRequest": {
-        "type": "object",
-        "required": ["prospect_id"],
-        "properties": {
-          "prospect_id": {
-            "type": "string",
-            "format": "uuid",
-            "description": "UUID of prospect to create talking points for"
-          },
-          "categories": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": ["business_challenges", "technology_opportunities", "recent_news", "personal_connections", "solution_alignment"]
-            },
-            "default": ["business_challenges", "technology_opportunities", "solution_alignment"]
-          },
-          "max_points": {
-            "type": "integer",
-            "minimum": 3,
-            "maximum": 15,
-            "default": 8
-          }
-        }
-      },
-      "CreateTalkingPointsResponse": {
-        "type": "object",
-        "properties": {
-          "prospect_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "files_processed": {
-            "type": "object",
-            "properties": {
-              "input_file": {
-                "type": "string",
-                "description": "Profile markdown file path"
-              },
-              "output_file": {
-                "type": "string",
-                "description": "Generated talking points markdown file path"
-              },
-              "file_size_kb": {
-                "type": "number"
-              }
-            }
-          },
-          "talking_points_summary": {
-            "type": "object",
-            "properties": {
-              "total_generated": {
-                "type": "integer"
-              },
-              "categories_covered": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "conversation_openers": {
-                "type": "integer",
-                "description": "Number of high-priority conversation starters"
-              },
-              "avg_relevance_score": {
                 "type": "number",
                 "minimum": 0.0,
                 "maximum": 1.0
@@ -470,9 +366,9 @@
             "type": "array",
             "items": {
               "type": "string",
-              "enum": ["research", "profile", "talking_points"]
+              "enum": ["research", "profile"]
             },
-            "default": ["research", "profile", "talking_points"]
+            "default": ["research", "profile"]
           }
         }
       },
@@ -508,9 +404,6 @@
                 "$ref": "#/components/schemas/FileInfo"
               },
               "profile": {
-                "$ref": "#/components/schemas/FileInfo"
-              },
-              "talking_points": {
                 "$ref": "#/components/schemas/FileInfo"
               }
             }
@@ -642,16 +535,10 @@
               "profile_exists": {
                 "type": "boolean"
               },
-              "talking_points_exists": {
-                "type": "boolean"
-              },
               "research_path": {
                 "type": "string"
               },
               "profile_path": {
-                "type": "string"
-              },
-              "talking_points_path": {
                 "type": "string"
               }
             }
