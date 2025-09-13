@@ -52,7 +52,7 @@
 - [x] T008 [P] Contract test search_prospects MCP tool in tests/contract/test_search_prospects.py
 - [x] T009 [P] Integration test complete 2-step workflow in tests/integration/test_complete_workflow.py
 - [x] T010 [P] Integration test markdown file generation in tests/integration/test_markdown_generation.py
-- [ ] T011 [P] Integration test MCP server tool discovery in tests/integration/test_mcp_server.py
+- [x] T011 [P] Integration test MCP server tool discovery in tests/integration/test_mcp_server.py
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
 ### Database Library
