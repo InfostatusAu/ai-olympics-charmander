@@ -39,40 +39,40 @@
 - **Tests**: `tests/contract/`, `tests/integration/`, `tests/unit/`
 
 ## Phase 3.1: Setup
-- [ ] T001 Create simplified project structure per implementation plan
-- [ ] T002 Initialize Python project with MCP SDK, SQLite, Click dependencies
-- [ ] T003 [P] Configure pytest + pytest-asyncio for TDD with real dependencies
-- [ ] T004 [P] Set up data directory structure: data/prospects/, data/database/
+- [x] T001 Create simplified project structure per implementation plan
+- [x] T002 Initialize Python project with MCP SDK, SQLite, Click dependencies
+- [x] T003 [P] Configure pytest + pytest-asyncio for TDD with real dependencies
+- [x] T004 [P] Set up data directory structure: data/prospects/, data/database/
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
-- [ ] T005 [P] Contract test research_prospect MCP tool in tests/contract/test_research_prospect.py
-- [ ] T006 [P] Contract test create_profile MCP tool in tests/contract/test_create_profile.py
-- [ ] T007 [P] Contract test get_prospect_data MCP tool in tests/contract/test_get_prospect_data.py
-- [ ] T008 [P] Contract test search_prospects MCP tool in tests/contract/test_search_prospects.py
-- [ ] T009 [P] Integration test complete 2-step workflow in tests/integration/test_complete_workflow.py
-- [ ] T010 [P] Integration test markdown file generation in tests/integration/test_markdown_generation.py
-- [ ] T011 [P] Integration test MCP server tool discovery in tests/integration/test_mcp_server.py
+- [x] T005 [P] Contract test research_prospect MCP tool in tests/contract/test_research_prospect.py
+- [x] T006 [P] Contract test create_profile MCP tool in tests/contract/test_create_profile.py
+- [x] T007 [P] Contract test get_prospect_data MCP tool in tests/contract/test_get_prospect_data.py
+- [x] T008 [P] Contract test search_prospects MCP tool in tests/contract/test_search_prospects.py
+- [x] T009 [P] Integration test complete 2-step workflow in tests/integration/test_complete_workflow.py
+- [x] T010 [P] Integration test markdown file generation in tests/integration/test_markdown_generation.py
+- [x] T011 [P] Integration test MCP server tool discovery in tests/integration/test_mcp_server.py
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
 ### Database Library
-- [ ] T012 [P] Prospect model in src/database/models.py
-- [ ] T013 [P] Basic SQLite operations in src/database/operations.py
-- [ ] T014 [P] Database CLI commands in src/database/cli.py
+- [x] T012 [P] Prospect model in src/database/models.py
+- [x] T013 [P] Basic SQLite operations in src/database/operations.py
+- [x] T014 [P] Database CLI commands in src/database/cli.py
 
 ### File Manager Library  
-- [ ] T015 [P] File system operations in src/file_manager/storage.py
-- [ ] T016 [P] Markdown template management in src/file_manager/templates.py
-- [ ] T017 [P] File management CLI in src/file_manager/cli.py
+- [x] T015 [P] File system operations in src/file_manager/storage.py
+- [x] T016 [P] Markdown template management in src/file_manager/templates.py
+- [x] T017 [P] File management CLI in src/file_manager/cli.py
 
 ### Prospect Research Library
-- [ ] T018 AI research logic and markdown generation in src/prospect_research/research.py
-- [ ] T019 Profile + strategy generation in src/prospect_research/profile.py  
-- [ ] T020 [P] Research CLI commands in src/prospect_research/cli.py
+- [x] T018 AI research logic and markdown generation in src/prospect_research/research.py
+- [x] T019 Profile + strategy generation in src/prospect_research/profile.py  
+- [x] T020 [P] Research CLI commands in src/prospect_research/cli.py
 
 ### MCP Server Library
-- [ ] T021 MCP tool implementations (4 tools) in src/mcp_server/tools.py
-- [ ] T022 MCP server with tool registration in src/mcp_server/server.py
+- [x] T021 MCP tool implementations (4 tools) in src/mcp_server/tools.py
+- [x] T022 MCP server with tool registration in src/mcp_server/server.py
 - [ ] T023 [P] Server CLI commands in src/mcp_server/cli.py
 
 ## Phase 3.4: Integration
