@@ -1,0 +1,34 @@
+{
+  "privacy": {
+    "usageStatisticsEnabled": false
+  },
+  "context": {
+    "filePath": [
+      ".gemini/GEMINI.md",
+      "gemini-docs/"
+    ]
+  },
+  "advanced": {
+    "excludedEnvVars": ["DEBUG", "DEBUG_MODE", "NODE_ENV"]
+  },
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest", "--browser", "msedge"
+      ]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp", "--api-key", YOUR_API_KEY_HERE]
+    },
+    "serena": {
+        "command": "uvx",
+        "args": ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide-assistant", "--project", "$(pwd)"]
+    },
+    "atlassian": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.atlassian.com/v1/sse"]
+    }
+  }
+}

@@ -1,0 +1,1 @@
+# Spec-Driven Development: Define user stories and acceptance criteria in structured EARS notation

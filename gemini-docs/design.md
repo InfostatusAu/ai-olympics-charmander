@@ -1,0 +1,1 @@
+# Spec-Driven Development: Document the technical architecture, sequence diagrams, and implementation considerations
