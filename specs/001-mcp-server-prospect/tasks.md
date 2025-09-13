@@ -56,9 +56,9 @@
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
 ### Database Library
-- [ ] T012 [P] Prospect model in src/database/models.py
-- [ ] T013 [P] Basic SQLite operations in src/database/operations.py
-- [ ] T014 [P] Database CLI commands in src/database/cli.py
+- [x] T012 [P] Prospect model in src/database/models.py
+- [x] T013 [P] Basic SQLite operations in src/database/operations.py
+- [x] T014 [P] Database CLI commands in src/database/cli.py
 
 ### File Manager Library  
 - [ ] T015 [P] File system operations in src/file_manager/storage.py
