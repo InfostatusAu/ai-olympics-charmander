@@ -18,3 +18,18 @@
 
 ## Identified Pain Points
 {pain_points}
+
+## LinkedIn Information
+{linkedin_info}
+
+## Apollo.io Information
+{apollo_info}
+
+## Public Job Boards Information
+{job_board_info}
+
+## General Search and News Information
+{news_and_search_info}
+
+## Government & Business Registries Information
+{government_registry_info}
