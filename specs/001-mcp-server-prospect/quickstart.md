@@ -329,7 +329,7 @@ StreamLine Software is now ready for personalized outreach. Would you like me to
 
 **AI Assistant Conversation**:
 ```
-User: "Show me everything we have on TechCorp Inc - I want to see all the research, profile, and talking points"
+User: "Show me everything we have on TechCorp Inc - I want to see all the research and profile+strategy"
 
 AI Assistant: I'll retrieve the complete intelligence package for TechCorp Inc with all markdown files.
 
@@ -340,17 +340,16 @@ AI Assistant: Here's the complete TechCorp Inc intelligence package:
 **📊 Prospect Overview**
 - **Company**: TechCorp Inc  
 - **Domain**: techcorp.com
-- **Status**: Complete workflow (all files generated)
+- **Status**: Complete workflow (both files generated)
 - **Created**: 2025-09-13 14:22:15
 - **Last Updated**: 2025-09-13 14:35:42
 
 **📄 Generated Files Summary**
-- **research.md**: 24.5 KB (comprehensive intelligence)
-- **profile.md**: 8.2 KB (structured decision-maker insights)
-- **talking_points.md**: 6.8 KB (personalized conversation starters)
-- **Total Intelligence**: 39.5 KB
+- **techcorp-inc_research.md**: 24.5 KB (comprehensive intelligence)
+- **techcorp-inc_profile.md**: 14.7 KB (structured profile + conversation strategy)
+- **Total Intelligence**: 39.2 KB
 
-**🔍 Research Highlights** (from research.md):
+**🔍 Research Highlights** (from techcorp-inc_research.md):
 ```markdown
 # TechCorp Inc - Comprehensive Research Report
 
@@ -372,37 +371,34 @@ TechCorp Inc is a 150-employee software development company specializing in AI/M
 - Data Processing: Currently manual workflows causing bottlenecks
 ```
 
-**👤 Profile Summary** (from profile.md):
+**👤 Profile + Strategy Summary** (from techcorp-inc_profile.md):
 ```markdown
-# TechCorp Inc - Mini Profile
+# TechCorp Inc - Profile + Conversation Strategy
 
+## Mini Profile
+| Field | Description | Example |
+|-------|-------------|---------|
+| Company Name | Official company name | TechCorp Inc |
+| Employee Count | Number of employees | 150 |
+| Revenue Range | Annual revenue estimate | $50M-$100M |
+| Industry | Primary industry sector | Software Development - AI/ML Platform |
+| Location | Headquarters location | San Francisco, CA |
+| Decision Makers | Key decision-maker contacts | Jane Smith (CTO), Mike Johnson (CEO) |
+| Infostatus Pain Points | Specific problems we can solve | Manual document workflows, AWS integration |
+
+## Conversation Strategy
 **Infostatus Fit Score**: 8.7/10
 
-## Key Details
-- **Size**: 150 employees
-- **Revenue**: $50M-$100M  
-- **Pain Points**: Manual document workflows, scaling challenges
-- **Opportunity**: AWS migration creates document processing needs
-- **Decision Makers**: Jane Smith (CTO) - technical buyer, Mike Johnson (CEO) - budget authority
+**🎯 Primary Talking Points:**
+1. **AWS Migration Pain Points** (94% relevance)
+2. **AI Engineering Team Growth** (92% relevance)  
+3. **Document Processing Scale** (89% relevance)
 ```
 
-**💬 Top Talking Points** (from talking_points.md):
-```markdown
-# TechCorp Inc - Conversation Starters
-
-## 1. AWS Migration Pain Points (94% relevance)
-"I noticed TechCorp is migrating to AWS infrastructure. During cloud transitions, 
-document processing workflows often become bottlenecks..."
-
-## 2. AI Engineering Team Growth (92% relevance)  
-"Congratulations on expanding your AI engineering team! Growing teams often spend 
-too much time on document preparation instead of model development..."
+**Complete intelligence package ready for sales engagement.** All files are available using `{prospect_id}_` naming for CRM integration or export.
 ```
 
-**Complete intelligence package ready for sales engagement.** All files are available at `/data/prospects/techcorp-inc/` for CRM integration or export.
-```
-
-**Expected Result**: Complete prospect intelligence with full markdown content ready for sales team usage.
+**Expected Result**: Complete prospect intelligence with integrated profile+strategy markdown ready for sales team usage.
 
 ### Story 5: Prospect Search and Filtering
 **Goal**: Search prospects by metadata and content across all markdown files
@@ -421,31 +417,31 @@ AI Assistant: Found 4 fintech prospects with API integration content:
 
 1. **PaymentFlow Corp** - Complete workflow ✅
    - **Industry**: Fintech - Payment Processing
-   - **Files**: All 3 files (research.md, profile.md, talking_points.md)
+   - **Files**: Both files ready (paymentflow-corp_research.md, paymentflow-corp_profile.md)
    - **Match**: Research mentions "API gateway bottlenecks" and "payment processor integration complexity"
-   - **Intelligence**: 42.1 KB total content
+   - **Intelligence**: 41.8 KB total content
    - **Status**: Ready for outreach
 
-2. **CreditAnalytics Inc** - Profile ready ✅
+2. **CreditAnalytics Inc** - Research only 📊
    - **Industry**: Fintech - Credit Scoring  
-   - **Files**: research.md ✅, profile.md ✅, talking_points.md ❌
-   - **Match**: Profile highlights "third-party API orchestration challenges"
-   - **Intelligence**: 31.7 KB (missing talking points)
-   - **Status**: Need talking points generation
+   - **Files**: creditanalytics-inc_research.md ✅, profile.md ❌
+   - **Match**: Research highlights "third-party API orchestration challenges"
+   - **Intelligence**: 19.3 KB research data
+   - **Status**: Need profile+strategy generation
 
 3. **LendingBridge** - Research only 📊
    - **Industry**: Fintech - Lending Platform
-   - **Files**: research.md ✅, profile.md ❌, talking_points.md ❌  
+   - **Files**: lendingbridge_research.md ✅, profile.md ❌
    - **Match**: Research section on "API rate limiting issues with banking partners"
    - **Intelligence**: 19.2 KB research data
-   - **Status**: Need profile and talking points
+   - **Status**: Need profile+strategy generation
 
 4. **FinTechFlow** - Research only 📊
    - **Industry**: Fintech - Data Aggregation
-   - **Files**: research.md ✅, profile.md ❌, talking_points.md ❌
+   - **Files**: fintechflow_research.md ✅, profile.md ❌
    - **Match**: Research covers "API standardization challenges across financial institutions"
    - **Intelligence**: 16.8 KB research data  
-   - **Status**: Need profile and talking points
+   - **Status**: Need profile+strategy generation
 
 **Content Search Summary:**
 - **Total Prospects Searched**: 47 in database
@@ -455,15 +451,18 @@ AI Assistant: Found 4 fintech prospects with API integration content:
 
 **Recommended Action Plan:**
 1. **Immediate Outreach**: PaymentFlow Corp (complete intelligence ready)
-2. **Quick Wins**: Generate talking points for CreditAnalytics Inc  
-3. **Pipeline Development**: Complete profiles for LendingBridge and FinTechFlow
+2. **Pipeline Development**: Generate profiles+strategy for CreditAnalytics, LendingBridge, and FinTechFlow
 
 Would you like me to complete the missing workflow steps for any of these prospects?
 ```
 
-**Expected Result**: Targeted prospect list with content-based matching and clear next actions for each prospect.
+**Expected Result**: Targeted prospect list with content-based matching and clear next actions for 2-step workflow.
 
 ### Story 5: Complete End-to-End Workflow  
+**Goal**: Full prospect discovery to outreach preparation with markdown intelligence
+
+**AI Assistant Conversation**:
+### Story 6: Complete End-to-End Workflow  
 **Goal**: Full prospect discovery to outreach preparation with markdown intelligence
 
 **AI Assistant Conversation**:
@@ -480,30 +479,41 @@ AI Assistant: I'll help you find a qualified SaaS prospect and prepare complete 
 - **Domain**: cloudsync.tech
 - **Industry**: SaaS - Cloud Infrastructure Management
 - **Size**: 156 employees, Series B funded
-- **Generated**: `/data/prospects/cloudsync-technologies/research.md` (27.3 KB)
+- **Generated**: `/data/prospects/cloudsync-technologies_research.md` (27.3 KB)
 
-Now generating structured profile...
+Now generating structured profile + conversation strategy...
 
-[AI calls generate_profile for CloudSync Technologies]
+[AI calls create_profile for CloudSync Technologies]
 
-✅ **Step 2 Complete** - Mini Profile Generated:
+✅ **Step 2 Complete** - Profile + Strategy Generated:
 
-**Generated**: `/data/prospects/cloudsync-technologies/profile.md` (9.1 KB)
+**Generated**: `/data/prospects/cloudsync-technologies_profile.md` (17.5 KB)
 
-**Key Intelligence:**
-- **Decision Makers**: Sarah Chen (CTO), David Park (VP Engineering)  
-- **Pain Points**: Managing compliance across 50+ cloud environments
-- **Opportunity**: Recent SOC 2 audit highlighted documentation gaps
-- **Budget Authority**: $2M annual tooling budget, expanding Q4 2025
-- **Infostatus Fit**: 9.2/10 (excellent document automation fit)
+**Mini Profile Table:**
+| Field | Description | Example |
+|-------|-------------|---------|
+| Company Name | Official company name | CloudSync Technologies |
+| Employee Count | Number of employees | 156 |
+| Revenue Range | Annual revenue estimate | $25M-$50M |
+| Industry | Primary industry sector | SaaS - Cloud Infrastructure Management |
+| Location | Headquarters location | Seattle, WA |
+| Hiring Signals | Current hiring activity | 12 engineering positions open |
+| Tech Adoption | Technology usage patterns | Multi-cloud, K8s, compliance-focused |
+| Public PR Signals | Recent news and announcements | $15M Series B, SOC 2 certification |
+| Funding Growth | Financial growth indicators | 40% YoY growth, expanding Q4 |
+| Tender Compliance | Government/compliance activity | SOC 2, preparing for FedRAMP |
+| Decision Makers | Key decision-maker contacts | Sarah Chen (CTO), David Park (VP Eng) |
+| Engagement Potential | Social media and industry presence | CTO speaks at CloudNativeCon |
+| General Notes | Additional observations | Strong DevOps culture, remote-first |
+| Infostatus Pain Points | Specific problems we can solve | Compliance docs, audit automation |
 
-Now creating personalized talking points...
+**Conversation Strategy:**
+**Infostatus Fit**: 9.2/10 (excellent document automation fit)
 
-[AI calls create_talking_points for CloudSync Technologies]
-
-✅ **Step 3 Complete** - Talking Points Ready:
-
-**Generated**: `/data/prospects/cloudsync-technologies/talking_points.md` (8.4 KB)
+**🎯 Primary Talking Points:**
+1. **SOC 2 Compliance Challenge** (97% relevance)
+2. **Engineering Team Efficiency** (94% relevance)
+3. **Q4 Tooling Budget** (91% relevance)
 
 ## 🎯 Complete Sales Call Package Ready
 
@@ -540,8 +550,10 @@ Now creating personalized talking points...
 3. Schedule technical deep-dive with engineering team
 4. Establish budget and timeline for Q4 decision
 
-**Complete prospect intelligence package ready for sales engagement!** All files saved to `/data/prospects/cloudsync-technologies/` for future reference.
+**Complete prospect intelligence package ready for sales engagement!** All files saved with `{prospect_id}_` naming convention for future reference.
 ```
+
+**Expected Result**: Complete sales-ready package with research, integrated profile+strategy table, and call preparation guidance - all generated from 2-step AI-powered markdown workflow.
 
 **Expected Result**: Complete sales-ready package with research, structured profile, talking points, and call preparation guidance - all generated from AI-powered markdown intelligence.
 
