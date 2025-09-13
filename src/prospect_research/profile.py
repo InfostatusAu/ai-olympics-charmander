@@ -17,38 +17,41 @@ async def create_profile(prospect_id: str, research_report_filename: str) -> Dic
 
     # Read the research markdown report
     research_report_path = await get_prospect_report_path(prospect_id, research_report_filename)
-    research_content = await read_markdown_file(research_report_path)
+    research_content = read_markdown_file(research_report_path)  # read_markdown_file is not async
 
     # Parse the research content with enhanced parsing
     parsed_data = parse_research_markdown(research_content)
 
-    profile_filename = f"{prospect_id}_profile.md"
-
-    # Generate intelligent profile data based on research findings
+    # Generate the Mini Profile template data - match template field names
     profile_data = {
         "company_name": parsed_data.get("company_name", "N/A"),
         "domain": parsed_data.get("domain", "N/A"),
         "industry": _determine_industry(parsed_data),
         "company_size": _estimate_company_size(parsed_data),
         "headquarters": _extract_headquarters(parsed_data),
-        "key_contact": _get_primary_contact(parsed_data),
-        "contact_title": _get_primary_contact_title(parsed_data),
+        "key_contact": _get_primary_contact(parsed_data),  # Changed to match template
+        "contact_title": _get_primary_contact_title(parsed_data),  # Changed to match template
         "recent_news_summary": _summarize_recent_news(parsed_data),
         "tech_stack_summary": _summarize_tech_stack(parsed_data),
         "pain_points_summary": _summarize_pain_points(parsed_data),
         "conversation_starter_1": _generate_conversation_starter_1(parsed_data),
         "conversation_starter_2": _generate_conversation_starter_2(parsed_data),
         "value_proposition": _generate_value_proposition(parsed_data),
-        "relevance_score": _calculate_relevance_score(parsed_data)
+        "relevance_score": _calculate_relevance_score(parsed_data),
+        "research_date": datetime.now().strftime("%Y-%m-%d"),
+        "prospect_id": prospect_id
     }
 
-    # Generate profile markdown using template
-    template_content = await get_template("profile_template.md")
+    # Get the Mini Profile template and format it
+    template_content = await get_template("profile_template.md")  # get_template is async
     if not template_content:
-        raise FileNotFoundError("profile_template.md not found.")
+        raise ValueError("Mini Profile template not found. Please ensure profile_template.md exists in data/templates/")
 
+    # Format the template with profile data
     markdown_profile = template_content.format(**profile_data)
 
+    # Save the profile as a markdown file
+    profile_filename = f"{prospect_id}_profile.md"
     await save_markdown_report(prospect_id, profile_filename, markdown_profile)
 
     return {
