@@ -1,27 +1,33 @@
-# Workflow Specification: Simplified 3-Step Markdown-First Process
+# Workflow Specification: Simplified 2-Step Markdown-First Process
 
 **Date**: September 13, 2025  
 **Feature**: MCP Server Prospect Research Workflow  
 **Phase**: 1 - Simplified Workflow and Process Design  
-**Update**: Refactored for markdown-first, minimal database approach
+**Update**: Merged profile+strategy for 2-step workflow
 
 ## Overview
 
-The prospect research automation follows a streamlined 3-step process that creates **human-readable markdown files** with rich business intelligence for Infostatus sales teams.
+The prospect research automation follows a streamlined 2-step process that creates **human-readable markdown files** with rich business intelligence for Infostatus sales teams.
 
 ## Core Architecture
 
 **Database Role**: Minimal metadata tracking only  
 **File System Role**: Rich AI-generated content storage  
-**Output Focus**: Copy-paste ready markdown reports  
+**Output Focus**: Copy-paste ready markdown reports with centralized calling strategy  
 
-## The Simplified 3-Step Workflow
+## The Simplified 2-Step Workflow
 
 ### Step 1: Comprehensive Research
 **Purpose**: Gather research data and generate comprehensive markdown research report  
 **Executor**: AI Agent using MCP `research_prospect` tool  
 **Database**: Create/update minimal prospect record with research_status='researched'  
 **Output**: Rich markdown file `/data/prospects/{id}_research.md`  
+
+### Step 2: Profile + Strategy Generation  
+**Purpose**: Transform research into structured mini profile table with conversation strategy  
+**Executor**: AI Agent using MCP `create_profile` tool  
+**Database**: Update prospect record metadata  
+**Output**: Combined markdown file `/data/prospects/{id}_profile.md` containing mini profile table and talking points  
 
 **Process**:
 1. AI agent receives company identifier (name or domain)
@@ -72,98 +78,66 @@ The prospect research automation follows a streamlined 3-step process that creat
 *Confidence: 0.85*
 ```
 
-### Step 2: Structured Analysis - Mini Profile Generation  
-**Purpose**: Transform research markdown into structured Mini Profile template  
-**Executor**: AI Agent using MCP `generate_profile` tool  
+### Step 2: Profile + Strategy Generation  
+**Purpose**: Transform research markdown into structured Mini Profile table with conversation strategy  
+**Executor**: AI Agent using MCP `create_profile` tool  
 **File Input**: Read `/data/prospects/{id}_research.md`  
-**Output**: Structured markdown profile `/data/prospects/{id}_profile.md`  
+**Output**: Combined markdown file `/data/prospects/{id}_profile.md`  
 
 **Process**:
 1. AI agent reads the research markdown file
 2. Analyzes unstructured research content
-3. Generates structured Mini Profile with standardized fields:
-   - Company metadata (size, revenue, location)
-   - Business intelligence (hiring, tech adoption, funding)
-   - Engagement signals (PR activity, decision maker activity)
-   - Infostatus-specific pain points analysis
+3. Generates structured Mini Profile with exactly 14 standardized fields (table format)
+4. Creates conversation strategy with personalized talking points
+5. Combines both sections into single markdown file
 
 **Example Output** (`{id}_profile.md`):
 ```markdown
-# Mini Profile: TechCorp Inc
+## Mini Profile – TechCorp Inc
 
-| Field | Value |
-|-------|--------|
-| **Company** | TechCorp Inc |
-| **Industry** | SaaS/AI |
-| **Size** | 150-200 employees |
-| **Revenue** | $10M-$25M (estimated) |
-| **Location** | San Francisco, CA |
-| **Funding** | Series A, $15M (March 2024) |
-| **Tech Stack** | AWS, React, Node.js |
-| **Hiring Signals** | Data Scientists, AI Engineers (5 positions) |
-| **Tech Adoption** | AWS migration, AI/ML implementation |
-| **Recent PR** | TechCrunch AI innovation feature |
-| **Decision Makers** | CEO John Smith, CTO Jane Doe |
-| **Engagement** | CTO LinkedIn post on AI compliance |
-| **Infostatus Fit** | High - automation pain points identified |
+| Field | Description | Example |
+|-------|-------------|---------|
+| **Company Name** | Name of the company | "TechCorp Inc" |
+| **Size** | Number of employees | 150 |
+| **Revenue Range** | Estimated revenue | $10M-$25M |
+| **Industry** | Sector | SaaS/AI Technology |
+| **Location** | Main location | San Francisco, CA |
+| **Hiring Signals** | Job postings | Hiring "Data Scientists" & "AI Engineers" (5 positions) |
+| **Tech Adoption** | Cloud/AI/automation | AWS migration, AI/ML implementation |
+| **Public & PR Signals** | Press/news | TechCrunch: "TechCorp launches AI features" |
+| **Funding & Growth** | Funding info | Series A $15M in March 2024 |
+| **Tender/Compliance** | Gov contracts | Not applicable |
+| **Decision-Makers** | Key roles | CEO John Smith & CTO Jane Doe identified |
+| **Engagement Potential** | Activity | CTO LinkedIn post on AI compliance challenges |
+| **Notes** | Other info | Member of San Francisco Tech Council |
+| **Pain point(s)** | Inferred/observable outstanding, relevant pain point(s) that Infostatus might help/solve | Manual data processing workflows consuming 20+ hours/week, document handling inefficiencies, scaling challenges with legacy system integrations |
 
-## Key Pain Points for Infostatus
-- Manual data processing workflows (20+ hours/week)
-- Document handling inefficiencies
-- Scaling operational processes
+## Conversation Strategy
+
+### Primary Talking Points
+1. **🎯 AWS Migration Challenges** (94% relevance)
+   "I noticed TechCorp is migrating to AWS infrastructure. During cloud transitions, document processing workflows often become bottlenecks. We've helped similar companies maintain processing speed while scaling on AWS."
+
+2. **🚀 AI Feature Launch Success** (91% relevance)  
+   "Congratulations on launching your AI features! Growing AI teams often spend too much time on document preparation instead of model development. Our automation could free up your engineers for higher-value work."
+
+3. **📊 Series A Growth Scaling** (88% relevance)
+   "With your Series A funding and rapid growth, operational efficiency becomes critical. We've worked with similar companies to automate their document workflows before they become bottlenecks."
+
+### Conversation Openers
+- **CTO LinkedIn Engagement**: "Jane's recent post about AI compliance really resonated..."
+- **TechCrunch Feature**: "Saw the TechCrunch feature on your AI innovation..."
+- **San Francisco Tech Network**: "Fellow SF tech company..."
+
+### Next Actions
+- Target CTO Jane Doe for technical discussion
+- Reference Series A growth for timing relevance
+- Focus on AWS integration capabilities
+```
 
 ---
 *Profile generated: 2025-09-13T11:15:00Z*
 *Confidence: 0.83*
-```
-
-### Step 3: Personalized Talking Points Generation
-**Purpose**: Create conversation starters from Mini Profile  
-**Executor**: AI Agent using MCP `create_talking_points` tool  
-**File Input**: Read `/data/prospects/{id}_profile.md`  
-**Output**: Conversation starters `/data/prospects/{id}_talking_points.md`  
-
-**Process**:
-1. AI agent reads the structured Mini Profile
-2. Generates personalized talking points across categories:
-   - Business challenges and pain points
-   - Technology opportunities and trends
-   - Recent company news and developments
-   - Personal/professional connection opportunities
-   - Infostatus solution alignment points
-
-**Example Output** (`{id}_talking_points.md`):
-```markdown
-# Conversation Starters: TechCorp Inc
-
-## 🎯 Business Challenges
-**Best for: Opening conversation about pain points**
-- "I noticed you're scaling rapidly after your Series A - many companies your size struggle with manual data operations. How is TechCorp handling the increased volume?"
-- "AWS migration is exciting - we often see companies face document processing challenges during cloud transitions..."
-
-## 🔧 Technology Opportunities  
-**Best for: Technical decision maker discussions**
-- "Your React/Node.js stack aligns perfectly with our TypeScript SDK - integration typically takes under a week..."
-- "With your AI/ML focus, automated document processing could free up your data scientists for higher-value work..."
-
-## 📰 Recent Company News
-**Best for: Warm conversation starters**
-- "Congratulations on the Series A funding! That TechCrunch feature on your AI innovation was impressive..."
-- "Saw the announcement about European expansion - data localization must be top of mind..."
-
-## 👥 Personal Connections
-**Best for: LinkedIn outreach**
-- "Jane Doe's background in distributed systems is impressive - she'll appreciate our scalable architecture..."
-- "I noticed John's previous experience at DataCorp - we've helped several similar companies..."
-
-## ✅ Best Opening Lines
-1. **Series A + scaling challenges** (Relevance: 0.92)
-2. **AWS migration + document processing** (Relevance: 0.88)
-3. **AI hiring + efficiency optimization** (Relevance: 0.85)
-
----
-*Generated: 2025-09-13T11:45:00Z*
-*Categories: 5 | Total points: 12*
 ```
 
 ## Simplified State Management
@@ -179,8 +153,7 @@ Progress is determined by **file existence** rather than complex database states
 
 ```
 Step 1 Complete: /data/prospects/{id}_research.md exists
-Step 2 Complete: /data/prospects/{id}_profile.md exists  
-Step 3 Complete: /data/prospects/{id}_talking_points.md exists
+Step 2 Complete: /data/prospects/{id}_profile.md exists (contains mini profile + conversation strategy)
 ```
 
 ### State Transitions
@@ -202,8 +175,7 @@ Database: Minimal metadata only
 File System: Rich AI-generated content
 ├── /data/icp.md (business-managed ICP)
 ├── /data/prospects/{id}_research.md
-├── /data/prospects/{id}_profile.md
-└── /data/prospects/{id}_talking_points.md
+└── /data/prospects/{id}_profile.md (mini profile + conversation strategy)
 ```
 
 ### Integration with MCP Architecture
@@ -225,14 +197,15 @@ AI Agent → MCP Client → MCP Server → File Operations + SQLite
 ### Error Handling and Recovery
 - **Step 1 Failure**: Retry with different data sources, mark research_status='failed'
 - **Step 2 Failure**: Keep research file, retry profile generation with adjusted prompts
-- **Step 3 Failure**: Keep profile file, generate generic talking points or retry
+- **Step 1 Failure**: Mark prospect as 'failed', can retry research
+- **Step 2 Failure**: Keep research file, can retry profile+strategy generation  
 - **File Corruption**: Regenerate from previous step if source file exists
 - **Partial Files**: Validate markdown format and completeness before marking complete
 
 ## Success Metrics
 
 ### Development Efficiency Metrics
-- **Time to complete full 3-step workflow**: Target < 5 minutes per prospect
+- **Time to complete full 2-step workflow**: Target < 3 minutes per prospect
 - **File generation success rate**: Target > 95% for each step
 - **Markdown quality scores**: Human readability and completeness ratings
 - **Development velocity**: Faster iteration due to file-based debugging
@@ -281,16 +254,10 @@ Domain: "techcorp.com"
 - Pain points and business challenges
 
 **2. Profile File** (`/data/prospects/abc123_profile.md`):
-- Structured 13-field Mini Profile table
+- Structured 14-field Mini Profile table (exact format specified)
+- Conversation strategy with personalized talking points
 - Key business intelligence summary
-- Infostatus-specific pain point analysis
-- Engagement timing recommendations
-
-**3. Talking Points File** (`/data/prospects/abc123_talking_points.md`):
-- 8-12 categorized conversation starters
-- Relevance scoring for each point
-- Best opening lines recommendations
-- Context for different conversation types
+- Engagement timing and approach recommendations
 
 ### Database Record
 ```sql
@@ -304,4 +271,4 @@ INSERT INTO prospects VALUES (
 );
 ```
 
-This simplified workflow specification demonstrates how **markdown-first architecture** creates more value with less complexity, enabling faster development and better business outcomes.
+This simplified 2-step workflow specification demonstrates how **markdown-first architecture with merged profile+strategy files** creates more value with less complexity, enabling faster development and better business outcomes.
