@@ -77,7 +77,7 @@
 
 ## Phase 3.4: Integration
 - [x] T024 Connect prospect_research to file_manager for markdown output
-- [ ] T025 Connect MCP tools to all underlying libraries 
+- [x] T025 Connect MCP tools to all underlying libraries 
 - [ ] T026 MCP protocol JSON-RPC error handling
 - [ ] T027 Structured logging with context for all operations
 
