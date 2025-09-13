@@ -1,12 +1,19 @@
-# Quickstart: MCP Prospect Research Server
+# Quickstart: MCP Prospect Research Server - 3-Step Workflow
 
 **Date**: September 13, 2025  
 **Feature**: Prospect Research Automation Engine  
-**Phase**: 1 - Integration Guide and User Stories
+**Phase**: 1 - Integration Guide and User Stories  
+**Update**: 3-Step Workflow Implementation
 
 ## Overview
 
-This quickstart guide demonstrates how to set up and use the MCP Prospect Research Server with AI assistants like Gemini CLI, VS Code Copilot, or Claude. The server provides automated prospect research capabilities through four specialized tools that work together to streamline cold calling preparation.
+This quickstart guide demonstrates how to set up and use the MCP Prospect Research Server with AI assistants like Gemini CLI, VS Code Copilot, or Claude. The server provides a comprehensive 3-step prospect research workflow that transforms basic company information into actionable sales intelligence:
+
+1. **Step 1: Research** - Gather comprehensive unstructured data
+2. **Step 2: Mini Profile** - Generate structured 13-field prospect profile  
+3. **Step 3: Talking Points** - Create personalized conversation starters
+
+The complete workflow produces structured prospect intelligence ready for sales engagement.
 
 ## Prerequisites
 
@@ -96,38 +103,74 @@ Add to Claude configuration:
 
 ## User Story Walkthroughs
 
-### Story 1: Finding New Prospects
-**Goal**: Discover qualified prospects matching ideal customer profile
+## User Story Walkthroughs
+
+### Story 1: Complete 3-Step Prospect Research Workflow
+**Goal**: Transform a company name into actionable sales intelligence through the complete research workflow
+
+**Scenario**: Sales rep needs complete prospect intelligence for "TechCorp Inc" outreach
 
 **AI Assistant Conversation**:
 ```
-User: "I need to find new prospects for our SaaS product targeting tech startups with 50-200 employees"
+User: "I need complete prospect intelligence for TechCorp Inc. Please run the full research workflow."
 
-AI Assistant: I'll help you find qualified prospects using the prospect research tools. Let me search for companies matching your criteria.
+AI Assistant: I'll run the complete 3-step prospect research workflow for TechCorp Inc. Let me start with comprehensive research.
 
-[AI discovers and calls find_new_prospect tool]
+[Step 1: Research - AI calls research_prospect tool]
 
-AI Assistant: I found 15 qualified prospects matching your tech startup criteria. Here are the top 5 prospects with highest match scores:
+AI Assistant: ✅ Step 1 Complete - Research gathered from multiple sources:
+- Company background and history
+- Recent news and developments  
+- Decision makers identified (Jane Smith - CTO, Mike Johnson - CEO)
+- Technology stack analysis
+- 6 research notes created with 85% confidence
 
-1. **TechFlow Solutions** (techflow.com) - 87% match
-   - 125 employees, Software Development
-   - San Francisco, CA
-   - Recent Series A funding
+Now generating structured Mini Profile...
 
-2. **DataStream Inc** (datastream.io) - 84% match  
-   - 89 employees, Data Analytics
-   - Austin, TX
-   - Growing customer base
+[Step 2: Profile Generation - AI calls generate_profile tool]
 
-[Additional prospects listed...]
+AI Assistant: ✅ Step 2 Complete - Mini Profile generated:
 
-Would you like me to research any of these prospects in detail?
+**TechCorp Inc Mini Profile**
+- **Size**: 150 employees
+- **Revenue Range**: $50M-$100M  
+- **Industry**: Software Development
+- **Location**: San Francisco, CA
+- **Hiring Signals**: Hiring Data Scientists & AI Engineers (5 open positions)
+- **Tech Adoption**: Migrating to AWS cloud infrastructure, implementing AI/ML pipelines
+- **Public & PR Signals**: Featured in TechCrunch for AI innovation, CEO speaking at ML conferences
+- **Funding & Growth**: Series A $10M raised Aug 2025, 40% YoY growth
+- **Decision-Makers**: Jane Smith (CTO), Mike Johnson (CEO) - both active on LinkedIn
+- **Engagement Potential**: CTO posted about AI compliance challenges last week
+- **Pain Points**: Manual data processing workflows, document handling inefficiencies
+
+Now creating personalized talking points...
+
+[Step 3: Talking Points - AI calls create_talking_points tool]
+
+AI Assistant: ✅ Step 3 Complete - Personalized talking points generated:
+
+**Conversation Starters for TechCorp Inc**
+
+1. **🎯 AI Compliance Trend** (High relevance: 92%)
+   "I noticed TechCorp was featured in TechCrunch for AI innovation. The fintech space is really embracing AI compliance frameworks - we've helped similar companies navigate the regulatory landscape while maintaining innovation speed."
+
+2. **☁️ AWS Migration Opportunity** (High relevance: 88%)  
+   "Saw you're migrating to AWS infrastructure. During cloud migrations, we often see companies struggle with document processing workflows. Our AWS-native solutions have helped similar companies reduce processing time by 70%."
+
+3. **🚀 Series A Growth** (High relevance: 85%)
+   "Congratulations on the Series A funding! With 40% YoY growth, scaling operational processes becomes critical. We've worked with several Series A companies to automate their document workflows before they become bottlenecks."
+
+4. **👨‍💼 Hiring Data Scientists** (High relevance: 90%)
+   "I see you're hiring data scientists and AI engineers. One challenge growing teams face is spending too much time on manual data preparation instead of actual modeling. Our document automation could free up your team for higher-value work."
+
+**Workflow Complete!** TechCorp Inc is now ready for personalized outreach with structured intelligence and conversation starters.
 ```
 
-**Expected Result**: List of qualified prospects with match scores and basic company information.
+**Expected Result**: Complete prospect intelligence package ready for sales engagement with structured profile and personalized talking points.
 
-### Story 2: Researching a Specific Prospect
-**Goal**: Compile comprehensive intelligence on a target prospect
+### Story 2: Step-by-Step Workflow Execution
+**Goal**: Understand each step of the workflow individually
 
 **AI Assistant Conversation**:
 ```
@@ -135,106 +178,149 @@ User: "Research TechFlow Solutions in detail, I want to understand their pain po
 
 AI Assistant: I'll gather comprehensive research on TechFlow Solutions for you.
 
-[AI calls research_prospect tool with domain "techflow.com"]
+```
+User: "Let me understand each step. First, just do the research step for DataStream Inc."
 
-AI Assistant: Here's the detailed research on TechFlow Solutions:
+AI Assistant: I'll start with Step 1 - comprehensive research for DataStream Inc.
 
-**Company Overview:**
-- Founded in 2020, 125 employees
-- SaaS platform for workflow automation
-- Recently raised $8M Series A (June 2025)
-- Headquarters: San Francisco, CA
+[AI calls research_prospect tool with company "DataStream Inc"]
 
-**Key Decision Makers:**
-- **Sarah Chen** - CEO (primary decision maker)
-  - Email: sarah.chen@techflow.com
-  - LinkedIn: linkedin.com/in/sarahchen-ceo
-- **Mike Rodriguez** - CTO (technical decision maker)
-  - Email: mike.r@techflow.com
+AI Assistant: ✅ **Step 1 - Research Complete** for DataStream Inc:
 
-**Identified Pain Points:**
-1. Struggling with customer data integration across multiple platforms
-2. Manual reporting processes slowing down customer success team
-3. Need for better analytics to track user engagement
+**Research Summary:**
+- 6 research notes created from multiple sources (Firecrawl, LinkedIn, news APIs)
+- Company background: Data analytics platform, founded 2019
+- Recent developments: New partnership with Microsoft Azure
+- Decision makers identified: Tom Wilson (CEO), Lisa Zhang (CTO)
+- Technology focus: Real-time analytics, cloud infrastructure
+- Workflow Status: **research_complete**
 
-**Recent News:**
-- Launched new API platform (August 2025)
-- Expanding engineering team by 40%
-- Partnership with CloudCorp announced
+The research data is now ready for profile generation. Would you like me to proceed to Step 2?
 
-**Technology Stack:**
-- AWS, Python, React, PostgreSQL
-- Using Salesforce for CRM
-- Slack for team communication
+User: "Yes, generate the Mini Profile now"
 
-This gives you strong talking points about data integration challenges and how your solution could help with their scaling efforts.
+AI Assistant: Moving to Step 2 - generating structured Mini Profile from research data.
+
+[AI calls generate_profile tool using the research data]
+
+AI Assistant: ✅ **Step 2 - Mini Profile Complete** for DataStream Inc:
+
+**Mini Profile Generated:**
+- **Company Name**: DataStream Inc
+- **Size**: 89 employees  
+- **Revenue Range**: $25M-$50M
+- **Industry**: Data Analytics
+- **Location**: Austin, TX
+- **Hiring Signals**: Hiring Senior Data Engineers and Product Managers
+- **Tech Adoption**: Azure-native architecture, real-time streaming
+- **Public & PR Signals**: Microsoft partnership announcement, Austin Business Journal feature
+- **Funding & Growth**: Bootstrapped, 60% YoY growth
+- **Decision-Makers**: Tom Wilson (CEO), Lisa Zhang (CTO)
+- **Engagement Potential**: CTO active on tech Twitter, CEO posts about data privacy
+- **Pain Points**: Scaling real-time processing, compliance automation needs
+
+The structured profile is ready. Would you like me to create talking points (Step 3)?
+
+User: "Perfect, now create the talking points"
+
+AI Assistant: Proceeding to Step 3 - generating personalized talking points.
+
+[AI calls create_talking_points tool using the Mini Profile]
+
+AI Assistant: ✅ **Step 3 - Talking Points Complete** for DataStream Inc:
+
+**Personalized Conversation Starters:**
+
+1. **Microsoft Partnership** (Relevance: 94%)
+   "Congratulations on the Microsoft Azure partnership! We've worked with several Azure-native companies to streamline their compliance automation as they scale their data processing capabilities."
+
+2. **Real-time Processing Scale** (Relevance: 91%)
+   "I saw you're focusing on real-time analytics. One challenge we often see with streaming data platforms is managing document processing at scale - our automation tools integrate directly with Azure Event Hubs."
+
+3. **Data Privacy Leadership** (Relevance: 87%)
+   "Tom's posts about data privacy really resonate. With 60% YoY growth, maintaining compliance while scaling can be challenging - we've helped similar companies automate their data governance workflows."
+
+**Complete 3-Step Workflow Finished!** DataStream Inc is now ready for personalized outreach with full intelligence package.
 ```
 
-**Expected Result**: Comprehensive prospect intelligence with actionable insights for sales conversations.
+**Expected Result**: Understanding of each workflow step with clear progression and specialized outputs.
 
-### Story 3: Saving Prospect Data
-**Goal**: Store research findings in the prospect database
+### Story 3: Finding New Prospects with ICP Matching
+**Goal**: Discover qualified prospects matching ideal customer profile criteria
 
 **AI Assistant Conversation**:
 ```
-User: "Save all the TechFlow Solutions research to our prospect database and mark them as qualified"
+User: "Find new prospects for our document automation solution targeting tech companies with 50-200 employees"
 
-AI Assistant: I'll save the complete TechFlow Solutions profile to your prospect database.
+AI Assistant: I'll search for qualified prospects matching your ICP criteria for document automation solutions.
 
-[AI calls save_prospect tool with all gathered data]
+[AI calls find_new_prospect tool with ICP parameters]
 
-AI Assistant: ✅ Successfully saved TechFlow Solutions to your prospect database:
+AI Assistant: Found 12 qualified prospects for document automation solutions:
 
-**Saved Data:**
-- Company profile with 125 employees, Series A status
-- 2 key decision makers (Sarah Chen - CEO, Mike Rodriguez - CTO)
-- 5 research notes covering pain points, recent news, tech stack
-- Qualification status: Qualified
-- Matched to ICP: "tech-startups-growth-stage"
+**Top Matched Prospects:**
 
-**Prospect ID**: a1b2c3d4-e5f6-7890-abcd-123456789012
+1. **TechFlow Solutions** (techflow.com) - 87% match
+   - 125 employees, SaaS/Workflow automation
+   - San Francisco, CA
+   - Pain point indicators: Manual processes, scaling operations
 
-The prospect is now available for future reference and you can retrieve this information anytime. Would you like me to find similar prospects or research another company?
+2. **DataBridge Corp** (databridge.io) - 84% match  
+   - 89 employees, Data integration platform
+   - Seattle, WA
+   - Pain point indicators: Document processing bottlenecks
+
+3. **CloudSync Technologies** (cloudsync.tech) - 81% match
+   - 156 employees, Cloud infrastructure
+   - Denver, CO
+   - Pain point indicators: Compliance documentation needs
+
+Would you like me to run the complete 3-step workflow on any of these prospects to get full intelligence and talking points?
 ```
 
-**Expected Result**: Prospect data persisted with confirmation and unique identifier for future reference.
+**Expected Result**: List of qualified prospects with match scores ready for detailed research workflow.
 
-### Story 4: Retrieving Saved Prospects
-**Goal**: Query stored prospect data for follow-up activities
+### Story 4: Workflow Status Tracking and Management  
+**Goal**: Monitor and manage prospects through different workflow stages
 
 **AI Assistant Conversation**:
 ```
-User: "Show me all qualified prospects in the software industry that we haven't contacted yet"
+User: "Show me all prospects and their workflow status. I want to see where each one is in the research process."
 
-AI Assistant: I'll search your prospect database for qualified software companies.
+AI Assistant: I'll retrieve all prospects with their current workflow status.
 
-[AI calls retrieve_prospect tool with filters]
+[AI calls retrieve_prospect tool with workflow status focus]
 
-AI Assistant: Found 8 qualified software prospects that haven't been contacted:
+AI Assistant: Here's your prospect pipeline with workflow status:
 
-**Active Qualified Prospects:**
+**Workflow Status Overview:**
 
-1. **TechFlow Solutions** - Last updated: Sep 13, 2025
-   - 125 employees, Workflow automation
-   - Pain points: Data integration, manual reporting
-   - Decision makers: Sarah Chen (CEO), Mike Rodriguez (CTO)
+📋 **Workflow Complete (Ready for Outreach):** 5 prospects
+- TechCorp Inc - Profile + 6 talking points ready
+- DataStream Inc - Profile + 4 talking points ready  
+- CloudBridge Analytics - Profile + 5 talking points ready
 
-2. **CloudBridge Analytics** - Last updated: Sep 12, 2025
-   - 78 employees, Business intelligence
-   - Pain points: Scaling data infrastructure
-   - Decision maker: Jennifer Wang (Head of Engineering)
+📊 **Profile Complete (Need Talking Points):** 3 prospects
+- StreamLine Software - Mini Profile ready, waiting for talking points
+- DevOps Masters - Mini Profile ready, waiting for talking points
 
-3. **StreamLine Software** - Last updated: Sep 11, 2025
-   - 156 employees, DevOps tools
-   - Pain points: Multi-cloud management complexity
-   - Decision makers: Alex Thompson (CTO), Maria Garcia (VP Engineering)
+🔍 **Research Complete (Need Profile):** 4 prospects  
+- TechFlow Solutions - 6 research notes ready for analysis
+- DataBridge Corp - 5 research notes ready for analysis
 
-[Additional prospects...]
+⏳ **Initial/Researching:** 8 prospects
+- CloudSync Technologies - Research in progress
+- APIFirst Ltd - Research scheduled
 
-**Summary**: 8 qualified prospects, total database contains 45 prospects across all industries.
+**Recommended Actions:**
+1. Complete talking points for 3 "Profile Complete" prospects
+2. Generate profiles for 4 "Research Complete" prospects  
+3. 5 prospects ready for immediate outreach
 
-Would you like me to prioritize these by company size, recent funding, or specific pain points that match your solution?
+Would you like me to batch-process any of these workflow steps?
 ```
+
+**Expected Result**: Clear pipeline visibility with actionable next steps for workflow progression.
 
 **Expected Result**: Filtered list of prospects with key information for sales prioritization.
 
@@ -291,29 +377,61 @@ All prospects are now in your database for tracking and follow-up. Would you lik
 
 ## Validation Tests
 
-### Functional Validation
+### Functional Validation  
 Each user story above can be executed as an integration test:
 
-1. **Tool Discovery Test**: Verify AI assistant can discover all 4 MCP tools
-2. **Find Prospects Test**: Validate find_new_prospect returns qualified leads
-3. **Research Quality Test**: Confirm research_prospect gathers comprehensive data
-4. **Data Persistence Test**: Ensure save_prospect stores data correctly
-5. **Query Functionality Test**: Validate retrieve_prospect filtering and search
-6. **Error Handling Test**: Verify graceful handling of invalid inputs and API failures
+1. **3-Step Workflow Test**: Validate complete research → profile → talking points workflow
+2. **Tool Discovery Test**: Verify AI assistant can discover all 8 MCP tools
+3. **Find Prospects Test**: Validate find_new_prospect returns qualified leads  
+4. **Research Quality Test**: Confirm research_prospect gathers comprehensive data with workflow status tracking
+5. **Profile Generation Test**: Ensure generate_profile creates structured Mini Profile from research
+6. **Talking Points Test**: Validate create_talking_points generates relevant conversation starters
+7. **Data Persistence Test**: Ensure save_prospect stores complete workflow data correctly
+8. **Query Functionality Test**: Validate retrieve_prospect filtering with workflow status support
+9. **Workflow Status Test**: Confirm proper workflow state transitions and status tracking
+10. **Error Handling Test**: Verify graceful handling of invalid inputs and API failures
 
 ### Performance Validation
 - **Response Time**: All tool calls complete within <200ms (excluding external API calls)
-- **Concurrent Users**: Support multiple AI assistant connections simultaneously
-- **Data Quality**: Research confidence scores above 0.8 for successful operations
+- **Workflow Completion**: Full 3-step process completes within <30 seconds
+- **Concurrent Users**: Support multiple AI assistant connections simultaneously  
+- **Data Quality**: Research confidence scores above 0.8, profile completeness above 85%
+- **Talking Point Relevance**: Average relevance scores above 0.8
 
 ### Security Validation
 - **Input Sanitization**: All tool parameters validated against JSON schemas
 - **Database Security**: SQL injection prevention through parameterized queries
 - **API Key Protection**: External service credentials properly secured
+- **Workflow Integrity**: Prevent workflow step skipping, maintain data consistency
 
 ## Troubleshooting
 
-### Common Issues
+### Common Workflow Issues
+
+**Issue**: Workflow stuck at "research_complete" status
+**Solution**: Check research data completeness - ensure minimum 3 research notes created before profile generation
+
+**Issue**: Profile generation fails with low confidence
+**Solution**: Review research data quality, run additional research with different focus areas
+
+**Issue**: Talking points seem generic  
+**Solution**: Verify Mini Profile has sufficient specific details, especially in pain points and engagement potential fields
+
+### Common Workflow Issues
+
+**Issue**: Workflow stuck at "research_complete" status
+**Solution**: Check research data completeness - ensure minimum 3 research notes created before profile generation
+
+**Issue**: Profile generation fails with low confidence
+**Solution**: Review research data quality, run additional research with different focus areas
+
+**Issue**: Talking points seem generic  
+**Solution**: Verify Mini Profile has sufficient specific details, especially in pain points and engagement potential fields
+
+**Issue**: Workflow status not updating
+**Solution**: Check database connectivity and ensure workflow status transitions are properly committed
+
+### Common Setup Issues
 
 **MCP Server Not Responding**:
 ```bash
@@ -345,20 +463,25 @@ uv run python -m mcp_server.cli test-sources
 # Monitor server performance
 uv run python -m mcp_server.cli monitor --duration 60
 
-# Check database query performance
-uv run python -m mcp_server.cli db-stats
+# Check database query performance and workflow metrics
+uv run python -m mcp_server.cli db-stats --include-workflow
+
+# Monitor workflow completion rates
+uv run python -m mcp_server.cli workflow-stats
 ```
 
 ## Next Steps
 
 After completing this quickstart:
 
-1. **Customize ICPs**: Create industry-specific ideal customer profiles
-2. **Configure Data Sources**: Add API keys for premium data providers
-3. **Set Up Monitoring**: Enable structured logging and performance tracking
-4. **Scale Infrastructure**: Configure connection pooling for production use
-5. **Integrate CRM**: Connect prospect data to existing sales systems
+1. **Customize ICPs**: Create industry-specific ideal customer profiles for better prospect matching
+2. **Configure Data Sources**: Add API keys for premium data providers (Apollo, ZoomInfo, etc.)
+3. **Tune Workflow Parameters**: Adjust confidence thresholds and analysis focus areas
+4. **Set Up Monitoring**: Enable structured logging and performance tracking for workflow steps
+5. **Scale Infrastructure**: Configure connection pooling and caching for production use
+6. **Integrate CRM**: Connect prospect profiles and talking points to existing sales systems
+7. **Train Sales Team**: Provide training on using AI-generated talking points effectively
 
 For detailed implementation guide, see [Implementation Tasks](./tasks.md) (available after running `/tasks` command).
 
-This quickstart demonstrates the complete value proposition of automated prospect research, from discovery through qualification to sales preparation, all integrated seamlessly with AI assistant workflows.
+This quickstart demonstrates the complete value proposition of the 3-step automated prospect research workflow: transforming basic company information into structured intelligence with personalized conversation starters, all integrated seamlessly with AI assistant workflows.
