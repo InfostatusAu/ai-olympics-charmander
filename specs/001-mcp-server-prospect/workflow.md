@@ -1,217 +1,307 @@
-# Workflow Specification: 3-Step Prospect Research Process
+# Workflow Specification: Simplified 3-Step Markdown-First Process
 
 **Date**: September 13, 2025  
 **Feature**: MCP Server Prospect Research Workflow  
-**Phase**: 1 - Workflow and Process Design  
-**Update**: Critical workflow redesign based on user requirements
+**Phase**: 1 - Simplified Workflow and Process Design  
+**Update**: Refactored for markdown-first, minimal database approach
 
 ## Overview
 
-The prospect research automation follows a structured 3-step process that transforms unstructured research into actionable business intelligence for Infostatus sales teams.
+The prospect research automation follows a streamlined 3-step process that creates **human-readable markdown files** with rich business intelligence for Infostatus sales teams.
 
-## The 3-Step Workflow
+## Core Architecture
+
+**Database Role**: Minimal metadata tracking only  
+**File System Role**: Rich AI-generated content storage  
+**Output Focus**: Copy-paste ready markdown reports  
+
+## The Simplified 3-Step Workflow
 
 ### Step 1: Comprehensive Research
-**Purpose**: Gather comprehensive unstructured research data about the prospect company  
-**Executor**: AI Agent (Gemini CLI) using MCP tools and external sources  
-**Output**: Unstructured research data stored in database  
+**Purpose**: Gather research data and generate comprehensive markdown research report  
+**Executor**: AI Agent using MCP `research_prospect` tool  
+**Database**: Create/update minimal prospect record with research_status='researched'  
+**Output**: Rich markdown file `/data/prospects/{id}_research.md`  
 
 **Process**:
-1. AI agent receives prospect company identifier (name, domain, or basic info)
-2. Uses MCP `research_prospect` tool to gather data from multiple sources:
+1. AI agent receives company identifier (name or domain)
+2. MCP tool gathers data from multiple sources:
    - Direct API calls for official company data
-   - Firecrawl API for website content and public information
-   - Playwright MCP for complex JavaScript-heavy sites (fallback)
-3. Stores all findings as unstructured `ResearchNote` entries with different types:
-   - `company_background`
-   - `recent_news` 
-   - `pain_points`
-   - `competitive_analysis`
-   - `decision_makers`
-   - `technology_stack`
+   - Firecrawl for website content and public information
+   - Playwright fallback for complex sites
+3. AI generates comprehensive markdown research report with:
+   - Company overview and background
+   - Recent developments and news
+   - Technology stack analysis
+   - Decision maker identification
+   - Pain points and challenges
+   - Source attribution and metadata
 
-**Tools Used**:
-- `research_prospect(company_name, research_scope)`
-- `store_research(prospect_id, research_data)`
+**Example Output** (`{id}_research.md`):
+```markdown
+# Company Research: TechCorp Inc
 
-### Step 2: Structured Analysis - Mini Profile Generation
-**Purpose**: Transform unstructured research into structured Mini Profile template  
-**Executor**: AI Agent with specialized analysis capabilities  
-**Output**: Structured 13-field Mini Profile stored in database  
+## Company Overview
+- **Industry**: SaaS/AI Technology
+- **Size**: 150-200 employees
+- **Location**: San Francisco, CA
+- **Founded**: 2018
+
+## Recent Developments
+- Series A $15M funding (March 2024)
+- Launched AI features (Q2 2024)
+- European market expansion
+
+## Technology Stack
+- AWS cloud infrastructure
+- React/Node.js stack
+- PostgreSQL database
+
+## Decision Makers
+- **CEO**: John Smith (LinkedIn: /in/johnsmith)
+- **CTO**: Jane Doe (LinkedIn: /in/janedoe)
+
+## Pain Points Identified
+- Manual data processing workflows
+- Scaling customer support challenges
+- Integration complexity with legacy systems
+
+---
+*Research completed: 2025-09-13T10:30:00Z*
+*Sources: Company website, TechCrunch, LinkedIn*
+*Confidence: 0.85*
+```
+
+### Step 2: Structured Analysis - Mini Profile Generation  
+**Purpose**: Transform research markdown into structured Mini Profile template  
+**Executor**: AI Agent using MCP `generate_profile` tool  
+**File Input**: Read `/data/prospects/{id}_research.md`  
+**Output**: Structured markdown profile `/data/prospects/{id}_profile.md`  
 
 **Process**:
-1. AI agent retrieves all unstructured research for a prospect
-2. Uses MCP `generate_profile` tool to analyze and structure data into Mini Profile template
-3. Creates structured `ProspectProfile` entity with specific fields:
+1. AI agent reads the research markdown file
+2. Analyzes unstructured research content
+3. Generates structured Mini Profile with standardized fields:
+   - Company metadata (size, revenue, location)
+   - Business intelligence (hiring, tech adoption, funding)
+   - Engagement signals (PR activity, decision maker activity)
+   - Infostatus-specific pain points analysis
 
-#### Mini Profile Template Fields
+**Example Output** (`{id}_profile.md`):
+```markdown
+# Mini Profile: TechCorp Inc
 
-| Field | Database Column | Type | Description |
-|-------|----------------|------|-------------|
-| **Company Name** | `company_name` | VARCHAR(255) | Official company name |
-| **Size** | `employee_count` | INTEGER | Number of employees |
-| **Revenue Range** | `revenue_range` | VARCHAR(50) | Estimated annual revenue |
-| **Industry** | `industry` | VARCHAR(100) | Primary business sector |
-| **Location** | `location` | VARCHAR(255) | Main headquarters location |
-| **Hiring Signals** | `hiring_signals` | TEXT | Recent job postings and hiring activity |
-| **Tech Adoption** | `tech_adoption` | TEXT | Cloud/AI/automation technology usage |
-| **Public & PR Signals** | `public_pr_signals` | TEXT | Press releases, news mentions, public statements |
-| **Funding & Growth** | `funding_growth` | TEXT | Funding rounds, growth indicators, financial news |
-| **Tender/Compliance** | `tender_compliance` | TEXT | Government contracts, compliance activities |
-| **Decision-Makers** | `decision_makers` | TEXT | Key decision-maker roles and identified contacts |
-| **Engagement Potential** | `engagement_potential` | TEXT | Social media activity, industry engagement |
-| **Notes** | `general_notes` | TEXT | Additional observations and context |
-| **Pain Points** | `infostatus_pain_points` | TEXT | **Critical**: Specific pain points Infostatus can address |
+| Field | Value |
+|-------|--------|
+| **Company** | TechCorp Inc |
+| **Industry** | SaaS/AI |
+| **Size** | 150-200 employees |
+| **Revenue** | $10M-$25M (estimated) |
+| **Location** | San Francisco, CA |
+| **Funding** | Series A, $15M (March 2024) |
+| **Tech Stack** | AWS, React, Node.js |
+| **Hiring Signals** | Data Scientists, AI Engineers (5 positions) |
+| **Tech Adoption** | AWS migration, AI/ML implementation |
+| **Recent PR** | TechCrunch AI innovation feature |
+| **Decision Makers** | CEO John Smith, CTO Jane Doe |
+| **Engagement** | CTO LinkedIn post on AI compliance |
+| **Infostatus Fit** | High - automation pain points identified |
 
-**Tools Used**:
-- `get_prospect_research(prospect_id)`
-- `generate_profile(prospect_id, research_data)`
+## Key Pain Points for Infostatus
+- Manual data processing workflows (20+ hours/week)
+- Document handling inefficiencies
+- Scaling operational processes
+
+---
+*Profile generated: 2025-09-13T11:15:00Z*
+*Confidence: 0.83*
+```
 
 ### Step 3: Personalized Talking Points Generation
-**Purpose**: Create conversation starters and engagement opportunities  
-**Executor**: AI Agent with personalization capabilities  
-**Output**: Personalized talking points stored as separate entities  
+**Purpose**: Create conversation starters from Mini Profile  
+**Executor**: AI Agent using MCP `create_talking_points` tool  
+**File Input**: Read `/data/prospects/{id}_profile.md`  
+**Output**: Conversation starters `/data/prospects/{id}_talking_points.md`  
 
 **Process**:
-1. AI agent uses the structured Mini Profile data
-2. Uses MCP `create_talking_points` tool to generate personalized conversation starters
-3. Creates multiple `TalkingPoint` entries categorized by type:
-   - Personal/professional connections
-   - Industry trends and challenges
-   - Technology adoption opportunities
-   - Recent company developments
-   - Infostatus solution alignments
+1. AI agent reads the structured Mini Profile
+2. Generates personalized talking points across categories:
+   - Business challenges and pain points
+   - Technology opportunities and trends
+   - Recent company news and developments
+   - Personal/professional connection opportunities
+   - Infostatus solution alignment points
 
-**Talking Point Categories**:
-- `personal_professional`: Personal or professional connection opportunities
-- `industry_trends`: Relevant industry developments for conversation
-- `technology_opportunities`: Tech adoption talking points
-- `company_developments`: Recent company news/changes to reference
-- `solution_alignment`: How Infostatus solutions address identified pain points
+**Example Output** (`{id}_talking_points.md`):
+```markdown
+# Conversation Starters: TechCorp Inc
 
-**Tools Used**:
-- `get_prospect_profile(prospect_id)`
-- `create_talking_points(prospect_id, profile_data)`
+## 🎯 Business Challenges
+**Best for: Opening conversation about pain points**
+- "I noticed you're scaling rapidly after your Series A - many companies your size struggle with manual data operations. How is TechCorp handling the increased volume?"
+- "AWS migration is exciting - we often see companies face document processing challenges during cloud transitions..."
 
-## Workflow State Management
+## 🔧 Technology Opportunities  
+**Best for: Technical decision maker discussions**
+- "Your React/Node.js stack aligns perfectly with our TypeScript SDK - integration typically takes under a week..."
+- "With your AI/ML focus, automated document processing could free up your data scientists for higher-value work..."
 
-### Workflow Status Tracking
-Each prospect goes through defined workflow states:
+## 📰 Recent Company News
+**Best for: Warm conversation starters**
+- "Congratulations on the Series A funding! That TechCrunch feature on your AI innovation was impressive..."
+- "Saw the announcement about European expansion - data localization must be top of mind..."
+
+## 👥 Personal Connections
+**Best for: LinkedIn outreach**
+- "Jane Doe's background in distributed systems is impressive - she'll appreciate our scalable architecture..."
+- "I noticed John's previous experience at DataCorp - we've helped several similar companies..."
+
+## ✅ Best Opening Lines
+1. **Series A + scaling challenges** (Relevance: 0.92)
+2. **AWS migration + document processing** (Relevance: 0.88)
+3. **AI hiring + efficiency optimization** (Relevance: 0.85)
+
+---
+*Generated: 2025-09-13T11:45:00Z*
+*Categories: 5 | Total points: 12*
+```
+
+## Simplified State Management
+
+### Research Status Tracking
+Each prospect has a simple research_status in the database:
+- `pending`: Identified but not yet researched
+- `researched`: Research completed successfully  
+- `failed`: Research attempt failed
+
+### Workflow Progress Determination
+Progress is determined by **file existence** rather than complex database states:
 
 ```
-initial → researching → research_complete → analyzing → profile_complete → generating_points → workflow_complete
+Step 1 Complete: /data/prospects/{id}_research.md exists
+Step 2 Complete: /data/prospects/{id}_profile.md exists  
+Step 3 Complete: /data/prospects/{id}_talking_points.md exists
 ```
 
-**State Definitions**:
-- `initial`: Prospect identified, no research started
-- `researching`: Step 1 in progress - gathering unstructured data
-- `research_complete`: Step 1 done - research data stored
-- `analyzing`: Step 2 in progress - generating structured profile
-- `profile_complete`: Step 2 done - Mini Profile created
-- `generating_points`: Step 3 in progress - creating talking points
-- `workflow_complete`: All 3 steps complete - ready for sales engagement
+### State Transitions
+```
+pending → researched (when research_prospect completes successfully)
+researched → failed (if subsequent steps fail)
+any → pending (manual reset for re-research)
+```
 
-### Workflow Triggers
+## File-Based Architecture
 
-**Manual Triggers**:
-- Sales team requests research on new prospect
-- Re-research requested for existing prospect (starts from Step 1)
-- Profile update requested (starts from Step 2)
+### Data Storage Strategy
+```
+Database: Minimal metadata only
+├── prospect_id, company_name, domain
+├── research_status, created_at, updated_at
+└── (6 total fields)
 
-**Automated Triggers**:
-- Scheduled re-research for prospects (configurable intervals)
-- New public information detected for tracked prospects
-- ICP criteria changes requiring re-analysis
+File System: Rich AI-generated content
+├── /data/icp.md (business-managed ICP)
+├── /data/prospects/{id}_research.md
+├── /data/prospects/{id}_profile.md
+└── /data/prospects/{id}_talking_points.md
+```
 
-## Integration with MCP Architecture
+### Integration with MCP Architecture
+```
+AI Agent → MCP Client → MCP Server → File Operations + SQLite
+                                 ↓
+                           Markdown Files (human-readable)
+                                 ↓
+                    Copy-paste ready business intelligence
+```
 
 ### Tool Flow
-```
-AI Agent → MCP Client → MCP Server → Tool Libraries → External APIs/Data
-                                 ↓
-                           PostgreSQL Database
-                                 ↓
-                        Structured Profile + Talking Points
-```
-
-### Database Integration
-- **Step 1**: Populates `ResearchNote` table with unstructured findings
-- **Step 2**: Creates `ProspectProfile` entity with structured Mini Profile data  
-- **Step 3**: Creates multiple `TalkingPoint` entities with conversation starters
-- **Tracking**: Updates `Prospect.workflow_status` throughout process
+1. **research_prospect**: Company data → SQLite record + research.md file
+2. **generate_profile**: research.md → profile.md file  
+3. **create_talking_points**: profile.md → talking_points.md file
+4. **get_prospect_data**: SQLite + all markdown files → complete prospect context
+5. **search_prospects**: SQLite query + optional file content search
 
 ### Error Handling and Recovery
-- **Step 1 Failure**: Retry with different data sources, fallback to manual research
-- **Step 2 Failure**: Re-run analysis with adjusted prompts, manual profile creation
-- **Step 3 Failure**: Generate generic talking points, flag for manual review
-- **Partial Completion**: Allow workflow to resume from last successful step
+- **Step 1 Failure**: Retry with different data sources, mark research_status='failed'
+- **Step 2 Failure**: Keep research file, retry profile generation with adjusted prompts
+- **Step 3 Failure**: Keep profile file, generate generic talking points or retry
+- **File Corruption**: Regenerate from previous step if source file exists
+- **Partial Files**: Validate markdown format and completeness before marking complete
 
 ## Success Metrics
 
-### Workflow Completion Metrics
-- Time to complete full 3-step workflow
-- Success rate for each step individually
-- Data quality scores for generated profiles
-- Talking point relevance and usability ratings
+### Development Efficiency Metrics
+- **Time to complete full 3-step workflow**: Target < 5 minutes per prospect
+- **File generation success rate**: Target > 95% for each step
+- **Markdown quality scores**: Human readability and completeness ratings
+- **Development velocity**: Faster iteration due to file-based debugging
 
 ### Business Impact Metrics
-- Sales team engagement with generated profiles
-- Conversion rate improvement with talking points
-- Time saved vs. manual prospect research
-- Accuracy of pain point identification for Infostatus solutions
+- **Sales team adoption**: Usage frequency of generated markdown files
+- **Conversion rate improvement**: Effectiveness of talking points in actual calls
+- **Time saved vs manual research**: Target 80% time reduction
+- **Copy-paste usage**: How often content is directly used in emails/presentations
 
-## Constitutional Compliance
+## Implementation Benefits
 
-### Ethical Guidelines
-- Respect prospect privacy and public information boundaries
-- Use only publicly available information sources
-- Provide opt-out mechanisms for prospects
-- Ensure data accuracy and source attribution
-- Regular compliance audits for information gathering practices
+### Development Advantages
+✅ **Faster Development**: No complex database migrations or schema evolution  
+✅ **Easier Debugging**: Open markdown files directly to see AI outputs  
+✅ **Simple Testing**: Compare markdown files for quality assessment  
+✅ **Version Control**: Track changes to generated content over time  
 
-### Data Governance
-- Clear data retention policies for research data
-- GDPR compliance for prospect information storage
-- Audit trails for all workflow steps and data sources
-- Regular data quality assessments and corrections
+### Business Advantages  
+✅ **Human-Readable Outputs**: Sales team can directly read and use files  
+✅ **Copy-Paste Ready**: Content formatted for emails, presentations, CRM  
+✅ **Collaborative**: Business team can edit ICP file directly  
+✅ **Portable**: Markdown files work across all platforms and tools  
+
+### Operational Advantages
+✅ **Simple Backups**: Just copy the /data folder  
+✅ **Easy Scaling**: Add file storage without database complexity  
+✅ **Template-Driven**: Consistent formatting across all outputs  
+✅ **Future-Proof**: Can add database complexity later if needed  
 
 ## Example Workflow Execution
 
 ### Input
 ```
-Company: "ABC Financial Services"
-Domain: "abcfinancial.com.au"
+Company: "TechCorp Inc"
+Domain: "techcorp.com"
 ```
 
-### Step 1 Output (Research)
-- Company background research note
-- Recent news and press coverage
+### File Outputs Created
+
+**1. Research File** (`/data/prospects/abc123_research.md`):
+- Comprehensive company background
+- Recent funding and developments  
 - Technology stack analysis
 - Decision maker identification
-- Industry competitive analysis
+- Pain points and business challenges
 
-### Step 2 Output (Mini Profile)
+**2. Profile File** (`/data/prospects/abc123_profile.md`):
+- Structured 13-field Mini Profile table
+- Key business intelligence summary
+- Infostatus-specific pain point analysis
+- Engagement timing recommendations
+
+**3. Talking Points File** (`/data/prospects/abc123_talking_points.md`):
+- 8-12 categorized conversation starters
+- Relevance scoring for each point
+- Best opening lines recommendations
+- Context for different conversation types
+
+### Database Record
+```sql
+INSERT INTO prospects VALUES (
+  'abc123',
+  'TechCorp Inc', 
+  'techcorp.com',
+  'researched',
+  '2025-09-13T10:30:00Z',
+  '2025-09-13T11:45:00Z'
+);
 ```
-Company Name: ABC Financial Services
-Size: 300 employees
-Revenue Range: $120M
-Industry: Financial Services
-Location: Sydney, NSW
-Hiring Signals: Hiring "Data Scientist" & "Head of Innovation"
-Tech Adoption: Migrating to AWS, exploring predictive analytics
-Public & PR Signals: AFR: "ABC invests in AI fraud detection"
-Funding & Growth: Series B $15M in 2023
-Tender/Compliance: Listed in NSW eTendering for financial IT project
-Decision-Makers: CIO & CFO identified
-Engagement Potential: CFO LinkedIn post on AI compliance
-Notes: Member of FinTech Australia
-Pain Points: Needs to speed up banking document automation tasks
-```
 
-### Step 3 Output (Talking Points)
-1. **Industry Trends**: "Noticed ABC is investing in AI fraud detection - this aligns with the broader FinTech trend toward automated compliance."
-2. **Technology Opportunity**: "Your AWS migration could benefit from our document processing solutions for cloud-native workflows."
-3. **Personal Connection**: "Saw the CFO's LinkedIn post about AI compliance - we've helped similar financial services navigate this challenge."
-4. **Solution Alignment**: "Based on your NSW government tender for financial IT, our document automation could streamline your public sector documentation requirements."
-
-This workflow specification provides the framework for transforming the current MCP server from a general research tool into a specialized 3-step prospect intelligence engine focused on generating actionable sales insights.
+This simplified workflow specification demonstrates how **markdown-first architecture** creates more value with less complexity, enabling faster development and better business outcomes.
