@@ -73,7 +73,7 @@
 ### MCP Server Library
 - [x] T021 MCP tool implementations (4 tools) in src/mcp_server/tools.py
 - [x] T022 MCP server with tool registration in src/mcp_server/server.py
-- [ ] T023 [P] Server CLI commands in src/mcp_server/cli.py
+- [x] T023 [P] Server CLI commands in src/mcp_server/cli.py
 
 ## Phase 3.4: Integration
 - [ ] T024 Connect prospect_research to file_manager for markdown output
