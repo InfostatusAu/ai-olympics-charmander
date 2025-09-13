@@ -1,4 +1,5 @@
 import os
+from src.config import get_prospect_dir_str
 
 def create_directory(path: str):
     """Creates a directory if it does not exist."""
@@ -23,11 +24,14 @@ def file_exists(file_path: str) -> bool:
 
 async def save_markdown_report(prospect_id: str, filename: str, content: str):
     """Saves a markdown report to the prospects directory."""
-    report_dir = os.path.join("data", "prospects", prospect_id)
+    report_dir = get_prospect_dir_str(prospect_id)
     create_directory(report_dir)
     file_path = os.path.join(report_dir, filename)
     save_markdown_file(file_path, content)
 
 async def get_prospect_report_path(prospect_id: str, filename: str) -> str:
+    """Gets the full path for a prospect's report file."""
+    report_dir = get_prospect_dir_str(prospect_id)
+    return os.path.join(report_dir, filename)
     """Returns the absolute path to a prospect report."""
     return os.path.abspath(os.path.join("data", "prospects", prospect_id, filename))
