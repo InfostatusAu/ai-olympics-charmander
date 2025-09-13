@@ -7,13 +7,12 @@
 
 ## Overview
 
-This quickstart guide demonstrates how to set up and use the simplified MCP Prospect Research Server with AI assistants. The server provides a streamlined 3-step research workflow that generates rich markdown files with minimal database complexity:
+This quickstart guide demonstrates how to set up and use the simplified MCP Prospect Research Server with AI assistants. The server provides a streamlined 2-step research workflow that generates rich markdown files with minimal database complexity:
 
 1. **Step 1: Research** - Generate comprehensive research markdown report
-2. **Step 2: Mini Profile** - Create structured profile from research markdown  
-3. **Step 3: Talking Points** - Generate conversation starters from profile
+2. **Step 2: Profile + Strategy** - Create structured profile and talking points from research
 
-The complete workflow produces three markdown files containing actionable sales intelligence.
+The complete workflow produces two markdown files containing actionable sales intelligence.
 
 ## Prerequisites
 
@@ -100,9 +99,7 @@ Add to Claude configuration:
 
 ## User Story Walkthroughs
 
-## User Story Walkthroughs
-
-### Story 1: Complete 3-Step Prospect Research Workflow
+### Story 1: Complete 2-Step Prospect Research Workflow
 **Goal**: Transform a company name into actionable sales intelligence through the complete research workflow
 
 **Scenario**: Sales rep needs complete prospect intelligence for "TechCorp Inc" outreach
