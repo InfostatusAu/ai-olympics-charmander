@@ -2,7 +2,18 @@
 
 **Date**: September 13, 2025  
 **Feature**: Prospect Research Automation Engine  
-**Phase**: 1 - Integration Guide and User Stories  
+**Phase*3. **📊 Document Processing Scale** (Relevance: 89%)
+   "With TechCorp's rapid growth to 150 employees, manual document workflows become expensive quickly. We've seen similar companies reduce processing costs by 60% while improving accuracy."
+
+**Complete Intelligence Package Ready!**
+- Research report: 24.5 KB of comprehensive intelligence
+- Profile + Strategy: 14.7 KB with structured table and personalized talking points
+- All files saved with `{prospect_id}_` naming convention for future reference
+
+TechCorp Inc is now ready for personalized outreach with complete markdown intelligence package.
+```
+
+**Expected Result**: Complete prospect intelligence package ready for sales engagement with structured 14-field profile table and integrated conversation strategy.ation Guide and User Stories  
 **Update**: Simplified Markdown-First Architecture
 
 ## Overview
@@ -108,13 +119,13 @@ Add to Claude configuration:
 ```
 User: "I need complete prospect intelligence for TechCorp Inc. Please run the full research workflow."
 
-AI Assistant: I'll run the complete 3-step prospect research workflow for TechCorp Inc. Let me start with comprehensive research.
+AI Assistant: I'll run the complete 2-step prospect research workflow for TechCorp Inc. Let me start with comprehensive research.
 
 [Step 1: Research - AI calls research_prospect tool]
 
 AI Assistant: ✅ Step 1 Complete - Research markdown file created:
 
-**File Generated**: `/data/prospects/techcorp-inc/research.md` (24.5 KB)
+**File Generated**: `/data/prospects/techcorp-inc_research.md` (24.5 KB)
 
 **Research Summary:**
 - Company background, history, and business model analysis
@@ -124,34 +135,37 @@ AI Assistant: ✅ Step 1 Complete - Research markdown file created:
 - Market position and competitive landscape
 - 6 detailed research sections with 85% confidence score
 
-Now generating structured Mini Profile from research data...
+Now generating structured Profile + Conversation Strategy from research data...
 
-[Step 2: Profile Generation - AI calls generate_profile tool]
+[Step 2: Profile + Strategy - AI calls create_profile tool]
 
-AI Assistant: ✅ Step 2 Complete - Mini Profile markdown generated:
+AI Assistant: ✅ Step 2 Complete - Profile + Strategy markdown generated:
 
-**File Generated**: `/data/prospects/techcorp-inc/profile.md` (8.2 KB)
+**File Generated**: `/data/prospects/techcorp-inc_profile.md` (14.7 KB)
 
-**Mini Profile Highlights:**
-- **Company**: TechCorp Inc (150 employees, $50M-$100M revenue)
-- **Industry**: Software Development - AI/ML Platform
-- **Location**: San Francisco, CA
-- **Key Decision Makers**: Jane Smith (CTO), Mike Johnson (CEO)
-- **Pain Points**: Manual data workflows, document processing bottlenecks
-- **Opportunity Signals**: AWS migration, hiring AI engineers, scaling challenges
-- **Infostatus Fit Score**: 8.7/10 (excellent document automation fit)
+**Mini Profile Table:**
+| Field | Description | Example |
+|-------|-------------|---------|
+| Company Name | Official company name | TechCorp Inc |
+| Employee Count | Number of employees | 150 |
+| Revenue Range | Annual revenue estimate | $50M-$100M |
+| Industry | Primary industry sector | Software Development - AI/ML Platform |
+| Location | Headquarters location | San Francisco, CA |
+| Hiring Signals | Current hiring activity | 5 AI engineer positions, scaling team |
+| Tech Adoption | Technology usage patterns | AWS migration in progress, ML pipelines |
+| Public PR Signals | Recent news and announcements | $10M Series A, Microsoft partnership |
+| Funding Growth | Financial growth indicators | 60% YoY growth, expanding to Austin |
+| Tender Compliance | Government/compliance activity | SOC 2 certification in progress |
+| Decision Makers | Key decision-maker contacts | Jane Smith (CTO), Mike Johnson (CEO) |
+| Engagement Potential | Social media and industry presence | CTO active on LinkedIn, CEO speaker |
+| General Notes | Additional observations | Strong technical team, scaling challenges |
+| Infostatus Pain Points | Specific problems we can solve | Manual document workflows, AWS integration |
 
-Now creating personalized talking points...
+**Conversation Strategy:**
 
-[Step 3: Talking Points - AI calls create_talking_points tool]
+**🎯 Primary Talking Points:**
 
-AI Assistant: ✅ Step 3 Complete - Talking Points markdown generated:
-
-**File Generated**: `/data/prospects/techcorp-inc/talking_points.md` (6.8 KB)
-
-**Top Conversation Starters:**
-
-1. **🎯 AWS Migration Pain Points** (Relevance: 94%)
+1. **AWS Migration Pain Points** (Relevance: 94%)
    "I noticed TechCorp is migrating to AWS infrastructure. During cloud transitions, document processing workflows often become bottlenecks. We've helped similar companies maintain processing speed while scaling on AWS."
 
 2. **🚀 AI Engineering Team Growth** (Relevance: 92%)  
@@ -176,11 +190,6 @@ TechCorp Inc is now ready for personalized outreach with complete markdown intel
 
 **AI Assistant Conversation**:
 ```
-User: "Research TechFlow Solutions in detail, I want to understand their pain points and decision makers"
-
-AI Assistant: I'll gather comprehensive research on TechFlow Solutions for you.
-
-```
 User: "Let me understand each step. First, just do the research step for DataStream Inc."
 
 AI Assistant: I'll start with Step 1 - comprehensive research for DataStream Inc.
@@ -189,7 +198,7 @@ AI Assistant: I'll start with Step 1 - comprehensive research for DataStream Inc
 
 AI Assistant: ✅ **Step 1 - Research Complete** for DataStream Inc:
 
-**File Generated**: `/data/prospects/datastream-inc/research.md` (18.7 KB)
+**File Generated**: `/data/prospects/datastream-inc_research.md` (18.7 KB)
 
 **Research Summary:**
 - Company founded 2019, data analytics platform focus
@@ -202,60 +211,56 @@ AI Assistant: ✅ **Step 1 - Research Complete** for DataStream Inc:
 
 The research markdown file contains detailed intelligence ready for profile generation. Would you like me to proceed to Step 2?
 
-User: "Yes, generate the Mini Profile now"
+User: "Yes, generate the Profile + Strategy now"
 
-AI Assistant: Moving to Step 2 - generating structured Mini Profile from research markdown.
+AI Assistant: Moving to Step 2 - generating structured Profile + Conversation Strategy from research markdown.
 
-[AI calls generate_profile tool using the research data]
+[AI calls create_profile tool using the research data]
 
-AI Assistant: ✅ **Step 2 - Mini Profile Complete** for DataStream Inc:
+AI Assistant: ✅ **Step 2 - Profile + Strategy Complete** for DataStream Inc:
 
-**File Generated**: `/data/prospects/datastream-inc/profile.md` (7.1 KB)
+**File Generated**: `/data/prospects/datastream-inc_profile.md` (12.3 KB)
 
-**Mini Profile Key Insights:**
-- **Company**: DataStream Inc (89 employees, $25M-$50M revenue)
-- **Industry**: Data Analytics Platform
-- **Location**: Austin, TX
-- **Decision Makers**: Tom Wilson (CEO), Lisa Zhang (CTO)
-- **Technology Focus**: Azure-native real-time analytics
-- **Growth Signals**: 60% YoY growth, Microsoft partnership
-- **Pain Points**: Scaling real-time processing, compliance automation
-- **Engagement Potential**: CTO active on tech Twitter, CEO posts about data privacy
-- **Infostatus Fit Score**: 7.8/10 (strong match for document processing needs)
+**Mini Profile Table:**
+| Field | Description | Example |
+|-------|-------------|---------|
+| Company Name | Official company name | DataStream Inc |
+| Employee Count | Number of employees | 89 |
+| Revenue Range | Annual revenue estimate | $25M-$50M |
+| Industry | Primary industry sector | Data Analytics Platform |
+| Location | Headquarters location | Austin, TX |
+| Hiring Signals | Current hiring activity | Expanding engineering team |
+| Tech Adoption | Technology usage patterns | Azure-native, real-time streaming |
+| Public PR Signals | Recent news and announcements | Microsoft Azure partnership Q3 2025 |
+| Funding Growth | Financial growth indicators | 60% YoY growth, bootstrapped |
+| Tender Compliance | Government/compliance activity | SOC 2 compliance planning |
+| Decision Makers | Key decision-maker contacts | Tom Wilson (CEO), Lisa Zhang (CTO) |
+| Engagement Potential | Social media and industry presence | CTO active on tech Twitter |
+| General Notes | Additional observations | Strong Azure focus, privacy-first |
+| Infostatus Pain Points | Specific problems we can solve | Scaling processing, compliance docs |
 
-The structured profile markdown is ready. Would you like me to create talking points (Step 3)?
+**Conversation Strategy:**
 
-User: "Perfect, now create the talking points"
+**🎯 Primary Talking Points:**
 
-AI Assistant: Proceeding to Step 3 - generating personalized talking points from the Mini Profile.
-
-[AI calls create_talking_points tool using the Mini Profile]
-
-AI Assistant: ✅ **Step 3 - Talking Points Complete** for DataStream Inc:
-
-**File Generated**: `/data/prospects/datastream-inc/talking_points.md` (5.9 KB)
-
-**Top Personalized Conversation Starters:**
-
-1. **🤝 Microsoft Partnership Leverage** (Relevance: 94%)
+1. **Microsoft Partnership Leverage** (Relevance: 94%)
    "Congratulations on the Microsoft Azure partnership! As you scale your real-time analytics platform, document processing often becomes a bottleneck. Our Azure-native solutions integrate seamlessly with Event Hubs and Stream Analytics."
 
-2. **⚡ Real-time Processing Optimization** (Relevance: 91%)
+2. **Real-time Processing Optimization** (Relevance: 91%)
    "I noticed DataStream focuses on real-time analytics. With 60% YoY growth, maintaining low-latency document processing while scaling becomes critical. We've helped similar platforms maintain <100ms processing times at enterprise scale."
 
-3. **🔒 Data Privacy Leadership** (Relevance: 87%)
+3. **Data Privacy Leadership** (Relevance: 87%)
    "Tom's thought leadership on data privacy really resonates. As streaming platforms grow, automated compliance documentation becomes essential. Our privacy-first approach helps maintain audit trails without slowing down processing."
 
-**Complete 3-Step Workflow Package:**
+**Complete 2-Step Workflow Package:**
 - Research: 18.7 KB comprehensive intelligence
-- Profile: 7.1 KB structured decision-maker insights  
-- Talking Points: 5.9 KB personalized conversation starters
-- Total: 31.7 KB of actionable sales intelligence
+- Profile + Strategy: 12.3 KB with structured table and conversation starters
+- Total: 31.0 KB of actionable sales intelligence
 
-All files saved in `/data/prospects/datastream-inc/` for future reference and CRM integration.
+All files saved with `{prospect_id}_` naming convention for future reference and CRM integration.
 ```
 
-**Expected Result**: Understanding of each workflow step with clear progression and specialized outputs.
+**Expected Result**: Understanding of each workflow step with clear progression from research to integrated profile+strategy output.
 
 ### Story 3: Prospect Discovery and Pipeline Management
 **Goal**: Find qualified prospects and manage them through the workflow pipeline
@@ -273,48 +278,43 @@ AI Assistant: Here's your prospect pipeline with workflow status:
 **Workflow Status Overview:**
 
 📋 **Complete Workflow (Ready for Outreach):** 3 prospects
-- **TechCorp Inc** - All 3 files ready (39.5 KB total intelligence)
-  - research.md (24.5 KB), profile.md (8.2 KB), talking_points.md (6.8 KB)
-- **DataStream Inc** - All 3 files ready (31.7 KB total)
-  - research.md (18.7 KB), profile.md (7.1 KB), talking_points.md (5.9 KB)
-- **CloudBridge Analytics** - All 3 files ready (28.3 KB total)
+- **TechCorp Inc** - Both files ready (39.2 KB total intelligence)
+  - techcorp-inc_research.md (24.5 KB), techcorp-inc_profile.md (14.7 KB)
+- **DataStream Inc** - Both files ready (31.0 KB total)
+  - datastream-inc_research.md (18.7 KB), datastream-inc_profile.md (12.3 KB)
+- **CloudBridge Analytics** - Both files ready (33.8 KB total)
+  - cloudbridge-analytics_research.md (21.2 KB), cloudbridge-analytics_profile.md (12.6 KB)
 
-📊 **Profile Generated (Need Talking Points):** 2 prospects
-- **StreamLine Software** - research.md ✅, profile.md ✅, talking_points.md ❌
-- **DevOps Masters** - research.md ✅, profile.md ✅, talking_points.md ❌
-
-🔍 **Research Complete (Need Profile):** 3 prospects  
-- **TechFlow Solutions** - research.md ✅ (22.1 KB), profile.md ❌, talking_points.md ❌
-- **DataBridge Corp** - research.md ✅ (19.8 KB), profile.md ❌, talking_points.md ❌
-- **APIFirst Ltd** - research.md ✅ (16.4 KB), profile.md ❌, talking_points.md ❌
+🔍 **Research Complete (Need Profile+Strategy):** 3 prospects  
+- **TechFlow Solutions** - research.md ✅ (22.1 KB), profile.md ❌
+- **DataBridge Corp** - research.md ✅ (19.8 KB), profile.md ❌
+- **APIFirst Ltd** - research.md ✅ (16.4 KB), profile.md ❌
 
 ⏳ **Research Only:** 4 prospects
 - **CloudSync Technologies** - Only basic metadata, no files yet
 
 **Recommended Actions:**
-1. Complete talking points for StreamLine and DevOps Masters (2 prospects)
-2. Generate profiles for TechFlow, DataBridge, and APIFirst (3 prospects)  
-3. 3 prospects ready for immediate outreach with complete intelligence packages
+1. Generate profiles for TechFlow, DataBridge, and APIFirst (3 prospects)  
+2. 3 prospects ready for immediate outreach with complete intelligence packages
 
 Would you like me to batch-process any of these workflow steps to complete the pipeline?
 
-User: "Yes, complete the talking points for StreamLine Software"
+User: "Yes, complete the profile for StreamLine Software"
 
-AI Assistant: I'll generate talking points for StreamLine Software using their existing profile.
+AI Assistant: I'll generate the profile+strategy for StreamLine Software using their existing research.
 
-[AI calls create_talking_points tool for StreamLine Software]
+[AI calls create_profile tool for StreamLine Software]
 
-AI Assistant: ✅ **Talking Points Generated** for StreamLine Software:
+AI Assistant: ✅ **Profile + Strategy Generated** for StreamLine Software:
 
-**File Created**: `/data/prospects/streamline-software/talking_points.md` (7.2 KB)
+**File Created**: `/data/prospects/streamline-software_profile.md` (13.4 KB)
 
 **Pipeline Update**: StreamLine Software now has complete workflow:
-- research.md ✅ (21.3 KB) 
-- profile.md ✅ (8.9 KB)
-- talking_points.md ✅ (7.2 KB)
-- **Total Intelligence**: 37.4 KB ready for outreach
+- streamline-software_research.md ✅ (21.3 KB) 
+- streamline-software_profile.md ✅ (13.4 KB) with table + talking points
+- **Total Intelligence**: 34.7 KB ready for outreach
 
-**Top Talking Points Generated:**
+**Top Talking Points Included:**
 1. **CI/CD Pipeline Optimization** (96% relevance)
 2. **Developer Productivity Focus** (93% relevance)  
 3. **Infrastructure Scaling Challenges** (89% relevance)
@@ -322,7 +322,7 @@ AI Assistant: ✅ **Talking Points Generated** for StreamLine Software:
 StreamLine Software is now ready for personalized outreach. Would you like me to complete profiles for the "Research Complete" prospects next?
 ```
 
-**Expected Result**: Clear pipeline visibility with file-based progress tracking and actionable workflow completion steps.
+**Expected Result**: Clear pipeline visibility with 2-step workflow progress tracking and actionable completion steps.
 
 ### Story 4: Accessing Prospect Intelligence 
 **Goal**: Retrieve complete prospect data with all generated markdown files
