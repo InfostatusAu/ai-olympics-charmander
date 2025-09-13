@@ -6,6 +6,10 @@ from typing import Dict, Any
 
 from src.file_manager.storage import read_markdown_file, save_markdown_report, get_prospect_report_path
 from src.file_manager.templates import get_template
+from src.logging_config import get_logger, OperationContext
+
+# Get structured logger
+logger = get_logger(__name__)
 
 async def create_profile(prospect_id: str, research_report_filename: str) -> Dict[str, Any]:
     """
@@ -15,51 +19,79 @@ async def create_profile(prospect_id: str, research_report_filename: str) -> Dic
     if not prospect_id or not research_report_filename:
         raise ValueError("Prospect ID and research report filename cannot be empty.")
 
-    # Read the research markdown report
-    research_report_path = await get_prospect_report_path(prospect_id, research_report_filename)
-    research_content = read_markdown_file(research_report_path)  # read_markdown_file is not async
+    with OperationContext(operation="profile_creation", prospect_id=prospect_id):
+        logger.info("Starting profile creation from research report",
+                   prospect_id=prospect_id,
+                   research_filename=research_report_filename)
 
-    # Parse the research content with enhanced parsing
-    parsed_data = parse_research_markdown(research_content)
+        # Read the research markdown report
+        research_report_path = await get_prospect_report_path(prospect_id, research_report_filename)
+        research_content = read_markdown_file(research_report_path)  # read_markdown_file is not async
+        
+        logger.info("Research report loaded successfully",
+                   report_path=research_report_path,
+                   content_length=len(research_content))
 
-    # Generate the Mini Profile template data - match template field names
-    profile_data = {
-        "company_name": parsed_data.get("company_name", "N/A"),
-        "domain": parsed_data.get("domain", "N/A"),
-        "industry": _determine_industry(parsed_data),
-        "company_size": _estimate_company_size(parsed_data),
-        "headquarters": _extract_headquarters(parsed_data),
-        "key_contact": _get_primary_contact(parsed_data),  # Changed to match template
-        "contact_title": _get_primary_contact_title(parsed_data),  # Changed to match template
-        "recent_news_summary": _summarize_recent_news(parsed_data),
-        "tech_stack_summary": _summarize_tech_stack(parsed_data),
-        "pain_points_summary": _summarize_pain_points(parsed_data),
-        "conversation_starter_1": _generate_conversation_starter_1(parsed_data),
-        "conversation_starter_2": _generate_conversation_starter_2(parsed_data),
-        "value_proposition": _generate_value_proposition(parsed_data),
-        "relevance_score": _calculate_relevance_score(parsed_data),
-        "research_date": datetime.now().strftime("%Y-%m-%d"),
-        "prospect_id": prospect_id
-    }
+        # Parse the research content with enhanced parsing
+        parsed_data = parse_research_markdown(research_content)
+        
+        logger.info("Research content parsed",
+                   parsed_fields=list(parsed_data.keys()),
+                   pain_points_found=len(parsed_data.get("pain_points", [])),
+                   decision_makers_found=len(parsed_data.get("decision_makers", [])))
 
-    # Get the Mini Profile template and format it
-    template_content = await get_template("profile_template.md")  # get_template is async
-    if not template_content:
-        raise ValueError("Mini Profile template not found. Please ensure profile_template.md exists in data/templates/")
+        # Generate the Mini Profile template data - match template field names
+        profile_data = {
+            "company_name": parsed_data.get("company_name", "N/A"),
+            "domain": parsed_data.get("domain", "N/A"),
+            "industry": _determine_industry(parsed_data),
+            "company_size": _estimate_company_size(parsed_data),
+            "headquarters": _extract_headquarters(parsed_data),
+            "key_contact": _get_primary_contact(parsed_data),  # Changed to match template
+            "contact_title": _get_primary_contact_title(parsed_data),  # Changed to match template
+            "recent_news_summary": _summarize_recent_news(parsed_data),
+            "tech_stack_summary": _summarize_tech_stack(parsed_data),
+            "pain_points_summary": _summarize_pain_points(parsed_data),
+            "conversation_starter_1": _generate_conversation_starter_1(parsed_data),
+            "conversation_starter_2": _generate_conversation_starter_2(parsed_data),
+            "value_proposition": _generate_value_proposition(parsed_data),
+            "relevance_score": _calculate_relevance_score(parsed_data),
+            "research_date": datetime.now().strftime("%Y-%m-%d"),
+            "prospect_id": prospect_id
+        }
+        
+        logger.info("Profile data generated",
+                   relevance_score=profile_data["relevance_score"],
+                   industry=profile_data["industry"],
+                   company_size=profile_data["company_size"],
+                   conversation_starters_generated=2)
 
-    # Format the template with profile data
-    markdown_profile = template_content.format(**profile_data)
+        # Get the Mini Profile template and format it
+        template_content = await get_template("profile_template.md")  # get_template is async
+        if not template_content:
+            logger.error("Profile template not found",
+                        template_name="profile_template.md",
+                        expected_location="data/templates/")
+            raise ValueError("Mini Profile template not found. Please ensure profile_template.md exists in data/templates/")
 
-    # Save the profile as a markdown file
-    profile_filename = f"{prospect_id}_profile.md"
-    await save_markdown_report(prospect_id, profile_filename, markdown_profile)
+        # Format the template with profile data
+        markdown_profile = template_content.format(**profile_data)
 
-    return {
-        "prospect_id": prospect_id,
-        "profile_filename": profile_filename,
-        "strategy_summary": f"Outreach strategy based on {len(parsed_data.get('pain_points', []))} pain points and {len(parsed_data.get('recent_news', []))} recent developments",
-        "message": f"Intelligent profile for {parsed_data.get('company_name', 'prospect')} generated and saved as {profile_filename}"
-    }
+        # Save the profile as a markdown file
+        profile_filename = f"{prospect_id}_profile.md"
+        await save_markdown_report(prospect_id, profile_filename, markdown_profile)
+        
+        logger.info("Profile creation completed successfully",
+                   profile_filename=profile_filename,
+                   profile_length=len(markdown_profile),
+                   template_formatted=True)
+
+        return {
+            "prospect_id": prospect_id,
+            "profile_filename": profile_filename,
+            "strategy_summary": f"Outreach strategy based on {len(parsed_data.get('pain_points', []))} pain points and {len(parsed_data.get('recent_news', []))} recent developments",
+            "message": f"Intelligent profile for {parsed_data.get('company_name', 'prospect')} generated and saved as {profile_filename}"
+        }
 
 def _determine_industry(parsed_data: Dict[str, Any]) -> str:
     """Determine industry based on research data."""

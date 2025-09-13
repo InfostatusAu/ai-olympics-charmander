@@ -8,6 +8,10 @@ from firecrawl import FirecrawlApp
 
 from src.file_manager.storage import save_markdown_report
 from src.file_manager.templates import get_template
+from src.logging_config import get_logger, OperationContext
+
+# Get structured logger
+logger = get_logger(__name__)
 
 async def research_prospect(company_identifier: str) -> Dict[str, Any]:
     """
@@ -27,10 +31,18 @@ async def research_prospect(company_identifier: str) -> Dict[str, Any]:
     prospect_id = f"prospect_{datetime.now().strftime('%Y%m%d%H%M%S')}"
     report_filename = f"{prospect_id}_research.md"
 
-    # Initialize Firecrawl with API key from environment
-    firecrawl_api_key = os.getenv("FIRECRAWL_API_KEY")
-    if not firecrawl_api_key:
-        raise ValueError("FIRECRAWL_API_KEY environment variable not set.")
+    with OperationContext(operation="prospect_research", prospect_id=prospect_id):
+        logger.info("Starting comprehensive prospect research",
+                   company_identifier=company_identifier,
+                   prospect_id=prospect_id,
+                   data_sources=["Company Website", "LinkedIn", "Job Boards", "News & Search", "Government Registries"])
+
+        # Initialize Firecrawl with API key from environment
+        firecrawl_api_key = os.getenv("FIRECRAWL_API_KEY")
+        if not firecrawl_api_key:
+            logger.error("Firecrawl API key not configured", 
+                        required_env_var="FIRECRAWL_API_KEY")
+            raise ValueError("FIRECRAWL_API_KEY environment variable not set.")
 
     from firecrawl import Firecrawl
     firecrawl = Firecrawl(api_key=firecrawl_api_key)
@@ -63,6 +75,9 @@ async def research_prospect(company_identifier: str) -> Dict[str, Any]:
 
     # 1. COMPANY WEBSITE RESEARCH
     try:
+        logger.info("Starting company website research", 
+                   website_url=company_website_url,
+                   data_source="company_website")
         print(f"Scraping company website: {company_website_url}")
         website_data = firecrawl.scrape(
             company_website_url,
@@ -80,10 +95,22 @@ async def research_prospect(company_identifier: str) -> Dict[str, Any]:
             found_tech = [tech for tech in tech_indicators if tech.lower() in website_content.lower()]
             research_data["tech_stack"] = found_tech
             
+            logger.info("Company website research completed successfully",
+                       content_length=len(website_content),
+                       tech_stack_found=found_tech,
+                       data_source="company_website")
+            
         else:
             research_data["background"] = f"Unable to scrape website content for {company_domain}"
+            logger.warning("No content extracted from company website",
+                          website_url=company_website_url,
+                          data_source="company_website")
             
     except Exception as e:
+        logger.exception("Error during company website research",
+                        website_url=company_website_url,
+                        data_source="company_website",
+                        error_type=type(e).__name__)
         print(f"Error scraping company website {company_website_url}: {e}")
         research_data["background"] = f"Error accessing company website: {str(e)}"
 
@@ -307,6 +334,15 @@ async def research_prospect(company_identifier: str) -> Dict[str, Any]:
 
     # Save the markdown report
     await save_markdown_report(prospect_id, report_filename, markdown_report)
+    
+    logger.info("Prospect research completed successfully",
+               prospect_id=prospect_id,
+               report_filename=report_filename,
+               pain_points_count=len(research_data["pain_points"]),
+               decision_makers_count=len(research_data["decision_makers"]),
+               tech_stack_count=len(research_data["tech_stack"]),
+               recent_news_count=len(research_data["recent_news"]),
+               data_sources_completed=5)
 
     return {
         "prospect_id": prospect_id,
