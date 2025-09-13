@@ -46,12 +46,12 @@
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
-- [ ] T005 [P] Contract test research_prospect MCP tool in tests/contract/test_research_prospect.py
-- [ ] T006 [P] Contract test create_profile MCP tool in tests/contract/test_create_profile.py
-- [ ] T007 [P] Contract test get_prospect_data MCP tool in tests/contract/test_get_prospect_data.py
-- [ ] T008 [P] Contract test search_prospects MCP tool in tests/contract/test_search_prospects.py
-- [ ] T009 [P] Integration test complete 2-step workflow in tests/integration/test_complete_workflow.py
-- [ ] T010 [P] Integration test markdown file generation in tests/integration/test_markdown_generation.py
+- [x] T005 [P] Contract test research_prospect MCP tool in tests/contract/test_research_prospect.py
+- [x] T006 [P] Contract test create_profile MCP tool in tests/contract/test_create_profile.py
+- [x] T007 [P] Contract test get_prospect_data MCP tool in tests/contract/test_get_prospect_data.py
+- [x] T008 [P] Contract test search_prospects MCP tool in tests/contract/test_search_prospects.py
+- [x] T009 [P] Integration test complete 2-step workflow in tests/integration/test_complete_workflow.py
+- [x] T010 [P] Integration test markdown file generation in tests/integration/test_markdown_generation.py
 - [ ] T011 [P] Integration test MCP server tool discovery in tests/integration/test_mcp_server.py
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
