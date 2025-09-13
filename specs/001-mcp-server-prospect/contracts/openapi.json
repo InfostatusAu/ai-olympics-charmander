@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "MCP Prospect Research Server - 3-Step Workflow",
-    "description": "Model Context Protocol server for automated 3-step prospect research workflow: Research → Mini Profile → Talking Points",
-    "version": "1.1.0",
+    "title": "MCP Prospect Research Server - Simplified Markdown-First",
+    "description": "Model Context Protocol server for markdown-first prospect research with minimal database complexity",
+    "version": "2.0.0",
     "contact": {
       "name": "MCP Prospect Research API",
       "url": "https://github.com/example/mcp-prospect-server"
@@ -16,49 +16,10 @@
     }
   ],
   "paths": {
-    "/tools/find_new_prospect": {
-      "post": {
-        "summary": "Find New Prospect",
-        "description": "Discover qualified leads matching ideal customer profile criteria",
-        "operationId": "findNewProspect",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FindNewProspectRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful prospect discovery",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FindNewProspectResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request parameters",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MCPError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/tools/research_prospect": {
       "post": {
         "summary": "Research Prospect (Step 1)",
-        "description": "Compile comprehensive unstructured intelligence for a specific prospect using tiered data acquisition",
+        "description": "Compile comprehensive research and generate markdown research report",
         "operationId": "researchProspect",
         "requestBody": {
           "required": true,
@@ -82,40 +43,11 @@
             }
           },
           "400": {
-            "description": "Invalid prospect identifier",
+            "description": "Invalid request parameters",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MCPError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/tools/get_prospect_research": {
-      "post": {
-        "summary": "Get Prospect Research (Step 2 Helper)",
-        "description": "Retrieve all unstructured research data for profile generation",
-        "operationId": "getProspectResearch",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetProspectResearchRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Research data retrieved",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetProspectResearchResponse"
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -126,7 +58,7 @@
     "/tools/generate_profile": {
       "post": {
         "summary": "Generate Profile (Step 2)",
-        "description": "Transform unstructured research into structured Mini Profile template",
+        "description": "Transform research markdown into structured Mini Profile template",
         "operationId": "generateProfile",
         "requestBody": {
           "required": true,
@@ -148,32 +80,13 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/tools/get_prospect_profile": {
-      "post": {
-        "summary": "Get Prospect Profile (Step 3 Helper)",
-        "description": "Retrieve structured Mini Profile data for talking points generation",
-        "operationId": "getProspectProfile",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetProspectProfileRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Profile data retrieved",
+          },
+          "404": {
+            "description": "Research file not found",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetProspectProfileResponse"
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -184,7 +97,7 @@
     "/tools/create_talking_points": {
       "post": {
         "summary": "Create Talking Points (Step 3)",
-        "description": "Generate personalized conversation starters from Mini Profile data",
+        "description": "Generate personalized conversation starters from Mini Profile",
         "operationId": "createTalkingPoints",
         "requestBody": {
           "required": true,
@@ -198,7 +111,7 @@
         },
         "responses": {
           "200": {
-            "description": "Talking points generated successfully",
+            "description": "Talking points created successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -206,32 +119,13 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/tools/save_prospect": {
-      "post": {
-        "summary": "Save Prospect (Updated for Workflow)",
-        "description": "Persist prospect profiles to the server's database with workflow support",
-        "operationId": "saveProspect",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SaveProspectRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Prospect saved successfully",
+          },
+          "404": {
+            "description": "Profile file not found",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SaveProspectResponse"
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -239,28 +133,67 @@
         }
       }
     },
-    "/tools/retrieve_prospect": {
+    "/tools/get_prospect_data": {
       "post": {
-        "summary": "Retrieve Prospect (Full Workflow Support)",
-        "description": "Query stored prospect data with full 3-step workflow support and filtering capabilities",
-        "operationId": "retrieveProspect",
+        "summary": "Get Prospect Data",
+        "description": "Retrieve prospect metadata with all generated markdown files",
+        "operationId": "getProspectData",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RetrieveProspectRequest"
+                "$ref": "#/components/schemas/GetProspectDataRequest"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Prospects retrieved successfully",
+            "description": "Prospect data retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RetrieveProspectResponse"
+                  "$ref": "#/components/schemas/GetProspectDataResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Prospect not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tools/search_prospects": {
+      "post": {
+        "summary": "Search Prospects",
+        "description": "Search prospects by metadata and optionally markdown file content",
+        "operationId": "searchProspects",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchProspectsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Search completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchProspectsResponse"
                 }
               }
             }
@@ -271,35 +204,364 @@
   },
   "components": {
     "schemas": {
-      "FindNewProspectRequest": {
+      "ResearchProspectRequest": {
+        "type": "object",
+        "required": ["prospect_identifier"],
+        "properties": {
+          "prospect_identifier": {
+            "type": "object",
+            "oneOf": [
+              {
+                "type": "object",
+                "required": ["domain"],
+                "properties": {
+                  "domain": {
+                    "type": "string",
+                    "format": "hostname",
+                    "description": "Company domain name"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": ["company_name"],
+                "properties": {
+                  "company_name": {
+                    "type": "string",
+                    "description": "Company name if domain unknown"
+                  }
+                }
+              }
+            ]
+          },
+          "research_depth": {
+            "type": "string",
+            "enum": ["basic", "standard", "comprehensive"],
+            "default": "standard",
+            "description": "Level of research detail to gather"
+          }
+        }
+      },
+      "ResearchProspectResponse": {
         "type": "object",
         "properties": {
-          "icp_name": {
+          "prospect_id": {
             "type": "string",
-            "minLength": 1,
-            "maxLength": 255,
-            "description": "Name of the Ideal Customer Profile to match against"
+            "format": "uuid",
+            "description": "Generated prospect UUID"
+          },
+          "company_name": {
+            "type": "string",
+            "description": "Company name found"
+          },
+          "domain": {
+            "type": "string",
+            "description": "Company domain"
+          },
+          "research_status": {
+            "type": "string",
+            "enum": ["researched"],
+            "description": "Research completion status"
+          },
+          "files_created": {
+            "type": "object",
+            "properties": {
+              "research_file": {
+                "type": "string",
+                "description": "Path to generated research markdown file"
+              },
+              "file_size_kb": {
+                "type": "number",
+                "description": "File size in kilobytes"
+              }
+            }
+          },
+          "research_summary": {
+            "type": "object",
+            "properties": {
+              "sections_found": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": ["company_overview", "recent_developments", "technology_stack", "decision_makers", "pain_points"]
+                }
+              },
+              "sources_used": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "confidence_score": {
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 1.0
+              },
+              "research_time_ms": {
+                "type": "integer",
+                "description": "Research completion time in milliseconds"
+              }
+            }
+          }
+        }
+      },
+      "GenerateProfileRequest": {
+        "type": "object",
+        "required": ["prospect_id"],
+        "properties": {
+          "prospect_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of prospect to generate profile for"
+          },
+          "focus_areas": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["revenue_estimation", "hiring_signals", "tech_adoption", "funding_status", "decision_makers", "pain_points"]
+            },
+            "description": "Profile fields to emphasize"
+          }
+        }
+      },
+      "GenerateProfileResponse": {
+        "type": "object",
+        "properties": {
+          "prospect_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "files_processed": {
+            "type": "object",
+            "properties": {
+              "input_file": {
+                "type": "string",
+                "description": "Research markdown file path"
+              },
+              "output_file": {
+                "type": "string",
+                "description": "Generated profile markdown file path"
+              },
+              "file_size_kb": {
+                "type": "number"
+              }
+            }
+          },
+          "profile_summary": {
+            "type": "object",
+            "properties": {
+              "fields_populated": {
+                "type": "integer",
+                "description": "Number of profile fields populated"
+              },
+              "confidence_score": {
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 1.0
+              },
+              "key_findings": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "infostatus_fit_score": {
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 1.0
+              },
+              "generation_time_ms": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "CreateTalkingPointsRequest": {
+        "type": "object",
+        "required": ["prospect_id"],
+        "properties": {
+          "prospect_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of prospect to create talking points for"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["business_challenges", "technology_opportunities", "recent_news", "personal_connections", "solution_alignment"]
+            },
+            "default": ["business_challenges", "technology_opportunities", "solution_alignment"]
+          },
+          "max_points": {
+            "type": "integer",
+            "minimum": 3,
+            "maximum": 15,
+            "default": 8
+          }
+        }
+      },
+      "CreateTalkingPointsResponse": {
+        "type": "object",
+        "properties": {
+          "prospect_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "files_processed": {
+            "type": "object",
+            "properties": {
+              "input_file": {
+                "type": "string",
+                "description": "Profile markdown file path"
+              },
+              "output_file": {
+                "type": "string",
+                "description": "Generated talking points markdown file path"
+              },
+              "file_size_kb": {
+                "type": "number"
+              }
+            }
+          },
+          "talking_points_summary": {
+            "type": "object",
+            "properties": {
+              "total_generated": {
+                "type": "integer"
+              },
+              "categories_covered": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "conversation_openers": {
+                "type": "integer",
+                "description": "Number of high-priority conversation starters"
+              },
+              "avg_relevance_score": {
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 1.0
+              },
+              "generation_time_ms": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "GetProspectDataRequest": {
+        "type": "object",
+        "required": ["prospect_id"],
+        "properties": {
+          "prospect_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "include_content": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include markdown file contents in response"
+          },
+          "file_types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["research", "profile", "talking_points"]
+            },
+            "default": ["research", "profile", "talking_points"]
+          }
+        }
+      },
+      "GetProspectDataResponse": {
+        "type": "object",
+        "properties": {
+          "prospect_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "company_name": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "research_status": {
+            "type": "string",
+            "enum": ["pending", "researched", "failed"]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "files": {
+            "type": "object",
+            "properties": {
+              "research": {
+                "$ref": "#/components/schemas/FileInfo"
+              },
+              "profile": {
+                "$ref": "#/components/schemas/FileInfo"
+              },
+              "talking_points": {
+                "$ref": "#/components/schemas/FileInfo"
+              }
+            }
+          }
+        }
+      },
+      "SearchProspectsRequest": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "company_name": {
+                "type": "string",
+                "description": "Company name (partial matching)"
+              },
+              "domain": {
+                "type": "string",
+                "description": "Company domain"
+              },
+              "research_status": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": ["pending", "researched", "failed"]
+                }
+              },
+              "content_search": {
+                "type": "string",
+                "description": "Search within markdown file content"
+              },
+              "created_after": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "include_files": {
+            "type": "boolean",
+            "default": false,
+            "description": "Include file paths and metadata in results"
           },
           "limit": {
             "type": "integer",
             "minimum": 1,
             "maximum": 100,
-            "default": 10,
-            "description": "Maximum number of prospects to return"
-          },
-          "exclude_domains": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "hostname"
-            },
-            "maxItems": 50,
-            "description": "Company domains to exclude from results"
+            "default": 20
           }
-        },
-        "required": ["icp_name"]
+        }
       },
-      "FindNewProspectResponse": {
+      "SearchProspectsResponse": {
         "type": "object",
         "properties": {
           "prospects": {
@@ -311,608 +573,48 @@
           "total_found": {
             "type": "integer"
           },
-          "icp_matched": {
-            "type": "string"
-          }
-        }
-      },
-      "ResearchProspectRequest": {
-        "type": "object",
-        "properties": {
-          "prospect_identifier": {
-            "$ref": "#/components/schemas/ProspectIdentifier"
-          },
-          "research_depth": {
-            "type": "string",
-            "enum": ["basic", "standard", "comprehensive"],
-            "default": "standard"
-          },
-          "focus_areas": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "company_background", "decision_makers", "recent_news",
-                "pain_points", "competitive_analysis", "technology_stack",
-                "funding_history", "hiring_signals", "public_pr_activity", "tender_compliance"
-              ]
-            },
-            "uniqueItems": true,
-            "maxItems": 10
-          }
-        },
-        "required": ["prospect_identifier"]
-      },
-      "ResearchProspectResponse": {
-        "type": "object",
-        "properties": {
-          "prospect_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "workflow_status": {
-            "type": "string",
-            "enum": ["research_complete"]
-          },
-          "company_profile": {
-            "$ref": "#/components/schemas/CompanyProfile"
-          },
-          "research_notes_created": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ResearchNoteSummary"
-            }
-          },
-          "decision_makers_found": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ContactPerson"
-            }
-          },
-          "research_metadata": {
-            "$ref": "#/components/schemas/ResearchMetadata"
-          }
-        }
-      },
-      "GetProspectResearchRequest": {
-        "type": "object",
-        "properties": {
-          "prospect_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "note_types": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "company_background", "recent_news", "pain_points",
-                "competitive_analysis", "decision_makers", "technology_stack"
-              ]
-            }
-          },
-          "include_metadata": {
-            "type": "boolean",
-            "default": true
-          }
-        },
-        "required": ["prospect_id"]
-      },
-      "GetProspectResearchResponse": {
-        "type": "object",
-        "properties": {
-          "prospect_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "company_name": {
-            "type": "string"
-          },
-          "workflow_status": {
-            "type": "string"
-          },
-          "research_notes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ResearchNote"
-            }
-          },
-          "contact_persons": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ContactPerson"
-            }
-          }
-        }
-      },
-      "GenerateProfileRequest": {
-        "type": "object",
-        "properties": {
-          "prospect_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "analysis_focus": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "revenue_range", "hiring_signals", "tech_adoption",
-                "public_pr_signals", "funding_growth", "tender_compliance",
-                "decision_makers", "engagement_potential", "infostatus_pain_points"
-              ]
-            }
-          },
-          "confidence_threshold": {
-            "type": "number",
-            "minimum": 0.0,
-            "maximum": 1.0,
-            "default": 0.7
-          },
-          "infostatus_context": {
-            "$ref": "#/components/schemas/InfostatusContext"
-          }
-        },
-        "required": ["prospect_id"]
-      },
-      "GenerateProfileResponse": {
-        "type": "object",
-        "properties": {
-          "prospect_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "workflow_status": {
-            "type": "string",
-            "enum": ["profile_complete"]
-          },
-          "mini_profile": {
-            "$ref": "#/components/schemas/MiniProfile"
-          },
-          "profile_metadata": {
-            "$ref": "#/components/schemas/ProfileMetadata"
-          }
-        }
-      },
-      "GetProspectProfileRequest": {
-        "type": "object",
-        "properties": {
-          "prospect_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "include_source_data": {
-            "type": "boolean",
-            "default": false
-          }
-        },
-        "required": ["prospect_id"]
-      },
-      "GetProspectProfileResponse": {
-        "type": "object",
-        "properties": {
-          "prospect_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "workflow_status": {
-            "type": "string"
-          },
-          "mini_profile": {
-            "$ref": "#/components/schemas/MiniProfile"
-          },
-          "profile_metadata": {
-            "$ref": "#/components/schemas/ProfileMetadata"
-          }
-        }
-      },
-      "CreateTalkingPointsRequest": {
-        "type": "object",
-        "properties": {
-          "prospect_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "talking_point_categories": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "personal_professional", "industry_trends", "technology_opportunities",
-                "company_developments", "solution_alignment"
-              ]
-            },
-            "default": ["industry_trends", "technology_opportunities", "solution_alignment"]
-          },
-          "conversation_context": {
-            "$ref": "#/components/schemas/ConversationContext"
-          },
-          "max_talking_points": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 20,
-            "default": 8
-          }
-        },
-        "required": ["prospect_id"]
-      },
-      "CreateTalkingPointsResponse": {
-        "type": "object",
-        "properties": {
-          "prospect_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "workflow_status": {
-            "type": "string",
-            "enum": ["workflow_complete"]
-          },
-          "talking_points": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TalkingPoint"
-            }
-          },
-          "generation_metadata": {
-            "$ref": "#/components/schemas/TalkingPointMetadata"
-          }
-        }
-      },
-      "SaveProspectRequest": {
-        "type": "object",
-        "properties": {
-          "prospect_data": {
-            "$ref": "#/components/schemas/ProspectData"
-          },
-          "contact_persons": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ContactPersonInput"
-            }
-          },
-          "research_notes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ResearchNoteInput"
-            }
-          }
-        },
-        "required": ["prospect_data"]
-      },
-      "SaveProspectResponse": {
-        "type": "object",
-        "properties": {
-          "prospect_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "operation": {
-            "type": "string",
-            "enum": ["created", "updated"]
-          },
-          "summary": {
-            "$ref": "#/components/schemas/SaveSummary"
-          }
-        }
-      },
-      "RetrieveProspectRequest": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "$ref": "#/components/schemas/ProspectQuery"
-          },
-          "include": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": ["contact_persons", "research_notes", "prospect_profile", "talking_points", "icp_matches", "all"]
-            },
-            "default": ["contact_persons", "prospect_profile"]
-          },
-          "sort": {
-            "$ref": "#/components/schemas/SortOptions"
-          },
-          "pagination": {
-            "$ref": "#/components/schemas/PaginationOptions"
-          }
-        }
-      },
-      "RetrieveProspectResponse": {
-        "type": "object",
-        "properties": {
-          "prospects": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ProspectWithWorkflow"
-            }
-          },
-          "pagination": {
-            "$ref": "#/components/schemas/PaginationResult"
-          },
-          "query_metadata": {
-            "$ref": "#/components/schemas/QueryMetadata"
-          }
-        }
-      },
-      "ProspectIdentifier": {
-        "type": "object",
-        "oneOf": [
-          {
+          "search_metadata": {
+            "type": "object",
             "properties": {
-              "domain": {
-                "type": "string",
-                "format": "hostname"
+              "query_time_ms": {
+                "type": "integer"
+              },
+              "content_search_performed": {
+                "type": "boolean"
+              },
+              "total_prospects_in_db": {
+                "type": "integer"
               }
-            },
-            "required": ["domain"]
-          },
-          {
-            "properties": {
-              "company_name": {
-                "type": "string"
-              }
-            },
-            "required": ["company_name"]
-          },
-          {
-            "properties": {
-              "prospect_id": {
-                "type": "string",
-                "format": "uuid"
-              }
-            },
-            "required": ["prospect_id"]
+            }
           }
-        ]
+        }
+      },
+      "FileInfo": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "File path"
+          },
+          "exists": {
+            "type": "boolean"
+          },
+          "size_kb": {
+            "type": "number"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "content": {
+            "type": "string",
+            "description": "Markdown file content (if include_content=true)"
+          }
+        }
       },
       "ProspectSummary": {
         "type": "object",
         "properties": {
-          "company_name": {
-            "type": "string"
-          },
-          "domain": {
-            "type": "string"
-          },
-          "industry": {
-            "type": "string"
-          },
-          "employee_count": {
-            "type": "integer"
-          },
-          "location": {
-            "type": "string"
-          },
-          "match_score": {
-            "type": "number"
-          }
-        }
-      },
-      "CompanyProfile": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "domain": {
-            "type": "string"
-          },
-          "industry": {
-            "type": "string"
-          },
-          "employee_count": {
-            "type": "integer"
-          },
-          "founded_year": {
-            "type": "integer"
-          },
-          "headquarters": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          }
-        }
-      },
-      "MiniProfile": {
-        "type": "object",
-        "properties": {
-          "company_name": {
-            "type": "string"
-          },
-          "employee_count": {
-            "type": "integer"
-          },
-          "revenue_range": {
-            "type": "string"
-          },
-          "industry": {
-            "type": "string"
-          },
-          "location": {
-            "type": "string"
-          },
-          "hiring_signals": {
-            "type": "string"
-          },
-          "tech_adoption": {
-            "type": "string"
-          },
-          "public_pr_signals": {
-            "type": "string"
-          },
-          "funding_growth": {
-            "type": "string"
-          },
-          "tender_compliance": {
-            "type": "string"
-          },
-          "decision_makers": {
-            "type": "string"
-          },
-          "engagement_potential": {
-            "type": "string"
-          },
-          "general_notes": {
-            "type": "string"
-          },
-          "infostatus_pain_points": {
-            "type": "string"
-          }
-        }
-      },
-      "TalkingPoint": {
-        "type": "object",
-        "properties": {
-          "talking_point_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "category": {
-            "type": "string",
-            "enum": [
-              "personal_professional", "industry_trends", "technology_opportunities",
-              "company_developments", "solution_alignment"
-            ]
-          },
-          "title": {
-            "type": "string"
-          },
-          "content": {
-            "type": "string"
-          },
-          "relevance_score": {
-            "type": "number",
-            "minimum": 0.0,
-            "maximum": 1.0
-          },
-          "conversation_opener": {
-            "type": "boolean"
-          }
-        }
-      },
-      "ContactPerson": {
-        "type": "object",
-        "properties": {
-          "full_name": {
-            "type": "string"
-          },
-          "job_title": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string",
-            "format": "email"
-          },
-          "linkedin_url": {
-            "type": "string",
-            "format": "uri"
-          },
-          "decision_maker_level": {
-            "type": "string",
-            "enum": ["primary", "secondary", "influencer"]
-          }
-        }
-      },
-      "ResearchNote": {
-        "type": "object",
-        "properties": {
-          "note_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "note_type": {
-            "type": "string",
-            "enum": [
-              "company_background", "recent_news", "pain_points",
-              "competitive_analysis", "decision_makers", "technology_stack"
-            ]
-          },
-          "title": {
-            "type": "string"
-          },
-          "content": {
-            "type": "string"
-          },
-          "source_url": {
-            "type": "string",
-            "format": "uri"
-          },
-          "source_type": {
-            "type": "string",
-            "enum": ["api", "firecrawl", "playwright", "manual"]
-          },
-          "confidence_score": {
-            "type": "number",
-            "minimum": 0.0,
-            "maximum": 1.0
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "ResearchNoteSummary": {
-        "type": "object",
-        "properties": {
-          "note_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "note_type": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          },
-          "content_preview": {
-            "type": "string"
-          }
-        }
-      },
-      "InfostatusContext": {
-        "type": "object",
-        "properties": {
-          "services": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "default": ["document_automation", "data_processing", "workflow_optimization"]
-          },
-          "target_pain_points": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "default": ["manual_processes", "document_handling", "compliance_automation"]
-          }
-        }
-      },
-      "ConversationContext": {
-        "type": "object",
-        "properties": {
-          "meeting_type": {
-            "type": "string",
-            "enum": ["cold_outreach", "warm_introduction", "follow_up", "conference_meeting"],
-            "default": "cold_outreach"
-          },
-          "salesperson_background": {
-            "type": "string"
-          },
-          "infostatus_solutions": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "default": ["document_automation", "data_processing", "compliance_tools"]
-          }
-        }
-      },
-      "ProspectWithWorkflow": {
-        "type": "object",
-        "properties": {
           "prospect_id": {
             "type": "string",
             "format": "uuid"
@@ -923,196 +625,52 @@
           "domain": {
             "type": "string"
           },
-          "industry": {
-            "type": "string"
-          },
-          "employee_count": {
-            "type": "integer"
-          },
-          "location": {
-            "type": "string"
-          },
-          "qualification_status": {
+          "research_status": {
             "type": "string",
-            "enum": ["qualified", "unqualified", "pending", "contacted"]
-          },
-          "workflow_status": {
-            "type": "string",
-            "enum": [
-              "initial", "researching", "research_complete",
-              "analyzing", "profile_complete", "generating_points", "workflow_complete"
-            ]
+            "enum": ["pending", "researched", "failed"]
           },
           "created_at": {
             "type": "string",
             "format": "date-time"
           },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "profile_completed_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "talking_points_completed_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "contact_persons": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ContactPerson"
-            }
-          },
-          "prospect_profile": {
-            "$ref": "#/components/schemas/MiniProfile"
-          },
-          "talking_points": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TalkingPoint"
-            }
-          },
-          "research_notes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ResearchNote"
+          "files": {
+            "type": "object",
+            "properties": {
+              "research_exists": {
+                "type": "boolean"
+              },
+              "profile_exists": {
+                "type": "boolean"
+              },
+              "talking_points_exists": {
+                "type": "boolean"
+              },
+              "research_path": {
+                "type": "string"
+              },
+              "profile_path": {
+                "type": "string"
+              },
+              "talking_points_path": {
+                "type": "string"
+              }
             }
           }
         }
       },
-      "ProspectQuery": {
-        "type": "object",
-        "properties": {
-          "prospect_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "domain": {
-            "type": "string",
-            "format": "hostname"
-          },
-          "company_name": {
-            "type": "string"
-          },
-          "qualification_status": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": ["qualified", "unqualified", "pending", "contacted"]
-            }
-          },
-          "workflow_status": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "initial", "researching", "research_complete",
-                "analyzing", "profile_complete", "generating_points", "workflow_complete"
-              ]
-            }
-          },
-          "industries": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "search_text": {
-            "type": "string"
-          }
-        }
-      },
-      "ResearchMetadata": {
-        "type": "object",
-        "properties": {
-          "research_depth": {
-            "type": "string"
-          },
-          "sources_used": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "total_notes_created": {
-            "type": "integer"
-          },
-          "confidence_score": {
-            "type": "number"
-          },
-          "research_time_ms": {
-            "type": "integer"
-          },
-          "next_step": {
-            "type": "string"
-          }
-        }
-      },
-      "ProfileMetadata": {
-        "type": "object",
-        "properties": {
-          "confidence_score": {
-            "type": "number"
-          },
-          "fields_populated": {
-            "type": "integer"
-          },
-          "fields_missing": {
-            "type": "integer"
-          },
-          "source_note_count": {
-            "type": "integer"
-          },
-          "analysis_time_ms": {
-            "type": "integer"
-          },
-          "generated_by": {
-            "type": "string"
-          },
-          "next_step": {
-            "type": "string"
-          }
-        }
-      },
-      "TalkingPointMetadata": {
-        "type": "object",
-        "properties": {
-          "total_generated": {
-            "type": "integer"
-          },
-          "avg_relevance_score": {
-            "type": "number"
-          },
-          "conversation_openers": {
-            "type": "integer"
-          },
-          "categories_covered": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "generation_time_ms": {
-            "type": "integer"
-          },
-          "generated_by": {
-            "type": "string"
-          }
-        }
-      },
-      "MCPError": {
+      "ErrorResponse": {
         "type": "object",
         "properties": {
           "error": {
             "type": "object",
             "properties": {
               "code": {
-                "type": "integer"
+                "type": "integer",
+                "description": "Error code (-32000 to -32399)"
               },
               "message": {
-                "type": "string"
+                "type": "string",
+                "description": "Error message"
               },
               "data": {
                 "type": "object",
@@ -1121,10 +679,18 @@
                     "type": "string"
                   },
                   "error_type": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": ["FileNotFound", "DatabaseError", "ValidationError", "ResearchTimeout", "InsufficientData"]
                   },
                   "details": {
                     "type": "string"
+                  },
+                  "file_path": {
+                    "type": "string"
+                  },
+                  "error_id": {
+                    "type": "string",
+                    "format": "uuid"
                   }
                 }
               }
