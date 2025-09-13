@@ -71,7 +71,7 @@
 - [x] T020 [P] Research CLI commands in src/prospect_research/cli.py
 
 ### MCP Server Library
-- [ ] T021 MCP tool implementations (4 tools) in src/mcp_server/tools.py
+- [x] T021 MCP tool implementations (4 tools) in src/mcp_server/tools.py
 - [ ] T022 MCP server with tool registration in src/mcp_server/server.py
 - [ ] T023 [P] Server CLI commands in src/mcp_server/cli.py
 
