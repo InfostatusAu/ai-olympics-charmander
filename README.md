@@ -4,7 +4,13 @@
 **Status**: Ready for Implementation with Gemini CLI  
 **Current Phase**: Deliverable 2 - MCP Server Development  
 
-## 🎯 Project Overview
+## � Challenge Statement
+
+![AI Olympics Challenge](Challenge_W1.jpeg)
+
+This project is our solution to the **Infostatus AI Olympics 2025 Challenge** - Week 1.
+
+## �🎯 Project Overview
 
 This project builds an AI-powered lead generation system using a **Spec-Driven Development (SDD)** approach with **4 sequential deliverables**:
 
