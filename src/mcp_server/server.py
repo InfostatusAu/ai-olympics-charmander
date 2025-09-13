@@ -190,6 +190,15 @@ async def main():
     """Main entry point for the MCP server."""
     logger.info("Starting prospect research MCP server...")
     
+    # Initialize database on startup
+    try:
+        from src.database.operations import init_db
+        await init_db()
+        logger.info("Database initialized successfully")
+    except Exception as e:
+        logger.error(f"Database initialization failed: {e}")
+        raise
+    
     async with stdio_server() as (read_stream, write_stream):
         await server.run(
             read_stream,

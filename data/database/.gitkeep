@@ -1,0 +1,2 @@
+# This file ensures the data/database directory is preserved in git
+# The database file (prospects.db) is auto-created and ignored

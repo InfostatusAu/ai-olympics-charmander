@@ -1,9 +1,14 @@
 import uuid
+import os
 from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.future import select
 from sqlalchemy.orm import sessionmaker
 from src.database.models import Base, Prospect, ProspectStatus
+
+# Ensure data directories exist
+os.makedirs("data/database", exist_ok=True)
+os.makedirs("data/prospects", exist_ok=True)
 
 DATABASE_URL = "sqlite+aiosqlite:///data/database/prospects.db"
 

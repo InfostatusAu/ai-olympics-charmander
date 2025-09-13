@@ -27,20 +27,34 @@ This project builds an AI-powered lead generation system using a **Spec-Driven D
 - [Gemini CLI installed](https://github.com/google-gemini/gemini-cli) 
 - Python 3.11+
 - Git
+- [UV package manager](https://docs.astral.sh/uv/)
 
 ```bash
 # 1. Clone and setup
 git clone [this-repo]
 cd ai-olympics-charmander
 
-# 2. Understand current state
+# 2. Install dependencies
+uv sync
+
+# 3. First-time setup (creates directories, database, .env template)
+python setup.py
+
+# 4. Configure API keys
+# Edit .env file and add your Firecrawl API key (required)
+# Apollo API key is optional but recommended
+
+# 5. Verify setup
+uv run pytest tests/ --tb=short
+
+# 6. Understand current state
 cat PROJECT_OVERVIEW.md              # Read project status
 cat GEMINI.md                        # Read implementation instructions
 
-# 3. Start Gemini CLI with project context
+# 7. Start Gemini CLI with project context
 gemini --include-directories .
 
-# 4. Begin implementation (Gemini CLI will guide you)
+# 8. Begin implementation (Gemini CLI will guide you)
 # Gemini CLI will read GEMINI.md automatically and follow the instructions
 ```
 
@@ -174,6 +188,40 @@ cat implementation_log.md
 
 ### "Implementation differs from specs"
 → Always validate against `specs/001-mcp-server-prospect/spec.md` acceptance criteria
+
+### First-time Setup Issues
+
+#### "Database not found" or "No such file or directory"
+```bash
+# Run the setup script
+python setup.py
+```
+
+#### "Import errors" or "Module not found"
+```bash
+# Ensure dependencies are installed
+uv sync
+```
+
+#### "API tests failing"
+```bash
+# Check if .env file exists and has valid API keys
+cat .env
+# Add your Firecrawl API key to .env file
+```
+
+#### "Permission denied" errors
+```bash
+# Ensure setup script is executable
+chmod +x setup.py
+```
+
+#### "Tests failing on fresh machine"
+```bash
+# Complete setup and verification process
+python setup.py
+uv run pytest tests/ --tb=short
+```
 
 ---
 
