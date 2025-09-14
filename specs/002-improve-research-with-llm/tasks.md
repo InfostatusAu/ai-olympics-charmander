@@ -36,11 +36,11 @@
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
-- [ ] T005 [P] Complete data source integration test in tests/integration/test_complete_data_sources.py
-- [ ] T006 [P] Enhanced research_prospect contract test in tests/contract/test_research_prospect_llm.py
-- [ ] T007 [P] Enhanced create_profile contract test in tests/contract/test_create_profile_llm.py
-- [ ] T008 [P] LLM middleware integration test in tests/integration/test_llm_middleware.py
-- [ ] T009 [P] Fallback mechanism test in tests/integration/test_llm_fallback.py
+- [x] T005 [P] Complete data source integration test in tests/integration/test_complete_data_sources.py
+- [x] T006 [P] Enhanced research_prospect contract test in tests/contract/test_research_prospect_llm.py
+- [x] T007 [P] Enhanced create_profile contract test in tests/contract/test_create_profile_llm.py
+- [x] T008 [P] LLM middleware integration test in tests/integration/test_llm_middleware.py
+- [x] T009 [P] Fallback mechanism test in tests/integration/test_llm_fallback.py
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
 ### Data Source Implementation
