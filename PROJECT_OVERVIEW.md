@@ -31,15 +31,28 @@ Develop an AI-powered lead generation system using a systematic development pipe
 - ✅ Phase 3 (Tasks): Complete task breakdown (35 tasks T001-T035)
 - ✅ **Phase 4 (Implementation)**: All 35 tasks completed with 100% user story validation
 
-### ⏳ Deliverable 3: Agentic Pipeline
-**Status**: PENDING (Future Feature)  
-**Location**: `specs/002-agentic-pipeline/` (to be created)  
-**Responsibility**: Gemini CLI Implementation (Future)  
-**Description**: Autonomous AI pipeline utilizing MCP server and external tools for end-to-end prospect research
+### 🔄 Deliverable 3: LLM Intelligence Middleware
+**Status**: 🔄 IN DEVELOPMENT  
+**Location**: `specs/002-improve-research-with-llm/`  
+**Responsibility**: Intelligence Middleware Implementation  
+**Description**: LLM-powered intelligence layer to replace manual data preparation with AI analysis  
+**Implementation**: Enhance existing research tools with AWS Bedrock Claude integration  
 
-### ⏳ Deliverable 4: Evaluation System
+**Progress Tracking**:
+- ✅ Phase 1 (Specify): Complete specification with intelligence middleware approach
+- ✅ Phase 2 (Plan): Complete architecture design for AI enhancement 
+- ⏳ Phase 3 (Tasks): Task breakdown creation (estimated ~18-22 tasks)
+- ⏳ **Phase 4 (Implementation)**: Intelligence middleware development
+
+### ⏳ Deliverable 4: Agentic Pipeline
 **Status**: PENDING (Future Feature)  
-**Location**: `specs/003-evaluation/` (to be created)  
+**Location**: `specs/003-agentic-pipeline/` (to be created)  
+**Responsibility**: Gemini CLI Implementation (Future)  
+**Description**: Autonomous AI pipeline utilizing enhanced MCP server and external tools for end-to-end prospect research
+
+### ⏳ Deliverable 5: Evaluation System
+**Status**: PENDING (Future Feature)  
+**Location**: `specs/004-evaluation/` (to be created)  
 **Responsibility**: Gemini CLI Implementation (Future)  
 **Description**: Comparative evaluation system measuring human work vs. agentic pipeline performance
 
@@ -66,18 +79,24 @@ ai-olympics-charmander/
 │   ├── ICP.md                            # Ideal customer profile definition
 │   ├── data_sources.md                   # Data source specifications
 │   └── requirements.md                   # Business requirements
-├── specs/001-mcp-server-prospect/        # 🔄 Deliverable 2: MCP Server (CURRENT)
+├── specs/001-mcp-server-prospect/        # ✅ Deliverable 2: MCP Server (COMPLETE)
 │   ├── spec.md                           # ✅ Feature specification (25 requirements)
 │   ├── plan.md                           # ✅ Technical implementation plan
 │   ├── tasks.md                          # ✅ Executable tasks (T001-T035)
 │   ├── workflow.md                       # ✅ 2-step process design
 │   ├── data-model.md                     # ✅ Markdown-first data architecture
 │   └── contracts/                        # ✅ MCP tool contracts & OpenAPI
-├── src/                                  # 🔄 Implementation (Gemini CLI creates this)
-│   ├── database/                         # Minimal SQLite operations
-│   ├── file_manager/                     # Markdown file operations
-│   ├── prospect_research/                # AI research logic
-│   └── mcp_server/                       # MCP protocol implementation
+├── specs/002-improve-research-with-llm/  # 🔄 Deliverable 3: Intelligence Middleware (CURRENT)
+│   ├── spec.md                           # ✅ LLM enhancement specification
+│   ├── plan.md                           # ✅ Intelligence middleware architecture
+│   ├── data-model.md                     # ✅ AI analysis approach
+│   └── tasks.md                          # ⏳ Task breakdown (to be created)
+├── src/                                  # 🔄 Implementation (Enhanced with LLM)
+│   ├── database/                         # Minimal SQLite operations (unchanged)
+│   ├── file_manager/                     # Markdown file operations (unchanged)
+│   ├── prospect_research/                # AI research logic (LLM enhanced)
+│   ├── mcp_server/                       # MCP protocol implementation (LLM config)
+│   └── llm_enhancer/                     # 🆕 Intelligence middleware module
 ├── tests/                                # Constitutional TDD validation
 │   ├── contract/                         # MCP tool contract tests
 │   ├── integration/                      # Complete workflow tests
@@ -90,24 +109,24 @@ ai-olympics-charmander/
 └── main.py                               # Entry point
 ```
 
-## 🔧 Current Feature: MCP Server Prospect Research ✨ **OPERATIONAL**
+## 🔧 Current Feature: LLM Intelligence Middleware ⏳ **IN DEVELOPMENT**
 
 ### Architecture Overview
-- **4-Library Structure**: database, file_manager, prospect_research, mcp_server ✅ **COMPLETE**
-- **Markdown-First Approach**: Rich content in human-readable files, minimal database metadata ✅ **COMPLETE**
-- **2-Step Workflow**: research_prospect → create_profile ✅ **OPERATIONAL**
-- **Real Data Integration**: 5 data sources (LinkedIn, Apollo, Job Boards, News, Gov Registries) ✅ **COMPLETE**
+- **5-Library Structure**: database, file_manager, prospect_research, mcp_server, llm_enhancer ⏳ **IN PROGRESS**
+- **Intelligence Middleware**: LLM sits between raw data collection and template generation ⏳ **DESIGNING**
+- **Same Templates**: No template changes, dramatically better content quality ⏳ **PLANNED**
+- **Manual Logic Replacement**: Replace hardcoded rules with AI analysis ⏳ **PLANNED**
 
-### MCP Tools Exposed ✅ **ALL OPERATIONAL**
-1. **research_prospect**: Real multi-source company research with AI analysis ✅ **ENHANCED**
-2. **create_profile**: Intelligent profile generation with conversation strategies ✅ **ENHANCED**
-3. **get_prospect_data**: Comprehensive prospect context retrieval ✅ **ENHANCED**
-4. **search_prospects**: Advanced content search with detailed match reporting ✅ **ENHANCED**
+### Enhanced MCP Tools ⏳ **PLANNED ENHANCEMENTS**
+1. **research_prospect**: Replace manual data prep with LLM business intelligence analysis ⏳
+2. **create_profile**: Replace hardcoded rules with AI conversation strategy generation ⏳
+3. **get_prospect_data**: Unchanged - returns enhanced content from above tools ✅
+4. **search_prospects**: Unchanged - structured search functionality ✅
 
 ### Current Implementation Status
-**Phase**: COMPLETE - All Tasks (T001-T035) Successfully Executed ✅  
-**Final Status**: 100% Implementation Complete with 100% User Story Validation ✨  
-**Achievement**: ✨ **Complete MCP Server with Full Test Suite & Validation Framework**
+**Phase**: SPECIFICATION COMPLETE - Intelligence Middleware Approach Defined ✅  
+**Next Phase**: Task Creation and Implementation Planning ⏳  
+**Goal**: Replace manual string manipulation with intelligent AI analysis
 
 ## 🛠️ Technology Stack (Current Feature)
 
@@ -117,6 +136,7 @@ ai-olympics-charmander/
 - **File Storage**: Markdown files in `/data/prospects/`
 - **Protocol**: Model Context Protocol (JSON-RPC 2.0)
 - **Testing**: pytest with constitutional TDD
+- **AI/LLM**: AWS Bedrock with Claude Sonnet (intelligence middleware)
 
 ### Dependencies
 - **MCP**: Model Context Protocol Python SDK
@@ -124,14 +144,22 @@ ai-olympics-charmander/
 - **Async**: asyncio for MCP server
 - **Database**: SQLAlchemy for minimal SQLite operations
 - **External APIs**: Firecrawl for web scraping, Playwright for fallback
+- **AI Service**: boto3 for AWS Bedrock integration
+- **LLM**: apac.anthropic.claude-sonnet-4-20250514-v1:0 (default model)
 
 ## 📊 Progress Metrics
 
-### Deliverable 2 Progress (MCP Server)
+### Deliverable 2 Progress (MCP Server) ✅ **COMPLETE**
 - **Specification**: 100% complete (25 functional requirements defined)
 - **Planning**: 100% complete (technical architecture finalized)
 - **Task Definition**: 100% complete (35 tasks sequenced with dependencies)
 - **Implementation**: 100% complete (35/35 tasks) ✨ **DELIVERABLE 2 COMPLETE**
+
+### Deliverable 3 Progress (LLM Intelligence Middleware) ⏳ **IN PROGRESS**
+- **Specification**: 100% complete (Intelligence middleware approach defined)
+- **Planning**: 100% complete (Architecture design for manual logic replacement)
+- **Task Definition**: ⏳ In progress (estimated ~18-22 tasks)
+- **Implementation**: ⏳ Pending (awaiting task breakdown completion)
 
 ### Quality Gates
 - ✅ **Specification Gate**: All 25 functional requirements defined with acceptance criteria
@@ -152,9 +180,22 @@ ai-olympics-charmander/
 - Performance requirements met (<200ms, <30s)
 - Constitutional TDD principles maintained throughout
 
-### Ready for Deliverable 3: Agentic Pipeline
-1. **Create Specification**: `specs/002-agentic-pipeline/`
-2. **Define Architecture**: Integration with completed MCP server
+### Deliverable 3 Status: ⏳ IN PROGRESS
+**LLM Intelligence Middleware**: Specification and planning complete
+- Problem analysis complete: Manual data preparation identified for replacement
+- Architecture design complete: Intelligence middleware pattern defined
+- Fallback strategy defined: Graceful degradation to original manual processing
+- Ready for task breakdown and implementation
+
+### Ready for Task Creation and Implementation
+1. **Create Task Breakdown**: `specs/002-improve-research-with-llm/tasks.md`
+2. **Define Implementation Order**: Manual logic replacement strategy
+3. **Begin Development**: Intelligence middleware implementation
+4. **Validate Enhancement**: AI vs manual processing comparison
+
+### Ready for Future Deliverable 4: Agentic Pipeline
+1. **Create Specification**: `specs/003-agentic-pipeline/`
+2. **Define Architecture**: Integration with enhanced MCP server
 3. **Plan Implementation**: Autonomous AI pipeline design
 4. **Execute Development**: Using established development workflow
 
