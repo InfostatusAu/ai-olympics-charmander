@@ -1,0 +1,198 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "LLM Enhanced Prospect Research",
+    "description": "Enhanced MCP tools with AWS Bedrock Claude intelligence",
+    "version": "0.3.0"
+  },
+  "paths": {
+    "/mcp/tools/research_prospect": {
+      "post": {
+        "summary": "Research prospect with LLM enhancement",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "company": {
+                    "type": "string",
+                    "example": "TechCorp Inc"
+                  }
+                },
+                "required": ["company"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Research completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "enum": ["success"] },
+                    "prospect_id": { "type": "string" },
+                    "report_filename": { "type": "string" },
+                    "llm_enhanced": { "type": "boolean" },
+                    "data_sources_used": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "response_time_ms": { "type": "integer" },
+                    "fallback_used": { "type": "boolean" }
+                  },
+                  "required": ["status", "prospect_id", "report_filename", "llm_enhanced", "response_time_ms", "fallback_used"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/tools/create_profile": {
+      "post": {
+        "summary": "Create prospect profile with LLM enhancement",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prospect_id": {
+                    "type": "string",
+                    "example": "prospect_20250914025742"
+                  }
+                },
+                "required": ["prospect_id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "enum": ["success"] },
+                    "prospect_id": { "type": "string" },
+                    "profile_filename": { "type": "string" },
+                    "company_name": { "type": "string" },
+                    "llm_enhanced": { "type": "boolean" },
+                    "response_time_ms": { "type": "integer" },
+                    "fallback_used": { "type": "boolean" }
+                  },
+                  "required": ["status", "prospect_id", "profile_filename", "company_name", "llm_enhanced", "response_time_ms", "fallback_used"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/tools/get_prospect_data": {
+      "post": {
+        "summary": "Get prospect data (unchanged)",
+        "description": "No LLM enhancement - returns raw data for client AI processing",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prospect_id": { "type": "string" }
+                },
+                "required": ["prospect_id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Data retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "enum": ["success"] },
+                    "prospect_id": { "type": "string" },
+                    "research_content": { "type": "string" },
+                    "profile_content": { "type": "string" },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "company_name": { "type": "string" },
+                        "research_enhanced": { "type": "boolean" },
+                        "profile_enhanced": { "type": "boolean" }
+                      }
+                    }
+                  },
+                  "required": ["status", "prospect_id", "research_content", "metadata"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/tools/search_prospects": {
+      "post": {
+        "summary": "Search prospects (unchanged)",
+        "description": "No LLM enhancement - returns structured search results",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "query": { "type": "string" },
+                  "limit": { "type": "integer", "default": 10, "maximum": 100 }
+                },
+                "required": ["query"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Search completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "enum": ["success"] },
+                    "query": { "type": "string" },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "prospect_id": { "type": "string" },
+                          "company_name": { "type": "string" },
+                          "match_score": { "type": "number" }
+                        }
+                      }
+                    },
+                    "total_results": { "type": "integer" }
+                  },
+                  "required": ["status", "query", "results", "total_results"]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
