@@ -1,26 +1,27 @@
-# Prospect Research Report: TestCorp Inc
+# Prospect Research Report: Performance Test Co
 
-**Company Name**: TestCorp Inc
-**Domain**: testcorpinc.com
+**Company Name**: Performance Test Co
+**Domain**: performancetestco.com
 **Date of Research**: 2025-09-14
 
 ## Company Background
-Error accessing company website: Unauthorized: Failed to scrape. Unauthorized: Invalid token - No additional error details provided.
+Mock background information for Performance Test Co. This is a technology company focused on innovative solutions.
 
 ## Recent News
 - No recent news found
 
 ## Technology Stack
-Technology stack not identified
+Python, JavaScript, AWS, React
 
 ## Key Decision Makers
-- Decision makers not identified
+- John Smith (CEO)
+- Jane Doe (CTO)
 
 ## Identified Pain Points
 - Digital transformation initiatives - actively hiring for AI/Cloud roles
 
 ## LinkedIn Information
-LinkedIn research error: FirecrawlClient.search() got an unexpected keyword argument 'search_engine'
+LinkedIn research error: cannot access local variable 'linkedin_results' where it is not associated with a value
 
 ## Apollo.io Information
 Apollo.io integration pending - requires API key and contact enrichment setup
