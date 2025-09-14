@@ -2,96 +2,215 @@ import asyncio
 import json
 import os
 from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, Union
 
 from src.file_manager.storage import read_markdown_file, save_markdown_report, get_prospect_report_path
 from src.file_manager.templates import get_template
 from src.logging_config import get_logger, OperationContext
+from src.llm_enhancer.middleware import LLMMiddleware
 
 # Get structured logger
 logger = get_logger(__name__)
 
-async def create_profile(prospect_id: str, research_report_filename: str) -> Dict[str, Any]:
+async def create_profile(prospect_id: str, research_data_or_filename: Union[str, Dict[str, Any]]) -> Dict[str, Any]:
     """
     Transforms a research markdown report into a structured Mini Profile table
     with intelligent conversation strategy based on comprehensive research data.
+    
+    Args:
+        prospect_id: The prospect identifier
+        research_data_or_filename: Either a filename string pointing to a research report,
+                                  or a dictionary containing research data directly
+    
+    Returns:
+        Dict containing the profile data and conversation strategy
     """
-    if not prospect_id or not research_report_filename:
-        raise ValueError("Prospect ID and research report filename cannot be empty.")
+    if not prospect_id:
+        raise ValueError("Prospect ID cannot be empty.")
+    
+    if not research_data_or_filename:
+        raise ValueError("Research data or filename cannot be empty.")
 
     with OperationContext(operation="profile_creation", prospect_id=prospect_id):
         logger.info("Starting profile creation from research report",
                    prospect_id=prospect_id,
-                   research_filename=research_report_filename)
+                   research_filename=research_data_or_filename)
 
-        # Read the research markdown report
-        research_report_path = await get_prospect_report_path(prospect_id, research_report_filename)
-        research_content = read_markdown_file(research_report_path)  # read_markdown_file is not async
+        # Handle both dictionary input and filename input
+        if isinstance(research_data_or_filename, dict):
+            # Use research data directly from dictionary
+            research_data = research_data_or_filename
+            logger.info("Using research data provided directly as dictionary")
+        else:
+            # Read the research markdown report from file
+            research_report_path = await get_prospect_report_path(prospect_id, research_data_or_filename)
+            research_content = read_markdown_file(research_report_path)
+            
+            logger.info("Research report loaded successfully",
+                       report_path=research_report_path,
+                       content_length=len(research_content))
+
+            # Parse the research content to extract key data
+            research_data = await _extract_research_data_from_markdown(research_content, prospect_id)
+
+        # LLM Enhancement Section for Profile Strategy
+        logger.info("Starting LLM enhancement for profile strategy")
+        enhancement_result = None
+        enhanced_strategy = {}
         
-        logger.info("Research report loaded successfully",
-                   report_path=research_report_path,
-                   content_length=len(research_content))
+        try:
+            from ..llm_enhancer.middleware import LLMMiddleware
+            middleware = LLMMiddleware()
+            enhancement_result = await middleware.enhance_profile_strategy(research_data)
+            
+            if enhancement_result and enhancement_result.get('enhanced_strategy'):
+                enhanced_strategy = enhancement_result['enhanced_strategy']
+                logger.info("Profile strategy successfully enhanced with LLM analysis")
+            else:
+                logger.warning("LLM enhancement failed or unavailable, using manual strategy generation")
+                enhanced_strategy = _generate_manual_profile_data(research_data)
+                
+        except Exception as e:
+            logger.error("LLM enhancement failed", exception=e)
+            logger.warning("LLM enhancement failed or unavailable, using manual strategy generation")
+            enhanced_strategy = _generate_manual_profile_data(research_data)
 
-        # Parse the research content with enhanced parsing
-        parsed_data = parse_research_markdown(research_content)
-        
-        logger.info("Research content parsed",
-                   parsed_fields=list(parsed_data.keys()),
-                   pain_points_found=len(parsed_data.get("pain_points", [])),
-                   decision_makers_found=len(parsed_data.get("decision_makers", [])))
+        # Extract data from research with fallbacks
+        company_background = research_data.get('company_background', 'Limited background information available')
+        business_model = research_data.get('business_model', 'Business model not specified')
+        technology_stack = research_data.get('technology_stack', [])
+        pain_points = research_data.get('pain_points', ['General business improvement opportunities'])
+        recent_developments = research_data.get('recent_developments', ['No recent developments identified'])
+        decision_makers = research_data.get('decision_makers', ['Decision makers not identified'])
 
-        # Generate the Mini Profile template data - match template field names
+        # Build comprehensive profile data
         profile_data = {
-            "company_name": parsed_data.get("company_name", "N/A"),
-            "domain": parsed_data.get("domain", "N/A"),
-            "industry": _determine_industry(parsed_data),
-            "company_size": _estimate_company_size(parsed_data),
-            "headquarters": _extract_headquarters(parsed_data),
-            "key_contact": _get_primary_contact(parsed_data),  # Changed to match template
-            "contact_title": _get_primary_contact_title(parsed_data),  # Changed to match template
-            "recent_news_summary": _summarize_recent_news(parsed_data),
-            "tech_stack_summary": _summarize_tech_stack(parsed_data),
-            "pain_points_summary": _summarize_pain_points(parsed_data),
-            "conversation_starter_1": _generate_conversation_starter_1(parsed_data),
-            "conversation_starter_2": _generate_conversation_starter_2(parsed_data),
-            "value_proposition": _generate_value_proposition(parsed_data),
-            "relevance_score": _calculate_relevance_score(parsed_data),
-            "research_date": datetime.now().strftime("%Y-%m-%d"),
-            "prospect_id": prospect_id
+            # Basic company information
+            'prospect_id': prospect_id,
+            'company_background': company_background,
+            'business_model': business_model,
+            'technology_stack': technology_stack if isinstance(technology_stack, list) else [technology_stack],
+            'pain_points': pain_points if isinstance(pain_points, list) else [pain_points],
+            'recent_developments': recent_developments if isinstance(recent_developments, list) else [recent_developments],
+            'decision_makers': decision_makers if isinstance(decision_makers, list) else [decision_makers],
+            
+            # Enhancement tracking
+            'enhancement_status': enhanced_strategy.get('enhancement_status', 'manual_processing'),
+            'enhancement_method': enhanced_strategy.get('enhancement_method', 'manual_processing'),
+            'fallback_reason': enhanced_strategy.get('fallback_reason'),
+            
+            # AI-generated conversation strategies
+            'conversation_starter_1': enhanced_strategy.get('conversation_starter_1', 'How is your team currently handling data processing workflows?'),
+            'conversation_starter_2': enhanced_strategy.get('conversation_starter_2', 'What challenges are you facing with system scalability?'),
+            'conversation_starter_3': enhanced_strategy.get('conversation_starter_3', 'How are you planning for digital transformation initiatives?'),
+            
+            # Personalized value propositions
+            'value_proposition_technical': enhanced_strategy.get('value_proposition_technical', 'Technical solution to improve operational efficiency'),
+            'value_proposition_business': enhanced_strategy.get('value_proposition_business', 'Business value through process optimization'),
+            'value_proposition_strategic': enhanced_strategy.get('value_proposition_strategic', 'Strategic advantage through technology adoption'),
+            
+            # Timing recommendations
+            'optimal_outreach_timing': enhanced_strategy.get('optimal_outreach_timing', 'Best time: Mid-week mornings, considering business cycle'),
+            'business_cycle_awareness': enhanced_strategy.get('business_cycle_awareness', 'General business planning considerations'),
+            'seasonal_considerations': enhanced_strategy.get('seasonal_considerations', 'Standard business seasonality applies'),
+            
+            # Intelligent talking points
+            'key_talking_points': enhanced_strategy.get('key_talking_points', [
+                'Process automation opportunities',
+                'Technology modernization benefits',
+                'Competitive advantage through innovation'
+            ]),
+            'technical_talking_points': enhanced_strategy.get('technical_talking_points', [
+                'System integration capabilities',
+                'Scalability improvements',
+                'Security enhancements'
+            ]),
+            'business_talking_points': enhanced_strategy.get('business_talking_points', [
+                'ROI potential',
+                'Operational efficiency gains',
+                'Strategic growth enablement'
+            ]),
+            
+            # Objection handling strategies
+            'common_objections': enhanced_strategy.get('common_objections', {
+                'budget_constraints': 'Focus on ROI and phased implementation approaches',
+                'timing_concerns': 'Highlight competitive risks of delayed adoption',
+                'technical_complexity': 'Emphasize our proven implementation methodology'
+            }),
+            'objection_responses': enhanced_strategy.get('objection_responses', {
+                'budget': 'We offer flexible pricing and proven ROI within 6 months',
+                'timeline': 'Our accelerated implementation reduces time to value',
+                'resources': 'Minimal internal resources required with our managed approach'
+            }),
+            
+            # Decision maker personalization
+            'decision_maker_profiles': enhanced_strategy.get('decision_maker_profiles', {}),
+            'personalization_strategy': enhanced_strategy.get('personalization_strategy', 'Tailor messaging to technical and business stakeholders'),
+            'stakeholder_mapping': enhanced_strategy.get('stakeholder_mapping', 'Identify key influencers and decision criteria'),
+            
+            # Performance metrics
+            'confidence_score': enhanced_strategy.get('confidence_score', 0.7),
+            'data_quality_score': research_data.get('data_quality_score', 0.6),
+            'strategy_completeness': enhanced_strategy.get('strategy_completeness', 0.8),
+            
+            # Success indicators
+            'success': True,
+            'profile_file': f"{prospect_id}_profile.md",
+            'message': f"Enhanced prospect profile generated for {prospect_id}",
+            
+            # Enhancement metadata
+            'enhancement_metadata': {
+                'llm_model_used': enhanced_strategy.get('llm_model_used'),
+                'enhancement_timestamp': datetime.now().isoformat(),
+                'enhancement_method': enhanced_strategy.get('enhancement_method', 'manual_processing')
+            }
         }
         
-        logger.info("Profile data generated",
-                   relevance_score=profile_data["relevance_score"],
-                   industry=profile_data["industry"],
-                   company_size=profile_data["company_size"],
-                   conversation_starters_generated=2)
+        # Add LLM-specific fields only if AI enhancement was successful
+        if enhanced_strategy.get('enhancement_status') == 'ai_enhanced':
+            profile_data['llm_model_used'] = enhanced_strategy.get('llm_model_used', 'anthropic.claude-3-5-sonnet-20241022-v2:0')
+            profile_data['ai_confidence_score'] = enhanced_strategy.get('ai_confidence_score', 0.8)
 
-        # Get the Mini Profile template and format it
-        template_content = await get_template("profile_template.md")  # get_template is async
-        if not template_content:
-            logger.error("Profile template not found",
-                        template_name="profile_template.md",
-                        expected_location="data/templates/")
-            raise ValueError("Mini Profile template not found. Please ensure profile_template.md exists in data/templates/")
-
-        # Format the template with profile data
-        markdown_profile = template_content.format(**profile_data)
-
-        # Save the profile as a markdown file
+        # Generate and save the profile markdown file
         profile_filename = f"{prospect_id}_profile.md"
-        await save_markdown_report(prospect_id, profile_filename, markdown_profile)
+        profile_content = await _generate_profile_markdown(profile_data)
         
-        logger.info("Profile creation completed successfully",
+        # Save the profile
+        await save_markdown_report(prospect_id, profile_filename, profile_content)
+        
+        logger.info("Profile created successfully",
+                   prospect_id=prospect_id,
                    profile_filename=profile_filename,
-                   profile_length=len(markdown_profile),
-                   template_formatted=True)
+                   enhancement_status=profile_data['enhancement_status'])
 
-        return {
-            "prospect_id": prospect_id,
-            "profile_filename": profile_filename,
-            "strategy_summary": f"Outreach strategy based on {len(parsed_data.get('pain_points', []))} pain points and {len(parsed_data.get('recent_news', []))} recent developments",
-            "message": f"Intelligent profile for {parsed_data.get('company_name', 'prospect')} generated and saved as {profile_filename}"
-        }
+        return profile_data
+
+def _generate_manual_profile_data(parsed_data: Dict[str, Any], prospect_id: str, fallback_info: Dict[str, Any]) -> Dict[str, Any]:
+    """Generate manual profile data when LLM enhancement fails."""
+    return {
+        "company_name": parsed_data.get("company_name", "N/A"),
+        "domain": parsed_data.get("domain", "N/A"),
+        "industry": _determine_industry(parsed_data),
+        "company_size": _estimate_company_size(parsed_data),
+        "headquarters": _extract_headquarters(parsed_data),
+        "key_contact": _get_primary_contact(parsed_data),
+        "contact_title": _get_primary_contact_title(parsed_data),
+        "recent_news_summary": _summarize_recent_news(parsed_data),
+        "tech_stack_summary": _summarize_tech_stack(parsed_data),
+        "pain_points_summary": _summarize_pain_points(parsed_data),
+        "conversation_starter_1": _generate_conversation_starter_1(parsed_data),
+        "conversation_starter_2": _generate_conversation_starter_2(parsed_data),
+        "conversation_starter_3": "What challenges are you facing with your current technology setup?",
+        "value_proposition": _generate_value_proposition(parsed_data),
+        "timing_recommendation": "Timing assessment based on manual analysis",
+        "talking_points": "- Technology modernization opportunities\n- Process automation potential\n- Competitive advantage through innovation",
+        "objection_handling": "- Address ROI concerns with data-driven examples\n- Highlight successful implementations in similar companies",
+        "relevance_score": _calculate_relevance_score(parsed_data),
+        "research_date": datetime.now().strftime("%Y-%m-%d"),
+        "prospect_id": prospect_id,
+        "enhancement_status": fallback_info.get("enhancement_status", "manual_fallback"),
+        "fallback_reason": fallback_info.get("llm_error", "LLM enhancement unavailable")
+    }
 
 def _determine_industry(parsed_data: Dict[str, Any]) -> str:
     """Determine industry based on research data."""
