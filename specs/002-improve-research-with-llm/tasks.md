@@ -1,6 +1,6 @@
 # Tasks: LLM Intelligence Middleware
 
-**Input**: Desi- ✅ T017 [P] Complete data source manager in src/data_sources/manager.pyn documents from `/specs/002-improve-research-with-llm/`
+**Input**: Design documents from `/specs/002-improve-research-with-llm/`
 **Prerequisites**: plan.md (✅), spec.md (✅)
 
 ## Execution Flow (main)
@@ -51,7 +51,7 @@
 - ✅ T014 [P] Enhanced job boards source in src/data_sources/job_boards_source.py
 - ✅ T015 [P] Enhanced news source in src/data_sources/news_source.py
 - ✅ T016 [P] Enhanced government registries source in src/data_sources/government_source.py
-- [ ] T017 Data source manager with error handling in src/data_sources/manager.py
+- ✅ T017 Data source manager with error handling in src/data_sources/manager.py
 
 ### LLM Intelligence Implementation
 - [ ] T018 [P] AWS Bedrock client wrapper in src/llm_enhancer/client.py
