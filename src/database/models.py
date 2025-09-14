@@ -1,25 +1,26 @@
-from datetime import datetime
+from datetime import datetime, UTC
 import uuid
 from enum import Enum as PythonEnum
 from sqlalchemy import Column, String, DateTime, Enum
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
 class ProspectStatus(PythonEnum):
-    IN_PROGRESS = "in_progress"
+    NEW = "new"
     RESEARCHED = "researched"
+    PROFILED = "profiled"
+    ERROR = "error"
 
 class Prospect(Base):
     __tablename__ = "prospects"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True)  # UUID as string for SQLite compatibility
     company_name = Column(String(255), nullable=False)
     domain = Column(String(255), unique=True, nullable=False)
-    status = Column(Enum(ProspectStatus), default=ProspectStatus.IN_PROGRESS, nullable=False)
-    created_at = Column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    status = Column(Enum(ProspectStatus), default=ProspectStatus.NEW, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=datetime.now, nullable=False)
+    updated_at = Column(DateTime(timezone=True), default=datetime.now, onupdate=datetime.now, nullable=False)
 
     def __repr__(self):
         return f"<Prospect(id='{self.id}', company_name='{self.company_name}', domain='{self.domain}')>"

@@ -1,5 +1,6 @@
 import os
 import asyncio
+from src.config import get_template_path_str
 
 async def load_template(template_path: str) -> str:
     """Loads a markdown template from a specified file path."""
@@ -10,6 +11,6 @@ async def load_template(template_path: str) -> str:
 
 async def get_template(template_name: str) -> str:
     """Retrieves a template from the data/templates directory."""
-    template_path = os.path.join("data", "templates", template_name)
+    template_path = get_template_path_str(template_name)
     return await load_template(template_path)
 

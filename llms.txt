@@ -1,0 +1,74 @@
+# AI Olympics Charmander - MCP Prospect Research System
+
+> Model Context Protocol server for automated prospect research and profile generation using AI-powered multi-source data collection.
+
+This project implements a comprehensive prospect research automation system using the Model Context Protocol (MCP). It enables AI assistants to perform automated company research and generate strategic profiles by collecting data from multiple sources including websites, LinkedIn, job boards, news, and government registries.
+
+## Architecture
+
+The system is built as 4 independent libraries with clear separation of concerns:
+
+- **Database**: SQLite operations for prospect metadata storage
+- **File Manager**: Markdown file operations and template management  
+- **Prospect Research**: AI-powered research and profile generation
+- **MCP Server**: Protocol implementation and tool interfaces
+
+## Core Libraries
+
+- [Database Library](src/database/llms.txt): Async SQLite operations with prospect status tracking
+- [File Manager Library](src/file_manager/llms.txt): Template-based markdown content management
+- [Prospect Research Library](src/prospect_research/llms.txt): Multi-source data collection and AI analysis
+- [MCP Server Library](src/mcp_server/llms.txt): Model Context Protocol server implementation
+
+## Key Features
+
+- **Multi-Source Research**: Integrates 5+ data sources for comprehensive company intelligence
+- **AI-Powered Analysis**: Intelligent processing of research data to extract actionable insights
+- **MCP Protocol Compliance**: Standardized interface for AI assistant integration
+- **Async Architecture**: High-performance concurrent operations throughout
+- **Structured Logging**: Comprehensive observability with structured logging
+- **Template System**: Consistent report and profile formatting
+
+## Workflow
+
+1. **Research Initiation**: AI assistant calls `research_prospect` MCP tool with company name
+2. **Data Collection**: System gathers data from websites, LinkedIn, job boards, news, registries
+3. **Report Generation**: Creates structured markdown research report with findings
+4. **Profile Creation**: AI assistant calls `create_profile` to generate strategic insights
+5. **Data Retrieval**: Use `get_prospect_data` and `search_prospects` for accessing results
+
+## Data Sources
+
+- **Firecrawl API**: Website content extraction and analysis
+- **LinkedIn**: Professional company information and employee data
+- **Job Boards**: Seek, Indeed, Glassdoor for hiring signals
+- **Google Search & News**: Recent developments and market intelligence
+- **Government Registries**: ASIC, ABN Lookup, NSW Open Data for official records
+
+## Output Formats
+
+- **Research Reports**: Comprehensive markdown reports with company overview, technology stack, recent news, hiring signals, and pain points
+- **Strategic Profiles**: Actionable profiles with engagement strategies, timing recommendations, and success probability assessment
+- **Structured Data**: JSON metadata for programmatic access and integration
+
+## Technical Stack
+
+- **Python 3.11+**: Modern async/await patterns and type hints
+- **SQLAlchemy 2.0**: Async ORM with SQLite backend
+- **MCP SDK**: Model Context Protocol implementation
+- **Firecrawl**: Web scraping and content extraction
+- **Structlog**: Structured logging and observability
+
+## Testing
+
+- **Unit Tests**: Comprehensive test coverage for all libraries
+- **Integration Tests**: End-to-end workflow validation
+- **Performance Tests**: Response time and scalability validation
+- **Contract Tests**: MCP tool interface compliance
+
+## Documentation
+
+- **Specifications**: Detailed specs in `specs/001-mcp-server-prospect/`
+- **API Reference**: Individual library documentation in each `llms.txt`
+- **Examples**: Sample data and usage patterns in `sample_data/`
+- **Setup Guide**: Quick start instructions in project README
