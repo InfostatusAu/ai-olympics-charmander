@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class BedrockClient:
-    """AWS Bedrock client wrapper for Claude Sonnet integration."""
+    """AWS Bedrock client wrapper for Claude Sonnet integration using Converse API."""
     
     def __init__(self, region: str = "ap-southeast-2", model_id: Optional[str] = None):
         """Initialize Bedrock client.
@@ -20,6 +20,7 @@ class BedrockClient:
         self.region = region
         self.model_id = model_id or "apac.anthropic.claude-sonnet-4-20250514-v1:0"
         self.bedrock_client = None
+        self._prompts_cache = {}
         
     async def initialize(self):
         """Initialize the AWS Bedrock client."""
@@ -27,15 +28,39 @@ class BedrockClient:
             import boto3
             self.bedrock_client = boto3.client('bedrock-runtime', region_name=self.region)
             logger.info(f"Bedrock client initialized with model {self.model_id}")
-        except ImportError:
-            logger.error("boto3 not installed - Bedrock client unavailable")
-            raise ValueError("boto3 required for Bedrock integration")
+            
+            # Load prompts into cache
+            await self._load_prompts()
+            
         except Exception as e:
             logger.error(f"Failed to initialize Bedrock client: {e}")
             raise
             
+    async def _load_prompts(self):
+        """Load prompt templates from files."""
+        import os
+        
+        prompts_dir = os.path.join(os.path.dirname(__file__), "prompts")
+        prompt_files = {
+            "research_system": "research_system_prompt.md",
+            "research_user": "research_user_prompt.md", 
+            "profile_system": "profile_system_prompt.md",
+            "profile_user": "profile_user_prompt.md"
+        }
+        
+        for key, filename in prompt_files.items():
+            try:
+                filepath = os.path.join(prompts_dir, filename)
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    self._prompts_cache[key] = f.read()
+                logger.debug(f"Loaded prompt template: {key}")
+            except Exception as e:
+                logger.error(f"Failed to load prompt {key}: {e}")
+                # Fallback to basic prompts if files not available
+                self._prompts_cache[key] = f"# {key.replace('_', ' ').title()}\nPlease analyze the provided data."
+            
     async def analyze_research_data(self, raw_data: Dict[str, Any], analysis_type: str = "research") -> Dict[str, Any]:
-        """Analyze research data using Claude.
+        """Analyze research data using Claude Converse API.
         
         Args:
             raw_data: Raw data from all sources
@@ -48,95 +73,108 @@ class BedrockClient:
             await self.initialize()
             
         try:
-            # Prepare prompt based on analysis type
-            if analysis_type == "research":
-                prompt = self._build_research_prompt(raw_data)
-            elif analysis_type == "profile":
-                prompt = self._build_profile_prompt(raw_data)
-            else:
-                raise ValueError(f"Unknown analysis type: {analysis_type}")
-                
-            # Call Bedrock
-            response = await self._call_bedrock(prompt)
+            # Prepare system and user prompts
+            system_prompt, user_prompt = self._prepare_prompts(raw_data, analysis_type)
+            
+            # Call Bedrock Converse API
+            response = await self._call_converse_api(system_prompt, user_prompt)
             
             # Parse and structure response
             structured_response = self._parse_llm_response(response, analysis_type)
             structured_response['llm_model'] = self.model_id
             structured_response['analysis_type'] = analysis_type
             
+            logger.info(f"LLM analysis completed for {analysis_type}")
             return structured_response
             
         except Exception as e:
             logger.error(f"LLM analysis failed: {e}")
-            raise
+            # Return fallback response structure
+            return {
+                "analysis": {"error": str(e)},
+                "enhancement_status": "error",
+                "source": "bedrock_claude",
+                "fallback": True
+            }
             
-    def _build_research_prompt(self, raw_data: Dict[str, Any]) -> str:
-        """Build research analysis prompt."""
-        # TODO: Implement sophisticated research prompt
-        return f"""
-        Analyze the following prospect research data and provide business intelligence insights:
+    def _prepare_prompts(self, raw_data: Dict[str, Any], analysis_type: str) -> tuple[str, str]:
+        """Prepare system and user prompts for analysis."""
+        if analysis_type == "research":
+            system_prompt = self._prompts_cache.get("research_system", "")
+            user_template = self._prompts_cache.get("research_user", "")
+            
+            # Format user prompt with data
+            user_prompt = user_template.format(
+                company_data=json.dumps(raw_data.get("company", {}), indent=2),
+                data_sources=json.dumps(raw_data.get("sources", []), indent=2), 
+                research_data=json.dumps(raw_data.get("research", {}), indent=2)
+            )
+            
+        elif analysis_type == "profile":
+            system_prompt = self._prompts_cache.get("profile_system", "")
+            user_template = self._prompts_cache.get("profile_user", "")
+            
+            # Format user prompt with data
+            user_prompt = user_template.format(
+                company_profile=json.dumps(raw_data.get("company", {}), indent=2),
+                business_analysis=json.dumps(raw_data.get("analysis", {}), indent=2),
+                target_contact=json.dumps(raw_data.get("contact", {}), indent=2)
+            )
+            
+        else:
+            raise ValueError(f"Unknown analysis type: {analysis_type}")
+            
+        return system_prompt, user_prompt
         
-        Company Data: {json.dumps(raw_data, indent=2)}
-        
-        Please provide:
-        1. Business priority analysis
-        2. Technology readiness assessment  
-        3. Competitive landscape positioning
-        4. Key decision makers and their likely concerns
-        5. Potential pain points and opportunities
-        
-        Respond in JSON format with structured insights.
-        """
-        
-    def _build_profile_prompt(self, raw_data: Dict[str, Any]) -> str:
-        """Build profile strategy prompt."""
-        # TODO: Implement sophisticated profile prompt
-        return f"""
-        Based on the research data, create a sophisticated conversation strategy:
-        
-        Research Data: {json.dumps(raw_data, indent=2)}
-        
-        Please provide:
-        1. Personalized conversation starters
-        2. Timing recommendations based on business cycles
-        3. Value proposition alignment
-        4. Relevant talking points
-        5. Potential objection handling
-        
-        Respond in JSON format with actionable strategies.
-        """
-        
-    async def _call_bedrock(self, prompt: str) -> str:
-        """Make API call to Bedrock."""
+    async def _call_converse_api(self, system_prompt: str, user_prompt: str) -> str:
+        """Make API call to Bedrock Converse API following best practices."""
         try:
-            # TODO: Implement actual Bedrock API call
-            logger.info("Making Bedrock API call - placeholder")
+            # Prepare inference configuration following best practices
+            inference_config = {
+                "temperature": 0.1,  # Low temperature for consistent analysis
+                "maxTokens": 4096,   # Sufficient for detailed analysis
+                "topP": 0.9          # Focused but not too restrictive
+            }
             
-            # Placeholder response
-            return json.dumps({
-                "analysis": "placeholder analysis",
-                "insights": ["insight 1", "insight 2"],
-                "status": "placeholder"
-            })
+            # Prepare system prompts (array format for Converse API)
+            system_prompts = [{"text": system_prompt}] if system_prompt else []
+            
+            # Prepare messages (must start with user role and alternate)
+            messages = [
+                {
+                    "role": "user",
+                    "content": [{"text": user_prompt}]
+                }
+            ]
+            
+            # Make the API call using Converse API
+            response = self.bedrock_client.converse(
+                modelId=self.model_id,
+                messages=messages,
+                system=system_prompts,
+                inferenceConfig=inference_config
+            )
+            
+            # Extract the response text
+            output_message = response['output']['message']
+            response_text = output_message['content'][0]['text']
+            
+            # Log token usage for monitoring
+            usage = response.get('usage', {})
+            logger.info(f"Bedrock API call completed. Tokens - Input: {usage.get('inputTokens', 0)}, Output: {usage.get('outputTokens', 0)}")
+            
+            return response_text
             
         except Exception as e:
-            logger.error(f"Bedrock API call failed: {e}")
+            logger.error(f"Bedrock Converse API call failed: {e}")
             raise
             
     def _parse_llm_response(self, response: str, analysis_type: str) -> Dict[str, Any]:
-        """Parse and structure LLM response."""
-        try:
-            # TODO: Implement proper response parsing
-            parsed = json.loads(response)
-            return {
-                "analysis": parsed,
-                "enhancement_status": "ai_enhanced",
-                "source": "bedrock_claude"
-            }
-        except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse LLM response: {e}")
-            return {
-                "analysis": {"error": "Failed to parse response"},
-                "enhancement_status": "parse_error",
-                "source": "bedrock_claude"
-            }
+        """Parse and structure LLM response for markdown output."""
+        # For research and profile, we expect markdown output following templates
+        return {
+            "enhanced_content": response,
+            "enhancement_status": "ai_enhanced",
+            "source": "bedrock_claude",
+            "format": "markdown"
+        }
