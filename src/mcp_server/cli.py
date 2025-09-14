@@ -10,6 +10,7 @@ import os
 from typing import Any, Dict
 from src.mcp_server.server import main as run_server
 from src.mcp_server.tools import research_prospect, create_profile, get_prospect_data, search_prospects
+from src.config import validate_configuration, EnvironmentConfig
 
 @click.group()
 def mcp_cli():
@@ -32,11 +33,27 @@ def mcp_cli():
 @click.option("--linkedin-auth", type=bool, default=False, help="Enable LinkedIn authenticated browsing")
 @click.option("--job-boards-auth", type=bool, default=False, help="Enable job boards authenticated searches")
 @click.option("--fallback-mode", type=click.Choice(['strict', 'graceful', 'manual']), default='graceful', help="Error handling mode")
+@click.option("--validate-env/--skip-validation", default=True, help="Validate environment before starting")
 def start(debug: bool, llm_enabled: bool, llm_provider: str, model_id: str, aws_region: str, 
           temperature: float, max_tokens: int, timeout_seconds: int, firecrawl_enabled: bool,
           apollo_enabled: bool, serper_enabled: bool, playwright_enabled: bool, linkedin_auth: bool,
-          job_boards_auth: bool, fallback_mode: str):
+          job_boards_auth: bool, fallback_mode: str, validate_env: bool):
     """Start the MCP server with stdio transport and complete configuration."""
+    
+    # Validate environment if requested
+    if validate_env:
+        click.echo("Validating environment configuration...")
+        is_valid, result = validate_configuration()
+        
+        if not is_valid:
+            click.echo("❌ Environment validation failed:")
+            for error in result['errors']:
+                click.echo(f"  • {error}")
+            click.echo("\n💡 Run 'mcp-cli validate-env --show-guide' for configuration help")
+            exit(1)
+        else:
+            click.echo("✅ Environment validation passed")
+    
     if debug:
         import logging
         logging.basicConfig(level=logging.DEBUG)
@@ -304,6 +321,110 @@ async def _test_data_sources():
         click.echo("✓ Data source configuration valid")
     except Exception as e:
         click.echo(f"✗ Data source test failed: {e}")
+
+@mcp_cli.command("validate-env")
+@click.option('--show-guide', is_flag=True, help='Show configuration guide')
+@click.option('--verbose', is_flag=True, help='Show detailed validation results')
+def validate_env(show_guide, verbose):
+    """Validate environment configuration."""
+    if show_guide:
+        click.echo(EnvironmentConfig.get_configuration_guide())
+        return
+    
+    click.echo("Validating environment configuration...")
+    is_valid, result = validate_configuration()
+    
+    # Show summary
+    summary = result['summary']
+    click.echo(f"\n📊 Configuration Summary:")
+    click.echo(f"  Required variables: {summary['required_configured']}/{summary['total_required']}")
+    click.echo(f"  Optional variables: {summary['optional_configured']}/{summary['total_optional']}")
+    click.echo(f"  Features enabled: {summary['features_enabled']}")
+    
+    # Show validation status
+    if is_valid:
+        click.echo("\n✅ Environment configuration is valid!")
+    else:
+        click.echo("\n❌ Environment configuration has errors!")
+    
+    # Show errors
+    if result['errors']:
+        click.echo(f"\n🚨 Errors ({len(result['errors'])}):")
+        for error in result['errors']:
+            click.echo(f"  • {error}")
+    
+    # Show warnings
+    if result['warnings']:
+        click.echo(f"\n⚠️  Warnings ({len(result['warnings'])}):")
+        for warning in result['warnings']:
+            click.echo(f"  • {warning}")
+    
+    # Show configured features
+    if result['configured_features']:
+        click.echo(f"\n✅ Configured Features ({len(result['configured_features'])}):")
+        for feature in result['configured_features']:
+            click.echo(f"  • {feature}")
+    
+    # Show missing optional features
+    if result['missing_optional']:
+        click.echo(f"\n💡 Available Optional Features ({len(result['missing_optional'])}):")
+        for missing in result['missing_optional']:
+            click.echo(f"  • {missing['feature']} (Set {missing['name']})")
+    
+    # Show detailed results if verbose
+    if verbose:
+        click.echo(f"\n📁 Directory Status:")
+        for dir_name, exists in result['directories'].items():
+            status = "✅" if exists else "❌"
+            click.echo(f"  {status} {dir_name}: {exists}")
+        
+        click.echo(f"\n🔒 Permissions Status:")
+        for perm_name, granted in result['permissions'].items():
+            status = "✅" if granted else "❌"
+            click.echo(f"  {status} {perm_name}: {granted}")
+        
+        click.echo(f"\n🎯 Feature Availability:")
+        for feature_name, available in result['features'].items():
+            status = "✅" if available else "❌"
+            click.echo(f"  {status} {feature_name}: {available}")
+    
+    # Exit with appropriate code
+    if not is_valid:
+        click.echo("\n💡 Run with --show-guide to see configuration examples")
+        exit(1)
+
+@mcp_cli.command("test-config")
+@click.option('--component', type=click.Choice(['llm', 'apollo', 'serper', 'playwright', 'all']), 
+              default='all', help='Test specific component configuration')
+def test_config(component):
+    """Test configuration for specific components."""
+    click.echo(f"Testing {component} configuration...")
+    
+    features = EnvironmentConfig.get_feature_availability()
+    
+    if component == 'all':
+        for feature_name, available in features.items():
+            status = "✅" if available else "❌"
+            click.echo(f"  {status} {feature_name}")
+    else:
+        # Map component names to feature names
+        component_map = {
+            'llm': 'llm_intelligence',
+            'apollo': 'apollo_enrichment',
+            'serper': 'serper_search',
+            'playwright': 'playwright_browsing'
+        }
+        
+        if component in component_map:
+            feature_name = component_map[component]
+            available = features.get(feature_name, False)
+            status = "✅" if available else "❌"
+            click.echo(f"  {status} {feature_name}: {available}")
+            
+            if not available:
+                click.echo("💡 Run 'mcp-cli validate-env --show-guide' for setup instructions")
+        else:
+            click.echo(f"Unknown component: {component}")
 
 @mcp_cli.command("config")
 @click.option("--output-format", type=click.Choice(['json', 'yaml', 'env']), default='json', help="Output format")

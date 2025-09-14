@@ -244,7 +244,10 @@ print(f'✅ Research generated: {result}')
 5. Commit each "small win" separately
 
 Powerful request to used with your AI Coding Assistant, after configuring system instruction like `.github/instructions/system_instructions.instructions.md` and MCP servers as tools like in `.gemini/settings copy.json`:
-> Hey, use context7 and serena tools during your work. Please solve tasks {tasks number to solve} defined at {current spec's tasks.md}. Please commit
+> Hey, use context7 and serena tools during your work. Please solve tasks {tasks number to solve} defined at {current spec's tasks.md}. Please commit your work and update tasks, project overview after each task - I want commit history to be transparent and granualr. Use serena tools during your work.
+
+(I repeated serena twice since it works - from my personal experiments hehe)  
+(Claude, for example Claude Sonnet 4, followed my instructions 90% perfectly, and definitely better than Gemini models with Gemini CLI)
 
 ### **Key Files**
 - `specs/001-mcp-server-prospect/spec.md` - Feature requirements
