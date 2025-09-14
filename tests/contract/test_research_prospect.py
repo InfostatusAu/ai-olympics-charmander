@@ -6,6 +6,7 @@ from mcp.client.stdio import stdio_client, StdioServerParameters
 from src.data_sources.linkedin_source import LinkedInSource
 from src.data_sources.job_boards_source import JobBoardsSource
 from src.data_sources.news_source import NewsSource
+from src.data_sources.government_source import GovernmentSource
 
 @pytest.mark.asyncio
 async def test_research_prospect_contract():
@@ -188,3 +189,71 @@ async def test_industry_news_search():
     
     # Clean up
     await news_source.close()
+
+@pytest.mark.asyncio
+async def test_government_source_basic():
+    """Test basic government source functionality."""
+    gov_source = GovernmentSource()
+    
+    result = await gov_source.research_company("TestCorp")
+    
+    assert result is not None
+    assert result["company"] == "TestCorp"
+    assert result["source"] == "government"
+    assert "registry_results" in result
+    assert "primary_company_data" in result
+    
+    # Clean up
+    await gov_source.close()
+
+@pytest.mark.asyncio
+async def test_government_source_with_registries():
+    """Test government source with specific registries."""
+    gov_source = GovernmentSource()
+    
+    result = await gov_source.research_company(
+        "TestCorp",
+        registries=["sec", "companies_house"],
+        include_filings=True
+    )
+    
+    assert result is not None
+    assert result["company"] == "TestCorp"
+    assert len(result["search_criteria"]["registries_searched"]) == 2
+    assert result["search_criteria"]["include_filings"] is True
+    
+    # Clean up
+    await gov_source.close()
+
+@pytest.mark.asyncio
+async def test_government_directors_search():
+    """Test directors and officers search."""
+    gov_source = GovernmentSource()
+    
+    result = await gov_source.search_directors_officers("TestCorp")
+    
+    assert result is not None
+    assert result["company"] == "TestCorp"
+    assert result["source"] == "government_officers"
+    assert "officers" in result
+    
+    # Clean up
+    await gov_source.close()
+
+@pytest.mark.asyncio
+async def test_government_source_with_api_keys():
+    """Test government source with API keys."""
+    api_keys = {
+        "sec": "fake_sec_key",
+        "companies_house": "fake_ch_key"
+    }
+    gov_source = GovernmentSource(api_keys=api_keys)
+    
+    result = await gov_source.research_company("TestCorp")
+    
+    assert result is not None
+    assert result["company"] == "TestCorp"
+    assert "insights" in result
+    
+    # Clean up
+    await gov_source.close()
