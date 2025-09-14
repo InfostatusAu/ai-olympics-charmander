@@ -2,7 +2,11 @@
 
 import asyncio
 import logging
+import os
 from typing import Dict, Any, Optional, List
+
+# Import config to trigger dotenv loading
+from .. import config
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -13,9 +17,10 @@ class LinkedInSource:
     
     def __init__(self, email: Optional[str] = None, password: Optional[str] = None, firecrawl_api_key: Optional[str] = None):
         """Initialize LinkedIn source with authentication and Firecrawl fallback."""
-        self.email = email
-        self.password = password
-        self.firecrawl_api_key = firecrawl_api_key
+        # Load from environment if not provided
+        self.email = email or os.getenv('LINKEDIN_EMAIL')
+        self.password = password or os.getenv('LINKEDIN_PASSWORD')
+        self.firecrawl_api_key = firecrawl_api_key or os.getenv('FIRECRAWL_API_KEY')
         self.session = None
         
     async def _get_session(self):
@@ -46,6 +51,9 @@ class LinkedInSource:
                 firecrawl_result = await self._research_via_firecrawl(company)
                 if firecrawl_result.get("status") == "success":
                     results.update(firecrawl_result)
+                elif firecrawl_result.get("status") == "linkedin_restricted":
+                    logger.info("Firecrawl LinkedIn restricted, continuing with other methods")
+                    results["firecrawl_note"] = "LinkedIn scraping requires special account activation"
                     
             # 2. Try authenticated browsing (if credentials available)
             if self.email and self.password:
@@ -103,7 +111,20 @@ class LinkedInSource:
                 },
                 "extractorOptions": {
                     "mode": "llm-extraction",
-                    "extractionPrompt": f"Extract company information for {company} including: company description, industry, size, location, recent posts, employee information"
+                    "extractionSchema": {
+                        "type": "object",
+                        "properties": {
+                            "company_name": {"type": "string", "description": "Official company name"},
+                            "description": {"type": "string", "description": "Company description or about section"},
+                            "industry": {"type": "string", "description": "Industry or sector"},
+                            "company_size": {"type": "string", "description": "Number of employees or company size"},
+                            "location": {"type": "string", "description": "Company headquarters location"},
+                            "website": {"type": "string", "description": "Company website URL"},
+                            "recent_posts": {"type": "array", "description": "Recent company posts or updates"},
+                            "specialties": {"type": "array", "description": "Company specialties or focus areas"}
+                        },
+                        "required": ["company_name"]
+                    }
                 }
             }
             
@@ -111,16 +132,32 @@ class LinkedInSource:
                 if response.status == 200:
                     data = await response.json()
                     return {
-                        "method": "firecrawl",
                         "status": "success",
-                        "linkedin_url": linkedin_url,
-                        "company_data": data.get("data", {}),
-                        "extracted_content": data.get("data", {}).get("content", ""),
-                        "llm_extraction": data.get("data", {}).get("llm_extraction", {})
+                        "method": "firecrawl",
+                        "company_url": linkedin_url,
+                        "content": data.get("data", {}),
+                        "extracted_data": data.get("extractedData", {}),
+                        "source": "linkedin_firecrawl"
                     }
                 else:
-                    logger.warning(f"Firecrawl request failed: {response.status}")
-                    return {"method": "firecrawl", "status": "failed", "error": f"HTTP {response.status}"}
+                    error_text = await response.text()
+                    logger.warning(f"Firecrawl request failed: {response.status} - {error_text}")
+                    
+                    # Check if it's a LinkedIn-specific restriction
+                    if "no longer supported" in error_text and "linkedin" in linkedin_url.lower():
+                        logger.info("LinkedIn scraping not supported on this Firecrawl account, falling back to search method")
+                        return {
+                            "status": "linkedin_restricted", 
+                            "error": "LinkedIn scraping requires special Firecrawl account activation",
+                            "method": "firecrawl_linkedin_restricted",
+                            "fallback_needed": True
+                        }
+                    
+                    return {
+                        "status": "error", 
+                        "error": f"Firecrawl API error: {response.status} - {error_text}",
+                        "method": "firecrawl_failed"
+                    }
                     
         except Exception as e:
             logger.error(f"Firecrawl LinkedIn research failed: {e}")
