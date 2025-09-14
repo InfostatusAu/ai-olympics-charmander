@@ -64,7 +64,7 @@
 - [x] T023 Enhanced profile logic with AI strategy generation in src/prospect_research/profile.py
 
 ## Phase 3.4: Integration
-- [ ] T024 MCP server complete API configuration parameters in src/mcp_server/cli.py
+- [x] T024 MCP server complete API configuration parameters in src/mcp_server/cli.py
 - [ ] T025 Enhanced MCP tools with complete data integration + LLM in src/mcp_server/tools.py
 - [ ] T026 Graceful fallback handling in src/llm_enhancer/middleware.py
 - [ ] T027 Environment configuration validation in src/config.py
