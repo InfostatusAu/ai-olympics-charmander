@@ -1,6 +1,6 @@
 # Tasks: LLM Intelligence Middleware
 
-**Input**: Design documents from `/specs/002-improve-research-with-llm/`
+**Input**: Desi- ✅ T017 [P] Complete data source manager in src/data_sources/manager.pyn documents from `/specs/002-improve-research-with-llm/`
 **Prerequisites**: plan.md (✅), spec.md (✅)
 
 ## Execution Flow (main)

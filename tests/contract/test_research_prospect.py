@@ -7,6 +7,7 @@ from src.data_sources.linkedin_source import LinkedInSource
 from src.data_sources.job_boards_source import JobBoardsSource
 from src.data_sources.news_source import NewsSource
 from src.data_sources.government_source import GovernmentSource
+from src.data_sources.manager import DataSourceManager
 
 @pytest.mark.asyncio
 async def test_research_prospect_contract():
@@ -257,3 +258,71 @@ async def test_government_source_with_api_keys():
     
     # Clean up
     await gov_source.close()
+
+@pytest.mark.asyncio
+async def test_data_source_manager_comprehensive():
+    """Test data source manager comprehensive mode."""
+    config = {
+        "apollo_api_key": "fake_apollo_key",
+        "serper_api_key": "fake_serper_key",
+        "news_api_key": "fake_news_key"
+    }
+    manager = DataSourceManager(config)
+    
+    result = await manager.collect_all_prospect_data("TestCorp", research_mode="comprehensive")
+    
+    assert result is not None
+    assert result["company"] == "TestCorp"
+    assert result["research_mode"] == "comprehensive"
+    assert "successful_sources" in result
+    assert "failed_sources" in result
+    assert "data_quality" in result
+    assert "recommendations" in result
+    
+    # Clean up
+    await manager.close_all_sources()
+
+@pytest.mark.asyncio
+async def test_data_source_manager_quick_mode():
+    """Test data source manager quick mode."""
+    manager = DataSourceManager()
+    
+    result = await manager.collect_all_prospect_data("TestCorp", research_mode="quick")
+    
+    assert result is not None
+    assert result["research_mode"] == "quick"
+    assert "performance_metrics" in result
+    assert "success_rate" in result
+    
+    # Clean up
+    await manager.close_all_sources()
+
+@pytest.mark.asyncio
+async def test_data_source_manager_test_functionality():
+    """Test data source manager test functionality."""
+    manager = DataSourceManager()
+    
+    result = await manager.test_all_sources("TestCorp")
+    
+    assert result is not None
+    assert "test_summary" in result
+    assert result["test_summary"]["test_company"] == "TestCorp"
+    assert "test_passed" in result["test_summary"]
+    
+    # Clean up
+    await manager.close_all_sources()
+
+@pytest.mark.asyncio
+async def test_data_source_manager_sequential_mode():
+    """Test data source manager sequential execution."""
+    config = {"parallel_execution": False}
+    manager = DataSourceManager(config)
+    
+    result = await manager.collect_all_prospect_data("TestCorp", research_mode="quick")
+    
+    assert result is not None
+    assert result["performance_metrics"]["execution_mode"] == "sequential"
+    assert "source_metadata" in result
+    
+    # Clean up
+    await manager.close_all_sources()
