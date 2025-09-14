@@ -106,11 +106,12 @@ class ProfileAnalyzer:
         """Structure LLM strategy for template compatibility."""
         # TODO: Implement sophisticated strategy structuring
         strategy_data = llm_strategy.get("analysis", {})
+        conversation_starters = strategy_data.get("conversation_starters", [])
         
         return {
-            "conversation_starter_1": strategy_data.get("conversation_starters", ["AI-generated starter"])[0],
-            "conversation_starter_2": strategy_data.get("conversation_starters", ["", "AI-generated starter 2"])[1] if len(strategy_data.get("conversation_starters", [])) > 1 else "AI-generated fallback",
-            "conversation_starter_3": strategy_data.get("conversation_starters", ["", "", "AI-generated starter 3"])[2] if len(strategy_data.get("conversation_starters", [])) > 2 else "AI-generated fallback",
+            "conversation_starter_1": conversation_starters[0] if len(conversation_starters) > 0 else "AI-generated starter",
+            "conversation_starter_2": conversation_starters[1] if len(conversation_starters) > 1 else "AI-generated fallback",
+            "conversation_starter_3": conversation_starters[2] if len(conversation_starters) > 2 else "AI-generated fallback",
             "value_proposition": strategy_data.get("value_proposition", "AI-aligned value proposition"),
             "timing_recommendation": strategy_data.get("timing", "AI-recommended timing"),
             "talking_points": strategy_data.get("talking_points", []),
