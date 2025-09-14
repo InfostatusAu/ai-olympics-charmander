@@ -5,6 +5,7 @@ from mcp.client.session import ClientSession
 from mcp.client.stdio import stdio_client, StdioServerParameters
 from src.data_sources.linkedin_source import LinkedInSource
 from src.data_sources.job_boards_source import JobBoardsSource
+from src.data_sources.news_source import NewsSource
 
 @pytest.mark.asyncio
 async def test_research_prospect_contract():
@@ -125,3 +126,65 @@ async def test_job_boards_culture_data():
     
     # Clean up
     await job_boards.close()
+
+@pytest.mark.asyncio
+async def test_news_source_basic():
+    """Test basic news source functionality."""
+    news_source = NewsSource()
+    
+    result = await news_source.research_news("TestCorp")
+    
+    assert result is not None
+    assert result["company"] == "TestCorp"
+    assert result["source"] == "news"
+    assert "source_results" in result
+    assert "articles" in result
+    
+    # Clean up
+    await news_source.close()
+
+@pytest.mark.asyncio
+async def test_news_source_with_filters():
+    """Test news source with time and source filters."""
+    news_source = NewsSource()
+    
+    result = await news_source.research_news(
+        "TestCorp",
+        days_back=7,
+        sources=["google_news", "bing_news"]
+    )
+    
+    assert result is not None
+    assert result["company"] == "TestCorp"
+    assert result["search_criteria"]["days_back"] == 7
+    assert len(result["search_criteria"]["sources_searched"]) == 2
+    
+    # Clean up
+    await news_source.close()
+
+@pytest.mark.asyncio
+async def test_news_source_with_apis():
+    """Test news source with API keys."""
+    news_source = NewsSource(news_api_key="fake_key", serper_api_key="fake_key")
+    
+    result = await news_source.research_news("TestCorp")
+    
+    assert result is not None
+    assert result["company"] == "TestCorp"
+    assert "insights" in result
+    
+    # Clean up
+    await news_source.close()
+
+@pytest.mark.asyncio
+async def test_industry_news_search():
+    """Test industry-specific news search."""
+    news_source = NewsSource()
+    
+    result = await news_source.search_industry_news("Technology", days_back=7)
+    
+    assert result is not None
+    assert "source" in result
+    
+    # Clean up
+    await news_source.close()

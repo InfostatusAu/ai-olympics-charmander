@@ -49,7 +49,7 @@
 - [ ] T012 [P] Playwright MCP browser tools in src/data_sources/playwright_source.py
 - ✅ T013 [P] Enhanced LinkedIn source in src/data_sources/linkedin_source.py
 - ✅ T014 [P] Enhanced job boards source in src/data_sources/job_boards_source.py
-- [ ] T015 [P] Enhanced news source in src/data_sources/news_source.py
+- ✅ T015 [P] Enhanced news source in src/data_sources/news_source.py
 - [ ] T016 [P] Government registries source in src/data_sources/government_source.py
 - [ ] T017 Data source manager with error handling in src/data_sources/manager.py
 
