@@ -1,6 +1,12 @@
 # Tasks: LLM Intelligence Middleware
 
-**Input**: Design documents from `/specs/002-improve-research-with-llm/`
+**Input**: Design documents from ## Phase 3.5: Polish
+- [x] T028 [P] Unit tests for data source modules in tests/unit/test_data_sources.py
+- [x] T029 [P] Unit tests for LLM client in tests/unit/test_llm_client.py
+- [x] T030 [P] Unit tests for analyzers in tests/unit/test_llm_analyzers.py
+- [x] T031 [P] Performance tests for complete workflow in tests/unit/test_complete_performance.py
+- [x] T032 [P] Update llms.txt documentation for all enhanced modules
+- [ ] T033 Integration validation with complete data source + LLM workflow testing/002-improve-research-with-llm/`
 **Prerequisites**: plan.md (✅), spec.md (✅)
 
 ## Execution Flow (main)
@@ -74,8 +80,8 @@
 - [x] T029 [P] Unit tests for LLM client in tests/unit/test_llm_client.py
 - [x] T030 [P] Unit tests for analyzers in tests/unit/test_llm_analyzers.py
 - [x] T031 [P] Performance tests for complete workflow in tests/unit/test_complete_performance.py
-- [ ] T032 [P] Update llms.txt documentation for all enhanced modules
-- [ ] T033 Integration validation with complete data source + LLM workflow testing
+- [x] T032 [P] Update llms.txt documentation for all enhanced modules
+- [x] T033 Integration validation with complete data source + LLM workflow testing
 
 ## Dependencies
 - Setup (T001-T004) before Tests (T005-T009)
