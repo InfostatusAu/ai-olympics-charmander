@@ -1,6 +1,12 @@
 # Tasks: LLM Intelligence Middleware
 
-**Input**: Design documents from `/specs/002-improve-research-with-llm/`
+**Input**: Design documents from ## Phase 3.5: Polish
+- [x] T028 [P] Unit tests for data source modules in tests/unit/test_data_sources.py
+- [x] T029 [P] Unit tests for LLM client in tests/unit/test_llm_client.py
+- [x] T030 [P] Unit tests for analyzers in tests/unit/test_llm_analyzers.py
+- [x] T031 [P] Performance tests for complete workflow in tests/unit/test_complete_performance.py
+- [x] T032 [P] Update llms.txt documentation for all enhanced modules
+- [ ] T033 Integration validation with complete data source + LLM workflow testing/002-improve-research-with-llm/`
 **Prerequisites**: plan.md (✅), spec.md (✅)
 
 ## Execution Flow (main)
@@ -64,18 +70,18 @@
 - [x] T023 Enhanced profile logic with AI strategy generation in src/prospect_research/profile.py
 
 ## Phase 3.4: Integration
-- [ ] T024 MCP server complete API configuration parameters in src/mcp_server/cli.py
-- [ ] T025 Enhanced MCP tools with complete data integration + LLM in src/mcp_server/tools.py
-- [ ] T026 Graceful fallback handling in src/llm_enhancer/middleware.py
-- [ ] T027 Environment configuration validation in src/config.py
+- [x] T024 MCP server complete API configuration parameters in src/mcp_server/cli.py
+- [x] T025 Enhanced MCP tools with complete data integration + LLM in src/mcp_server/tools.py
+- [x] T026 Graceful fallback handling in src/llm_enhancer/middleware.py
+- [x] T027 Environment configuration validation in src/config.py
 
 ## Phase 3.5: Polish
-- [ ] T028 [P] Unit tests for data source modules in tests/unit/test_data_sources.py
-- [ ] T029 [P] Unit tests for LLM client in tests/unit/test_llm_client.py
-- [ ] T030 [P] Unit tests for analyzers in tests/unit/test_llm_analyzers.py
-- [ ] T031 [P] Performance tests for complete workflow in tests/unit/test_complete_performance.py
-- [ ] T032 [P] Update llms.txt documentation for all enhanced modules
-- [ ] T033 Integration validation with complete data source + LLM workflow testing
+- [x] T028 [P] Unit tests for data source modules in tests/unit/test_data_sources.py
+- [x] T029 [P] Unit tests for LLM client in tests/unit/test_llm_client.py
+- [x] T030 [P] Unit tests for analyzers in tests/unit/test_llm_analyzers.py
+- [x] T031 [P] Performance tests for complete workflow in tests/unit/test_complete_performance.py
+- [x] T032 [P] Update llms.txt documentation for all enhanced modules
+- [x] T033 Integration validation with complete data source + LLM workflow testing
 
 ## Dependencies
 - Setup (T001-T004) before Tests (T005-T009)

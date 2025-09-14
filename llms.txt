@@ -1,74 +1,156 @@
-# AI Olympics Charmander - MCP Prospect Research System
+# AI Olympics Charmander - AI-Enhanced MCP Prospect Research System
 
-> Model Context Protocol server for automated prospect research and profile generation using AI-powered multi-source data collection.
+> Model Context Protocol server for automated prospect research and AI-powered profile generation using multi-source data collection and intelligent analysis.
 
-This project implements a comprehensive prospect research automation system using the Model Context Protocol (MCP). It enables AI assistants to perform automated company research and generate strategic profiles by collecting data from multiple sources including websites, LinkedIn, job boards, news, and government registries.
+This project implements a comprehensive AI-enhanced prospect research automation system using the Model Context Protocol (MCP). It enables AI assistants to perform automated company research and generate strategic profiles by collecting data from 7+ external sources and applying artificial intelligence to extract actionable business insights.
 
 ## Architecture
 
-The system is built as 4 independent libraries with clear separation of concerns:
+The system is built as 6 independent libraries with clear separation of concerns and AI-powered intelligence layer:
 
-- **Database**: SQLite operations for prospect metadata storage
-- **File Manager**: Markdown file operations and template management  
-- **Prospect Research**: AI-powered research and profile generation
-- **MCP Server**: Protocol implementation and tool interfaces
+- **Database**: SQLite operations for prospect metadata storage and workflow tracking
+- **File Manager**: Markdown file operations and template management for structured content
+- **Data Sources**: Multi-source data collection with external API integrations
+- **LLM Enhancer**: AI-powered intelligence middleware for data analysis and insight generation
+- **Prospect Research**: Enhanced research orchestration combining data collection with AI analysis
+- **MCP Server**: Protocol implementation and standardized tool interfaces
 
 ## Core Libraries
 
-- [Database Library](src/database/llms.txt): Async SQLite operations with prospect status tracking
-- [File Manager Library](src/file_manager/llms.txt): Template-based markdown content management
-- [Prospect Research Library](src/prospect_research/llms.txt): Multi-source data collection and AI analysis
-- [MCP Server Library](src/mcp_server/llms.txt): Model Context Protocol server implementation
+- [Database Library](src/database/llms.txt): Async SQLite operations with prospect status tracking and data validation
+- [File Manager Library](src/file_manager/llms.txt): Template-based markdown content management with atomic operations
+- [Data Sources Library](src/data_sources/llms.txt): Multi-source data collection from 7+ external APIs and services
+- [LLM Enhancer Library](src/llm_enhancer/llms.txt): AI-powered intelligence middleware using AWS Bedrock and Claude
+- [Prospect Research Library](src/prospect_research/llms.txt): Enhanced research orchestration with AI-powered analysis
+- [MCP Server Library](src/mcp_server/llms.txt): Model Context Protocol server implementation with tool interfaces
 
 ## Key Features
 
-- **Multi-Source Research**: Integrates 5+ data sources for comprehensive company intelligence
-- **AI-Powered Analysis**: Intelligent processing of research data to extract actionable insights
-- **MCP Protocol Compliance**: Standardized interface for AI assistant integration
-- **Async Architecture**: High-performance concurrent operations throughout
-- **Structured Logging**: Comprehensive observability with structured logging
-- **Template System**: Consistent report and profile formatting
+### Intelligence & Analysis
+- **AI-Powered Research Analysis**: Claude 3.5 Sonnet integration for intelligent data processing
+- **Strategic Insight Generation**: Automated extraction of business intelligence and pain points
+- **Conversation Strategy Development**: AI-generated engagement strategies and messaging optimization
+- **Quality Assessment**: Automated data quality evaluation and recommendation generation
 
-## Workflow
+### Data Collection
+- **Multi-Source Integration**: Comprehensive data from 7+ external sources including APIs and web scraping
+- **Parallel Data Collection**: Concurrent API calls with intelligent timeout and retry management
+- **Real-Time Intelligence**: Live data fetching from external APIs with performance optimization
+- **Error Resilience**: Graceful degradation when individual data sources fail
+
+### System Architecture
+- **MCP Protocol Compliance**: Standardized interface for AI assistant integration
+- **Async Architecture**: High-performance concurrent operations throughout the system
+- **Structured Logging**: Comprehensive observability with structured logging and performance metrics
+- **Template System**: Consistent report and profile formatting with AI-enhanced content
+
+## Enhanced Workflow
 
 1. **Research Initiation**: AI assistant calls `research_prospect` MCP tool with company name
-2. **Data Collection**: System gathers data from websites, LinkedIn, job boards, news, registries
-3. **Report Generation**: Creates structured markdown research report with findings
-4. **Profile Creation**: AI assistant calls `create_profile` to generate strategic insights
-5. **Data Retrieval**: Use `get_prospect_data` and `search_prospects` for accessing results
+2. **Multi-Source Data Collection**: System gathers data from Apollo.io, LinkedIn, job boards, news, government registries
+3. **AI Analysis**: LLM processes raw data to extract business insights, pain points, and opportunities
+4. **Enhanced Report Generation**: Creates structured markdown research report with AI-generated insights
+5. **Strategic Profile Creation**: AI assistant calls `create_profile` to generate AI-powered strategic recommendations
+6. **Intelligent Data Retrieval**: Use enhanced tools for accessing AI-processed results and insights
 
 ## Data Sources
 
-- **Firecrawl API**: Website content extraction and analysis
-- **LinkedIn**: Professional company information and employee data
-- **Job Boards**: Seek, Indeed, Glassdoor for hiring signals
-- **Google Search & News**: Recent developments and market intelligence
-- **Government Registries**: ASIC, ABN Lookup, NSW Open Data for official records
+### Professional & Business Intelligence
+- **Apollo.io API**: Company enrichment, employee data, contact information, and technology stack analysis
+- **LinkedIn**: Professional company information, employee insights, and recent business developments
+- **Serper API**: Advanced web search results with organic rankings and competitive intelligence
+
+### Employment & Growth Signals
+- **Job Boards**: Seek, Indeed, Glassdoor, LinkedIn Jobs for hiring signals and company culture analysis
+- **Career Intelligence**: Job postings analysis for growth indicators and technology adoption patterns
+
+### News & Market Intelligence
+- **Google Search & News**: Recent developments, market intelligence, and competitive positioning
+- **Bing News**: Additional news coverage and media sentiment analysis
+- **Specialized News APIs**: Industry-specific news and development tracking
+
+### Official & Government Data
+- **Government Registries**: SEC filings, Companies House UK, ASIC Australia, Canadian corporations
+- **International Coverage**: European Business Register and multiple jurisdiction support
+- **Compliance Intelligence**: Regulatory status and official company information
+
+### Web & Content Intelligence
+- **Browser Automation**: Playwright-driven data collection for complex authentication scenarios
+- **Content Extraction**: Firecrawl integration for structured web content analysis and website intelligence
+
+## AI Enhancement Capabilities
+
+### Research Intelligence
+- **Business Context Analysis**: AI extracts key business insights from multi-source data
+- **Technology Stack Assessment**: Intelligent analysis of technology adoption and infrastructure
+- **Growth Signal Detection**: AI-powered analysis of hiring patterns, funding news, and expansion indicators
+- **Competitive Intelligence**: Automated positioning within market context and competitive landscape
+
+### Strategic Analysis
+- **Pain Point Identification**: AI discovers specific business challenges and inefficiencies
+- **Opportunity Mapping**: Intelligent identification of engagement opportunities and value creation areas
+- **Decision Maker Insights**: AI analysis of leadership structure and decision-making patterns
+- **Timing Intelligence**: AI-determined optimal engagement timing based on company activities
+
+### Profile Generation
+- **Conversation Starters**: AI-generated personalized, context-aware conversation topics
+- **Engagement Strategies**: AI-created multi-touch engagement sequences based on company profile
+- **Value Propositions**: AI-tailored messaging to specific company needs and challenges
+- **Success Probability**: AI assessment of likelihood of successful engagement based on data signals
 
 ## Output Formats
 
-- **Research Reports**: Comprehensive markdown reports with company overview, technology stack, recent news, hiring signals, and pain points
-- **Strategic Profiles**: Actionable profiles with engagement strategies, timing recommendations, and success probability assessment
-- **Structured Data**: JSON metadata for programmatic access and integration
+### Enhanced Reports
+- **AI-Processed Research Reports**: Comprehensive markdown reports with AI-extracted insights, technology analysis, hiring signals, and intelligent pain point identification
+- **Strategic Profiles**: AI-generated actionable profiles with engagement strategies, timing recommendations, and success probability assessment
+- **Business Intelligence**: AI-powered competitive analysis and market positioning insights
+
+### Structured Data
+- **Enhanced JSON Metadata**: AI-processed data with quality scores and reliability assessments
+- **Performance Metrics**: Collection performance, AI processing metrics, and data completeness scores
+- **Quality Assessments**: AI-generated data quality insights and recommendation priorities
 
 ## Technical Stack
 
-- **Python 3.11+**: Modern async/await patterns and type hints
-- **SQLAlchemy 2.0**: Async ORM with SQLite backend
-- **MCP SDK**: Model Context Protocol implementation
-- **Firecrawl**: Web scraping and content extraction
-- **Structlog**: Structured logging and observability
+### Core Platform
+- **Python 3.11+**: Modern async/await patterns, type hints, and performance optimizations
+- **SQLAlchemy 2.0**: Async ORM with SQLite backend for data persistence
+- **MCP SDK**: Model Context Protocol implementation for standardized AI assistant integration
 
-## Testing
+### AI & Intelligence
+- **AWS Bedrock**: Production-ready AI service integration with Claude 3.5 Sonnet
+- **Anthropic Claude**: Advanced reasoning and analysis for business intelligence processing
+- **Prompt Engineering**: Sophisticated prompts optimized for business intelligence and prospect research
 
-- **Unit Tests**: Comprehensive test coverage for all libraries
-- **Integration Tests**: End-to-end workflow validation
-- **Performance Tests**: Response time and scalability validation
-- **Contract Tests**: MCP tool interface compliance
+### Data Collection
+- **HTTPX**: High-performance async HTTP client for API integrations
+- **Playwright**: Browser automation for complex web scraping scenarios
+- **Firecrawl**: Structured web content extraction and analysis
+- **Multiple APIs**: Apollo.io, Serper, government registries, job boards, news sources
+
+### Infrastructure
+- **Asyncio**: Concurrent operations and performance optimization
+- **Structlog**: Structured logging and comprehensive observability
+- **JSON Schema**: Data validation and API response verification
+
+## Testing & Quality
+
+### Comprehensive Test Suite
+- **Unit Tests**: Complete coverage for all 6 libraries with 65+ individual test functions
+- **Integration Tests**: End-to-end workflow validation with AI enhancement testing
+- **Performance Tests**: Response time validation and scalability testing with resource monitoring
+- **Contract Tests**: MCP tool interface compliance and AI output validation
+
+### AI Quality Assurance
+- **Output Validation**: Schema validation for all AI-generated structured data
+- **Consistency Checks**: Automated quality validation across different analysis types
+- **Fallback Testing**: Comprehensive testing of graceful degradation scenarios
+- **Performance Monitoring**: AI response time and quality metrics tracking
 
 ## Documentation
 
-- **Specifications**: Detailed specs in `specs/001-mcp-server-prospect/`
-- **API Reference**: Individual library documentation in each `llms.txt`
-- **Examples**: Sample data and usage patterns in `sample_data/`
-- **Setup Guide**: Quick start instructions in project README
+- **Detailed Specifications**: Complete specs in `specs/002-improve-research-with-llm/`
+- **AI Integration Guide**: LLM enhancement patterns and prompt engineering documentation
+- **API Reference**: Individual library documentation with AI capability descriptions
+- **Performance Benchmarks**: AI processing performance and quality metrics
+- **Setup Guide**: Complete setup instructions including AI service configuration
