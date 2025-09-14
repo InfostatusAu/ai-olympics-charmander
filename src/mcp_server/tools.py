@@ -4,6 +4,7 @@ Implements the 4 core MCP tools as standalone async functions.
 """
 
 from src.database import operations as db_operations
+from src.database.models import ProspectStatus
 from src.file_manager import storage as fm_storage
 from src.prospect_research import research as pr_research
 from src.prospect_research import profile as pr_profile
@@ -16,8 +17,12 @@ async def research_prospect(company: str) -> str:
     Integrates with enhanced research logic that uses real data sources.
     """
     try:
-        # First, create a prospect entry in the database  
-        prospect = await db_operations.create_prospect(
+        # Generate a unique prospect ID
+        prospect_id = str(uuid.uuid4())
+        
+        # First, create a prospect entry in the database using the default session functions
+        prospect = await db_operations.create_prospect_default(
+            prospect_id=prospect_id,
             company_name=company, 
             domain=f"{company.lower().replace(' ', '').replace('&', 'and')}.com"
         )
@@ -27,7 +32,7 @@ async def research_prospect(company: str) -> str:
         research_result = await pr_research.research_prospect(company)
         
         # Update prospect status in DB
-        await db_operations.update_prospect_status(prospect.id, db_operations.ProspectStatus.RESEARCHED)
+        await db_operations.update_prospect_status_default(prospect.id, ProspectStatus.RESEARCHED)
         
         # Return detailed result with data sources used
         data_sources = research_result.get('data_sources_used', [])
@@ -49,38 +54,38 @@ async def create_profile(prospect_id: str) -> str:
         prospect_uuid = uuid.UUID(prospect_id)
         
         # Verify prospect exists
-        prospect = await db_operations.get_prospect(prospect_uuid)
+        prospect = await db_operations.get_prospect_default(prospect_id)
         if not prospect:
             return f"❌ Prospect with ID {prospect_id} not found in database"
         
         # Check if research has been completed
-        if prospect.status != db_operations.ProspectStatus.RESEARCHED:
+        if prospect.status != ProspectStatus.RESEARCHED:
             return f"❌ Prospect {prospect_id} must be researched first. Current status: {prospect.status.name}"
         
-        # Look for research file using the research-generated naming pattern
-        research_filename = f"prospect_{prospect_id}_research.md"
-        
-        # Try to find the actual research file (it might have different naming from research function)
+        # The research function creates timestamp-based prospect IDs, but we need to find 
+        # the research file for the current database prospect
         import glob
-        research_files = glob.glob(f"data/prospects/*{prospect_id}*research.md")
+        import os
+        
+        # Try to find research files by looking for the newest research file
+        # Research files are stored in subdirectories: data/prospects/prospect_*/prospect_*_research.md
+        research_files = glob.glob("data/prospects/prospect_*/prospect_*_research.md")
         if not research_files:
-            # Try alternative naming patterns
-            research_files = glob.glob(f"data/prospects/prospect_*_research.md")
-            # Find the most recent one if multiple exist
-            if research_files:
-                research_files.sort(key=os.path.getmtime, reverse=True)
-                research_filename = os.path.basename(research_files[0])
+            return f"❌ No research files found. Please run research_prospect first."
         
-        if not research_files:
-            return f"❌ No research file found for prospect {prospect_id}. Please run research_prospect first."
+        # Find the most recent research file by modification time
+        research_files.sort(key=os.path.getmtime, reverse=True)
+        research_file_path = research_files[0]
+        research_filename = os.path.basename(research_file_path)
         
-        research_filename = os.path.basename(research_files[0])
+        # Extract the research prospect_id from the filename for profile creation
+        research_prospect_id = research_filename.replace("_research.md", "")
         
-        # Create the profile using the found research file
-        profile_result = await pr_profile.create_profile(prospect_id, research_filename)
+        # Create the profile using the research prospect ID and research filename
+        profile_result = await pr_profile.create_profile(research_prospect_id, research_filename)
         
         # Update prospect status in DB
-        await db_operations.update_prospect_status(prospect_uuid, db_operations.ProspectStatus.PROFILED)
+        await db_operations.update_prospect_status_default(prospect_id, ProspectStatus.PROFILED)
         
         return f"✅ Profile created for {prospect.company_name}\n" \
                f"📊 Prospect ID: {prospect_id}\n" \
@@ -100,7 +105,7 @@ async def get_prospect_data(prospect_id: str) -> str:
     """
     try:
         prospect_uuid = uuid.UUID(prospect_id)
-        prospect = await db_operations.get_prospect(prospect_uuid)
+        prospect = await db_operations.get_prospect_default(prospect_id)
         if not prospect:
             return f"❌ Prospect with ID {prospect_id} not found."
 
@@ -175,7 +180,7 @@ async def get_prospect_data(prospect_id: str) -> str:
                     f""
                 ])
         else:
-            if prospect.status == db_operations.ProspectStatus.PROFILED:
+            if prospect.status == ProspectStatus.PROFILED:
                 result_parts.extend([
                     f"## 🎯 Prospect Profile",
                     f"❌ Profile file not found despite PROFILED status",
@@ -205,7 +210,7 @@ async def search_prospects(query: str) -> str:
             return "❌ Search query must be at least 2 characters long"
         
         query_lower = query.lower()
-        all_prospects = await db_operations.list_prospects()
+        all_prospects = await db_operations.list_prospects_default()
         matching_prospects = []
 
         for prospect in all_prospects:
