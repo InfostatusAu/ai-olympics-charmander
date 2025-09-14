@@ -22,7 +22,7 @@ ai-olympics-charmander/
 │   ├── prospects/                     # AI-generated markdown files
 │   ├── database/                      # SQLite database storage
 │   └── templates/                     # Markdown templates
-├── gemini-docs/                       # ✅ COMPLETED: ICP & Sales Process
+├── domain-definition/                       # ✅ COMPLETED: ICP & Sales Process
 └── main.py                            # Entry point
 ```
 

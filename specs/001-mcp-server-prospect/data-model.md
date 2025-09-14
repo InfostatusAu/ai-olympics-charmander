@@ -141,7 +141,7 @@ The real value is in AI-generated markdown files stored in the filesystem:
 **Managed by**: Business team (version controlled)  
 **Used by**: Research tools for qualification and focus
 
-**Content**: Existing ICP definition from `/gemini-docs/ICP.md`
+**Content**: Existing ICP definition from `/domain-definition/ICP.md`
 
 ## File Naming Convention
 

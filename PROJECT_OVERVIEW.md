@@ -13,7 +13,7 @@ Successfully developed a complete AI-powered lead generation system using a syst
 
 ### ✅ Deliverable 1: ICP & Sales Process Definition
 **Status**: ✅ COMPLETED  
-**Location**: `gemini-docs/` folder  
+**Location**: `domain-definition/` folder  
 **Output**: Complete business requirements, ideal customer profiles, and data source specifications  
 **Achievement**: Comprehensive business foundation with clear target profiles and data strategy
 
@@ -59,7 +59,7 @@ ai-olympics-charmander/
 │   └── 002-improve-research-with-llm/ # ✅ LLM Enhancement (33 tasks complete)
 ├── tests/                         # ✅ Comprehensive test suite (contract, integration, unit)
 ├── data/                          # Generated research files & database
-├── gemini-docs/                   # ✅ Original business requirements
+├── domain-definition/                   # ✅ Original business requirements
 └── PROJECT_OVERVIEW.md            # This final summary
 ```
 

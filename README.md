@@ -3,14 +3,23 @@
 ---
 
 **Team Charmander - Infostatus AI Olympics 2025**  
-**Status**: ✅ **PROJECT COMPLETE** - Production Ready  
+**Status**: ✅ **70%** Completed
 **Achievement**: Complete AI-powered prospect research MCP server with LLM intelligence  
 
 ## 🎯 Challenge Achievement
 
 ![AI Olympics Challenge](Challenge_W1.jpeg)
 
-**✅ Complete Solution** to the **Infostatus AI Olympics 2025 Challenge** - Week 1
+**✅ Our Solution** to the **Infostatus AI Olympics 2025 Challenge** - Week 1  
+Planned **4 deliverables** vs. Current status: 
+1. Definition of: Ideal Customer Profile (ICP) and reliable data sources for prospect research.  
+Status: **DONE** - at `domain-definition`  
+2. A MCP server for market intelligence, lead/prospect research.  
+Status: **80% DONE** - at `src/mcp_server`.  TO-DO: Fix remaining issues at `specs/remaining_issues.md` and improve onboarding/using the MCP server tools & resource.  
+3. Agentic workflow for AI agent/CLI to automate the prospect identification, research and cold-calling strategies suggestion.  
+Status: **PENDING**.  TO-DO: Configure Gemini CLI with GEMINI.md instruction and settings.json for MCPs/tools usage to demonstrate agentic pipeline pattern of an agent automate the whole procedure.  
+4. Evaluate this agentic approach with the MCP server and agentic workflow, compare with manual standard result.  
+Status: **50% DONE** - human sample work gathered at `sample_data`. TO-DO: Configure the evaluation procedure and document results.
 
 ## 🚀 MCP Server Capabilities
 
