@@ -1,17 +1,22 @@
-"""Serper API integration for alternative search provider."""
+"""Serper API integration for Google search alternative."""
 
 import logging
-from typing import Dict, Any, Optional
+import os
+from typing import Dict, Any, Optional, List
+
+# Import config to trigger dotenv loading  
+from .. import config
 
 logger = logging.getLogger(__name__)
 
 
 class SerperSource:
-    """Serper API client for search enhancement and rate limit mitigation."""
+    """Serper API client for search and news data."""
     
     def __init__(self, api_key: Optional[str] = None):
         """Initialize Serper source with API key."""
-        self.api_key = api_key
+        # Load from environment if not provided
+        self.api_key = api_key or os.getenv('SERPER_API_KEY')
         self.base_url = "https://google.serper.dev"
         self.session = None
         

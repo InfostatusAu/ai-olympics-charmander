@@ -1,7 +1,11 @@
 """Apollo.io API integration for contact enrichment and lead data."""
 
 import logging
+import os
 from typing import Dict, Any, Optional, List
+
+# Import config to trigger dotenv loading
+from .. import config
 
 logger = logging.getLogger(__name__)
 
@@ -11,7 +15,8 @@ class ApolloSource:
     
     def __init__(self, api_key: Optional[str] = None):
         """Initialize Apollo source with API key."""
-        self.api_key = api_key
+        # Load from environment if not provided
+        self.api_key = api_key or os.getenv('APOLLO_API_KEY')
         self.base_url = "https://api.apollo.io/api/v1"
         self.session = None
         

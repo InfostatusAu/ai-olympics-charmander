@@ -44,9 +44,9 @@
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
 ### Data Source Implementation
-- [ ] T010 [P] Apollo.io API integration in src/data_sources/apollo_source.py
-- [ ] T011 [P] Serper API integration in src/data_sources/serper_source.py
-- [ ] T012 [P] Playwright MCP browser tools in src/data_sources/playwright_source.py
+- [x] T010 [P] Apollo.io API integration in src/data_sources/apollo_source.py
+- [x] T011 [P] Serper API integration in src/data_sources/serper_source.py
+- [x] T012 [P] Playwright MCP browser tools in src/data_sources/playwright_source.py
 - ✅ T013 [P] Enhanced LinkedIn source in src/data_sources/linkedin_source.py
 - ✅ T014 [P] Enhanced job boards source in src/data_sources/job_boards_source.py
 - ✅ T015 [P] Enhanced news source in src/data_sources/news_source.py
