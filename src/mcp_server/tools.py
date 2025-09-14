@@ -51,50 +51,70 @@ async def create_profile(prospect_id: str) -> str:
     Transforms the research markdown into structured profile with outreach strategy.
     """
     try:
-        prospect_uuid = uuid.UUID(prospect_id)
+        # Try UUID validation first, but allow both UUID and timestamp-based IDs
+        is_uuid = False
+        try:
+            prospect_uuid = uuid.UUID(prospect_id)
+            is_uuid = True
+        except ValueError:
+            # Not a UUID, might be a timestamp-based ID - allow it
+            pass
         
-        # Verify prospect exists
-        prospect = await db_operations.get_prospect_default(prospect_id)
-        if not prospect:
-            return f"❌ Prospect with ID {prospect_id} not found in database"
-        
-        # Check if research has been completed
-        if prospect.status != ProspectStatus.RESEARCHED:
-            return f"❌ Prospect {prospect_id} must be researched first. Current status: {prospect.status.name}"
-        
-        # The research function creates timestamp-based prospect IDs, but we need to find 
-        # the research file for the current database prospect
-        import glob
-        import os
-        
-        # Try to find research files by looking for the newest research file
-        # Research files are stored in subdirectories: data/prospects/prospect_*/prospect_*_research.md
-        research_files = glob.glob("data/prospects/prospect_*/prospect_*_research.md")
-        if not research_files:
-            return f"❌ No research files found. Please run research_prospect first."
-        
-        # Find the most recent research file by modification time
-        research_files.sort(key=os.path.getmtime, reverse=True)
-        research_file_path = research_files[0]
-        research_filename = os.path.basename(research_file_path)
-        
-        # Extract the research prospect_id from the filename for profile creation
-        research_prospect_id = research_filename.replace("_research.md", "")
-        
-        # Create the profile using the research prospect ID and research filename
-        profile_result = await pr_profile.create_profile(research_prospect_id, research_filename)
-        
-        # Update prospect status in DB
-        await db_operations.update_prospect_status_default(prospect_id, ProspectStatus.PROFILED)
-        
-        return f"✅ Profile created for {prospect.company_name}\n" \
-               f"📊 Prospect ID: {prospect_id}\n" \
-               f"📄 Profile: {profile_result['profile_filename']}\n" \
-               f"🎯 Strategy: {profile_result.get('strategy_summary', 'Conversation strategy included')}\n" \
-               f"💼 Database Status: PROFILED"
+        if is_uuid:
+            # Verify prospect exists in database
+            prospect = await db_operations.get_prospect_default(prospect_id)
+            if not prospect:
+                return f"❌ Prospect with ID {prospect_id} not found in database"
+            
+            # Check if research has been completed
+            if prospect.status != ProspectStatus.RESEARCHED:
+                return f"❌ Prospect {prospect_id} must be researched first. Current status: {prospect.status.name}"
+            
+            # Find matching research file for this prospect
+            import glob
+            import os
+            
+            research_files = glob.glob(f"data/prospects/prospect_*/prospect_*_research.md")
+            if not research_files:
+                return f"❌ No research files found. Please run research_prospect first."
+            
+            # Find the most recent research file by modification time
+            research_files.sort(key=os.path.getmtime, reverse=True)
+            research_file_path = research_files[0]
+            research_filename = os.path.basename(research_file_path)
+            
+            # Extract the research prospect_id from the filename for profile creation
+            research_prospect_id = research_filename.replace("_research.md", "")
+            
+            # Create the profile using the research prospect ID and research filename
+            profile_result = await pr_profile.create_profile(research_prospect_id, research_filename)
+            
+            # Update prospect status in DB
+            await db_operations.update_prospect_status_default(prospect_id, ProspectStatus.PROFILED)
+            
+            return f"✅ Profile created for {prospect.company_name}\n" \
+                   f"📊 Prospect ID: {prospect_id}\n" \
+                   f"📄 Profile: {profile_result['profile_filename']}\n" \
+                   f"🎯 Strategy: {profile_result.get('strategy_summary', 'Conversation strategy included')}\n" \
+                   f"💼 Database Status: PROFILED"
+        else:
+            # Handle timestamp-based prospect ID directly (from research_prospect tool output)
+            research_filename = f"{prospect_id}_research.md"
+            
+            # Check if research file exists
+            import os
+            research_file_path = f"data/prospects/{prospect_id}/{research_filename}"
+            if not os.path.exists(research_file_path):
+                return f"❌ Research file not found at {research_file_path}. Please run research_prospect first."
+            
+            # Create the profile using the research prospect ID and research filename
+            profile_result = await pr_profile.create_profile(prospect_id, research_filename)
+            
+            return f"✅ Profile created for {prospect_id}\n" \
+                   f"📄 Profile: {profile_result['profile_filename']}\n" \
+                   f"🎯 Strategy: {profile_result.get('strategy_summary', 'Conversation strategy included')}\n" \
+                   f"💡 Use this prospect_id: {prospect_id} for future operations"
                
-    except ValueError as ve:
-        return f"❌ Invalid prospect ID format: {prospect_id}"
     except Exception as e:
         return f"❌ Error during create_profile for {prospect_id}: {str(e)}"
 
@@ -104,30 +124,54 @@ async def get_prospect_data(prospect_id: str) -> str:
     Returns comprehensive prospect intelligence in markdown format.
     """
     try:
-        prospect_uuid = uuid.UUID(prospect_id)
-        prospect = await db_operations.get_prospect_default(prospect_id)
-        if not prospect:
-            return f"❌ Prospect with ID {prospect_id} not found."
-
-        # Build comprehensive prospect data response
-        result_parts = [
-            f"# 📊 Prospect Data Summary",
-            f"",
-            f"**Prospect ID**: {prospect_id}",
-            f"**Company Name**: {prospect.company_name}",
-            f"**Domain**: {prospect.domain}",
-            f"**Status**: {prospect.status.name}",
-            f"**Created**: {prospect.created_at.strftime('%Y-%m-%d %H:%M:%S')}",
-            f"**Updated**: {prospect.updated_at.strftime('%Y-%m-%d %H:%M:%S')}",
-            f""
-        ]
-
-        # Find and include research content
-        import glob
-        research_files = glob.glob(f"data/prospects/*{prospect_id}*research.md")
-        if not research_files:
-            research_files = glob.glob(f"data/prospects/prospect_*_research.md")
+        # Try UUID validation first, but allow both UUID and timestamp-based IDs
+        is_uuid = False
+        try:
+            prospect_uuid = uuid.UUID(prospect_id)
+            is_uuid = True
+        except ValueError:
+            # Not a UUID, might be a timestamp-based ID - allow it
+            pass
         
+        if is_uuid:
+            # Handle database prospect with UUID
+            prospect = await db_operations.get_prospect_default(prospect_id)
+            if not prospect:
+                return f"❌ Prospect with ID {prospect_id} not found."
+
+            # Build comprehensive prospect data response
+            result_parts = [
+                f"# 📊 Prospect Data Summary",
+                f"",
+                f"**Prospect ID**: {prospect_id}",
+                f"**Company Name**: {prospect.company_name}",
+                f"**Domain**: {prospect.domain}",
+                f"**Status**: {prospect.status.name}",
+                f"**Created**: {prospect.created_at.strftime('%Y-%m-%d %H:%M:%S')}",
+                f"**Updated**: {prospect.updated_at.strftime('%Y-%m-%d %H:%M:%S')}",
+                f""
+            ]
+
+            # Find and include research content (use latest research file)
+            import glob
+            research_files = glob.glob(f"data/prospects/prospect_*_research.md")
+            
+        else:
+            # Handle timestamp-based prospect ID directly
+            result_parts = [
+                f"# 📊 Prospect Data Summary",
+                f"",
+                f"**Prospect ID**: {prospect_id}",
+                f"**Type**: Research-generated prospect",
+                f"**Data Location**: data/prospects/{prospect_id}/",
+                f""
+            ]
+
+            # Find research and profile files for this timestamp-based ID
+            import glob
+            research_files = glob.glob(f"data/prospects/{prospect_id}/{prospect_id}_research.md")
+        
+        # Find and include research content
         if research_files:
             research_files.sort(key=os.path.getmtime, reverse=True)
             research_path = research_files[0]
@@ -152,12 +196,16 @@ async def get_prospect_data(prospect_id: str) -> str:
         else:
             result_parts.extend([
                 f"## 🔍 Research Report",
-                f"❌ No research file found. Status: {prospect.status.name}",
+                f"❌ No research file found for prospect {prospect_id}",
                 f""
             ])
 
         # Find and include profile content
-        profile_files = glob.glob(f"data/prospects/*{prospect_id}*profile.md")
+        if is_uuid:
+            profile_files = glob.glob(f"data/prospects/prospect_*_profile.md")
+        else:
+            profile_files = glob.glob(f"data/prospects/{prospect_id}/{prospect_id}_profile.md")
+            
         if profile_files:
             profile_files.sort(key=os.path.getmtime, reverse=True)
             profile_path = profile_files[0]
@@ -180,23 +228,14 @@ async def get_prospect_data(prospect_id: str) -> str:
                     f""
                 ])
         else:
-            if prospect.status == ProspectStatus.PROFILED:
-                result_parts.extend([
-                    f"## 🎯 Prospect Profile",
-                    f"❌ Profile file not found despite PROFILED status",
-                    f""
-                ])
-            else:
-                result_parts.extend([
-                    f"## 🎯 Prospect Profile", 
-                    f"⏳ Profile not yet created. Run create_profile to generate.",
-                    f""
-                ])
+            result_parts.extend([
+                f"## 🎯 Prospect Profile", 
+                f"⏳ Profile not yet created. Run create_profile to generate.",
+                f""
+            ])
 
         return "\n".join(result_parts)
         
-    except ValueError as ve:
-        return f"❌ Invalid prospect ID format: {prospect_id}"
     except Exception as e:
         return f"❌ Error during get_prospect_data for {prospect_id}: {str(e)}"
 
