@@ -203,7 +203,11 @@ cython_debug/
 
 # Project-specific database files
 data/database/*.db
-data/prospects/*.md
+
+# Generated prospect data (keep sample data but ignore user-generated)
+data/prospects/*/
+!data/prospects/prospect_20250914025742/
+!data/prospects/prospect_20250914025742/*.md
 
 # Marimo
 marimo/_static/
