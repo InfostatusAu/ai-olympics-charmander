@@ -132,8 +132,6 @@ DATABASE_URL=sqlite:///data/database/prospects.db
 
 ### **MCP Configuration for coding assistants**
 
-Add to your Claude Desktop `claude_desktop_config.json`:
-
 ```json
 {
   "mcpServers": {
@@ -244,6 +242,9 @@ print(f'✅ Research generated: {result}')
 3. Follow constitutional TDD: Write failing tests first
 4. Use Serena MCP tools for codebase navigation
 5. Commit each "small win" separately
+
+Powerful request to used with your AI Coding Assistant, after configuring system instruction like `.github/instructions/system_instructions.instructions.md` and MCP servers as tools like in `.gemini/settings copy.json`:
+> Hey, use context7 and serena tools during your work. Please solve tasks {tasks number to solve} defined at {current spec's tasks.md}. Please commit
 
 ### **Key Files**
 - `specs/001-mcp-server-prospect/spec.md` - Feature requirements
