@@ -1,8 +1,8 @@
 # AI Olympics Charmander: MCP Prospect Research Server
 
 **Team Charmander - Infostatus AI Olympics 2025**  
-**Status**: 🔄 **ENHANCING WITH AI** - Developing LLM Intelligence Middleware  
-**Current Phase**: ⏳ Deliverable 3 - Intelligence Middleware for Enhanced Research Quality  
+**Status**: 🔄 **ENHANCING WITH AI** - Phase 3.5 LLM Enhancement Layer  
+**Current Phase**: ⏳ Deliverable 3 - Phase 3.4 Integration Complete, Starting LLM Enhancement  
 
 ## 🎯 Challenge Achievement
 
@@ -41,7 +41,11 @@ This project builds an AI-powered lead generation system using **Spec-Driven Dev
 
 1. ✅ **ICP & Sales Process** (Complete - see `gemini-docs/`)
 2. ✅ **MCP Server** (COMPLETE - Full production server with 4 tools)
-3. ⏳ **LLM Intelligence Middleware** (**IN PROGRESS** - `specs/002-improve-research-with-llm/`)
+3. ⏳ **LLM Intelligence Middleware** (**Phase 3.4 COMPLETE** - `specs/002-improve-research-with-llm/`)
+   - ✅ **Phase 3.3**: Enhanced data sources (Apollo, Serper, Playwright, LinkedIn, Job Boards, News, Government)
+   - ✅ **Phase 3.4**: Complete MCP integration with LLM infrastructure, environment validation, graceful fallback
+   - ⏳ **Phase 3.5**: LLM Enhancement Layer (AWS Bedrock integration, analyzers, middleware)
+   - ⏳ **Phase 3.6**: Polish and final testing
 4. ⏳ **Agentic Pipeline** (Future - will be `specs/003-agentic-pipeline/`)
 5. ⏳ **Evaluation System** (Future - will be `specs/004-evaluation/`)
 
@@ -80,6 +84,12 @@ uv run python -m src.mcp_server.server
 
 # You should see: "MCP Prospect Research Server starting..."
 # Press Ctrl+C to stop
+
+# 7. Validate environment configuration
+uv run python -m src.mcp_server.cli validate-env
+
+# 8. Test specific components
+uv run python -m src.mcp_server.cli test-config --component all
 ```
 
 ### **Method 2: Quick Test (Demo Mode)**
@@ -115,6 +125,11 @@ AWS_DEFAULT_REGION=ap-southeast-2
 
 # Optional (demo mode works without these)
 APOLLO_API_KEY=your_apollo_api_key_here
+SERPER_API_KEY=your_serper_api_key_here
+
+# Optional for enhanced LinkedIn data collection  
+LINKEDIN_EMAIL=your_linkedin_email_here
+LINKEDIN_PASSWORD=your_linkedin_password_here
 
 # Database (auto-created)
 DATABASE_URL=sqlite:///data/database/prospects.db
@@ -124,7 +139,9 @@ DATABASE_URL=sqlite:///data/database/prospects.db
 
 1. **Firecrawl API** (recommended): Visit [firecrawl.dev](https://firecrawl.dev) for web scraping
 2. **AWS Bedrock** (for AI enhancements): Set up AWS account with Bedrock access in ap-southeast-2 region
-3. **Apollo API** (optional): Visit [apollo.io](https://apollo.io) for enhanced data
+3. **Apollo API** (optional): Visit [apollo.io](https://apollo.io) for enhanced contact data
+4. **Serper API** (optional): Visit [serper.dev](https://serper.dev) for enhanced search capabilities
+5. **LinkedIn** (optional): Your LinkedIn credentials for authenticated data collection
 
 **Note**: The server works in demo mode without any API keys - it generates realistic mock data for testing.
 
@@ -155,21 +172,23 @@ The server follows MCP protocol specifications and works with any compliant clie
 
 ## 🏗️ **Architecture & Technical Details**
 
-### **Enhanced Architecture (Intelligence Middleware)**
+### **Enhanced Architecture (Intelligence Middleware + Integration)**
 ```
 src/
 ├── database/          # SQLite operations & models (SQLAlchemy ORM)
 ├── file_manager/      # Markdown templates & file I/O  
 ├── prospect_research/ # 5-source research engine (🔄 AI-enhanced)
-├── mcp_server/        # MCP protocol implementation (🔄 LLM config)
-└── llm_enhancer/      # 🆕 Intelligence middleware module
+├── mcp_server/        # MCP protocol implementation (✅ LLM configured)
+├── data_sources/      # ✅ Enhanced multi-source data collection (Apollo, Serper, Playwright, etc.)
+└── llm_enhancer/      # ✅ Intelligence middleware infrastructure (ready for LLM integration)
 ```
 
-### **Intelligence Middleware Flow**
-1. **Data Collection**: Sub-level tools (Firecrawl, LinkedIn, etc.) gather raw data
-2. **AI Analysis**: LLM middleware processes raw data for business insights
-3. **Template Generation**: Same templates, dramatically better content quality
-4. **Fallback Safety**: Graceful degradation to manual processing if LLM unavailable
+### **Intelligence Middleware Flow (Infrastructure Complete)**
+1. **Data Collection**: Enhanced multi-source tools (Apollo, Serper, Playwright, LinkedIn, Job Boards, News, Government) ✅
+2. **AI Analysis**: LLM middleware processes raw data for business insights ⏳ **Next Phase**
+3. **Template Generation**: Same templates, dramatically better content quality ⏳ **Next Phase**
+4. **Fallback Safety**: ✅ Graceful degradation to manual processing implemented
+5. **Environment Validation**: ✅ Comprehensive configuration validation and testing
 
 ### **Data Flow**
 1. **Research**: `research_prospect` → Saves to `data/prospects/{id}_research.md`
@@ -189,24 +208,28 @@ src/
 
 ### ✅ **Strengths (What Works Today)**
 - **Complete MCP Implementation**: All 4 tools working, protocol compliant
+- **Enhanced Data Sources**: ✅ Apollo.io, Serper, Playwright, LinkedIn, Job Boards, News, Government integration
+- **LLM Infrastructure**: ✅ Complete environment validation, graceful fallback handling, MCP configuration
 - **Demo Mode**: Full functionality without API keys for testing
 - **Structured Output**: Markdown files with consistent formatting
-- **Error Handling**: Comprehensive validation and graceful failures  
+- **Error Handling**: ✅ Comprehensive validation and graceful failures with intelligent fallback
 - **Fast Performance**: 2-5 second research times
 - **Flexible ID Support**: Handles both UUID and timestamp-based IDs
 - **Search Capability**: Content search across all prospect data
+- **Configuration Management**: ✅ Complete environment validation and testing commands
 
-### ⏳ **Current Development (Intelligence Middleware)**
-- **Manual Logic Replacement**: Replacing hardcoded rules with AI analysis
-- **Business Intelligence**: LLM-powered insights instead of string manipulation
-- **Conversation Strategy**: AI-generated personalized talking points
-- **Fallback Safety**: Graceful degradation to original logic if LLM fails
+### ⏳ **Current Development (LLM Enhancement Layer - Phase 3.5)**
+- **AWS Bedrock Integration**: LLM client wrapper for Claude Sonnet ⏳ **Next**
+- **Business Intelligence**: LLM-powered insights instead of string manipulation ⏳ **Next**
+- **Conversation Strategy**: AI-generated personalized talking points ⏳ **Next**
+- **Enhanced Research Logic**: Replace manual logic with comprehensive data + AI analysis ⏳ **Next**
+- **Infrastructure Complete**: ✅ All data sources, environment validation, graceful fallback implemented
 
-### ⚠️ **Current Limitations**
-- **Data Sources**: Only Firecrawl web scraping (vs planned 5 sources)
-- **Storage**: SQLite file database (vs planned PostgreSQL)
-- **Demo Data**: Mock data quality could be more realistic
-- **No REST API**: MCP-only interface (vs planned dual CLI/API)
+### ⚠️ **Current Focus Areas**
+- **LLM Integration**: AWS Bedrock Claude integration for intelligent analysis ⏳ **Phase 3.5 Active**
+- **Enhanced Research Logic**: Replace manual logic with AI-powered business intelligence ⏳ **Phase 3.5 Active**
+- **Enhanced Profile Logic**: AI conversation strategy generation ⏳ **Phase 3.5 Active**
+- **Performance Optimization**: Ensure <10s response times for enhanced workflows ⏳ **Phase 3.5 Active**
 
 ### 🎯 **Original Goals (from Specs)**
 - **5 Data Sources**: Company, LinkedIn, Apollo, job boards, news, government
@@ -225,6 +248,14 @@ uv run pytest tests/ --tb=short
 uv run pytest tests/unit/ -v          # Unit tests
 uv run pytest tests/integration/ -v   # Integration tests  
 uv run pytest tests/contract/ -v      # Contract tests (some need fixes)
+
+# Test environment configuration
+uv run python -m src.mcp_server.cli validate-env --verbose
+uv run python -m src.mcp_server.cli validate-env --show-guide
+
+# Test specific component configurations
+uv run python -m src.mcp_server.cli test-config --component llm
+uv run python -m src.mcp_server.cli test-config --component apollo
 
 # Test MCP server manually
 uv run python -c "
@@ -280,8 +311,9 @@ ai-olympics-charmander/
 - **`PROJECT_OVERVIEW.md`** - Current implementation status and deliverable progress
 - **`specs/001-mcp-server-prospect/spec.md`** - MCP Server requirements & acceptance criteria (✅ complete)
 - **`specs/001-mcp-server-prospect/tasks.md`** - MCP Server task breakdown (T001-T035) (✅ complete)
-- **`specs/002-improve-research-with-llm/spec.md`** - Intelligence middleware specification (⏳ active)
-- **`specs/002-improve-research-with-llm/plan.md`** - Intelligence middleware architecture (⏳ active)
+- **`specs/002-improve-research-with-llm/spec.md`** - Intelligence middleware specification (✅ complete)
+- **`specs/002-improve-research-with-llm/plan.md`** - Intelligence middleware architecture (✅ complete)
+- **`specs/002-improve-research-with-llm/tasks.md`** - Intelligence middleware tasks (Phase 3.4 ✅ complete, Phase 3.5 ⏳ active)
 - **`.github/instructions/system_instructions.instructions.md`** - Development constitution
 
 ### **Future Deliverables (After Intelligence Middleware)**
@@ -297,20 +329,22 @@ ai-olympics-charmander/
 - ✅ Protocol compliance with JSON-RPC 2.0 over stdio
 - ✅ 2-5 second research performance with structured output
 
-**⏳ Deliverable 3 IN PROGRESS - Intelligence Middleware:**
-- ✅ Specification complete: Problem analysis and solution architecture
-- ✅ Planning complete: Intelligence middleware pattern defined
-- ⏳ Task breakdown: Creating implementation roadmap
-- ⏳ Implementation: Replacing manual logic with AI analysis
+**⏳ Deliverable 3 PHASE 3.4 COMPLETE - Intelligence Middleware Integration:**
+- ✅ Enhanced data sources integration (Apollo, Serper, Playwright, LinkedIn, Job Boards, News, Government)
+- ✅ Complete MCP server configuration with LLM infrastructure
+- ✅ Comprehensive environment validation and testing commands
+- ✅ Graceful fallback handling and error management
+- ⏳ AWS Bedrock LLM integration (Phase 3.5 - Next)
 
-**🎯 Enhanced Capabilities (Coming Soon):**
+**🎯 Enhanced Capabilities (Phase 3.5 Coming Soon):**
+- AWS Bedrock Claude integration for intelligent data analysis
 - AI business intelligence analysis instead of string manipulation
 - Personalized conversation strategies instead of hardcoded rules
 - Same templates with dramatically improved content quality
-- Graceful fallback to original logic for reliability
+- Comprehensive data source integration with intelligent fallback
 
 ---
 
 **Team Charmander - Infostatus AI Olympics 2025**  
-**Status**: ⏳ **Intelligence Middleware Development** - Enhancing Research Quality with AI  
-**Next**: Complete LLM intelligence middleware, then Agentic Pipeline (Deliverable 4)
+**Status**: ⏳ **LLM Enhancement Layer Development** - Phase 3.4 Integration Complete  
+**Next**: Complete AWS Bedrock LLM integration and enhanced research logic (Phase 3.5)
