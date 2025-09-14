@@ -1,208 +1,206 @@
-# Data Model: Simple LLM Enhancement
+````markdown
+# Data Model: LLM Intelligence Middleware
 
 **Date**: September 14, 2025  
 **Feature**: Improve Research with LLM  
 
-## Approach: No Database Changes
+## Approach: Intelligence Middleware Pattern
 
-**Configuration**: Environment variables only
-**Prompts**: Python files (version controlled)
-**Storage**: Existing prospect database unchanged
-**Processing**: In-memory enhancement with graceful fallback
+**Architecture**: LLM as intelligent middleware between raw data and templates  
+**Storage**: Existing prospect database unchanged  
+**Processing**: Replace manual data preparation with AI analysis  
+**Integration**: Enhance existing research and profile generation logic
 
-## Environment Variables
+## Current Problem: Manual Data Preparation
 
+### Research Tool Current Flow (Inefficient)
+```
+Sub-level Tools → Raw Data → Manual String Processing → Template Filling
+   ↓               ↓              ↓                        ↓
+Firecrawl      website_html   background = content[:1000]  research_template.md
+LinkedIn       search_results  tech_stack = keyword_match   
+Job Boards     job_postings    pain_points = manual_rules
+News Search    articles        decision_makers = regex_parse
+```
+
+### Profile Tool Current Flow (Hardcoded Logic)
+```
+Research Markdown → Manual Parsing → Hardcoded Rules → Profile Template
+      ↓                 ↓                ↓                  ↓
+research.md       parse_markdown()  if 'ai' in pain_points  profile_template.md
+                                   conversation_starter_1()
+                                   _generate_value_prop()
+```
+
+## Solution: LLM Intelligence Middleware
+
+### Enhanced Research Flow  
+```
+Sub-level Tools → Raw Data Collection → LLM Analysis → Template Generation
+   ↓                    ↓                    ↓              ↓
+Firecrawl           raw_website_data     Analyze content    research_template.md
+LinkedIn            raw_linkedin_data    → Extract insights   (AI-filled)
+Job Boards          raw_job_data         → Identify patterns
+News Search         raw_news_data        → Generate summaries
+Government          raw_registry_data    → Business intelligence
+```
+
+### Enhanced Profile Flow
+```
+Raw Research Data → LLM Strategy Analysis → Profile Template Generation
+       ↓                      ↓                        ↓
+All collected data    → Conversation strategies    profile_template.md
+Pain points          → Personalized talking points   (AI-generated)
+Company insights     → Value proposition alignment
+Decision makers      → Timing recommendations
+```
+
+## LLM Intelligence Middleware Architecture
+
+### Core Middleware Pattern
+```python
+# Current manual approach (TO BE REPLACED)
+research_data = {
+    "background": website_content[:1000] + "...",  # Truncation
+    "tech_stack": [tech for tech in keywords if tech in content],  # Keyword matching
+    "pain_points": manual_rule_based_extraction(),  # Hardcoded rules
+}
+
+# New LLM middleware approach  
+raw_data = {
+    "website_content": full_website_scrape,      # Complete data
+    "linkedin_results": all_linkedin_data,       # All findings
+    "job_postings": complete_job_listings,       # Full job details
+    "news_articles": complete_news_content,      # Full articles
+    "registry_info": complete_registry_data      # All registry findings
+}
+
+enhanced_data = await llm_enhancer.analyze_for_template(
+    raw_data=raw_data,
+    template_type="research",
+    template_structure=research_template_schema
+)
+```
+
+### Intelligence Middleware Components
+
+#### 1. Research Intelligence 
+- **Input**: Raw data from all 5 sub-level tools
+- **Processing**: AI analysis of business context, technology signals, pain points
+- **Output**: Structured data matching research_template.md requirements
+
+#### 2. Profile Intelligence
+- **Input**: Complete research context + company insights  
+- **Processing**: AI strategy generation, conversation planning, personalization
+- **Output**: Structured data matching profile_template.md requirements
+
+#### 3. Template-Aware Processing
+- **Template Schema Understanding**: LLM knows what each template field needs
+- **Content Optimization**: Generate content specifically for template structure  
+- **Context Preservation**: Maintain research context across template sections
+
+## MCP Server Configuration (LLM Enabled by Default)
+
+### Enhanced Server Arguments
 ```bash
-# AWS Bedrock
-AWS_ACCESS_KEY_ID=xxx
-AWS_SECRET_ACCESS_KEY=xxx
-AWS_DEFAULT_REGION=ap-southeast-2
+# Default: Intelligence middleware enabled
+python -m src.mcp_server.cli \
+    --llm-enabled true \
+    --llm-provider bedrock \
+    --model-id apac.anthropic.claude-sonnet-4-20250514-v1:0 \
+    --temperature 0.3 \
+    --max-tokens 4000 \
+    --timeout-seconds 60
 
-# LLM Control
-LLM_ENHANCEMENT_ENABLED=true
-BEDROCK_MODEL_ID=anthropic.claude-3-5-sonnet-20241022-v2:0
-BEDROCK_TEMPERATURE=0.3
-BEDROCK_MAX_TOKENS=2000
-BEDROCK_TIMEOUT_SECONDS=30
+# Disable for fallback mode
+python -m src.mcp_server.cli --llm-enabled false
 ```
 
-## Prompts as Code
+### Server Parameter Schema
+- `--llm-enabled`: Enable intelligence middleware (default: `true`)
+- `--llm-provider`: AI service provider (default: `bedrock`) 
+- `--model-id`: Model for analysis (default: `apac.anthropic.claude-sonnet-4-20250514-v1:0`)
+- `--temperature`: Analysis creativity (default: `0.3`)
+- `--max-tokens`: Analysis response limit (default: `4000`)
+- `--timeout-seconds`: Analysis timeout (default: `60`)
 
-```python
-# src/llm_enhancer/prompts.py
-RESEARCH_ENHANCEMENT_PROMPT = """
-Analyze company research data and generate business insights:
-1. Technology readiness assessment
-2. Competitive positioning analysis
-3. Specific pain points based on signals
-
-Research data: {research_data}
-Generate enhanced insights in markdown format.
-"""
-
-PROFILE_ENHANCEMENT_PROMPT = """
-Create sales conversation strategies:
-1. Personalized conversation starters
-2. Decision maker approach strategies
-3. Value proposition alignment
-
-Research data: {research_data}
-Format as conversation strategy in markdown.
-"""
-```
-
-## Enhancement Pattern
-
-```python
-async def enhance_content(raw_data: dict, prompt_type: str) -> dict:
-    if not config.LLM_ENHANCEMENT_ENABLED:
-        return raw_data
-    
-    try:
-        enhanced = await bedrock_client.enhance(raw_data, prompt_type)
-        enhanced['enhancement_status'] = 'enhanced'
-        return enhanced
-    except Exception as e:
-        logger.warning(f"LLM enhancement failed: {e}")
-        raw_data['enhancement_status'] = 'fallback'
-        return raw_data
-```
-
-## Database Schema (Unchanged)
-
-```python
-# src/database/models.py - NO MODIFICATIONS
-class Prospect(Base):
-    __tablename__ = "prospects"
-    id: str = Field(primary_key=True)
-    company_name: str = Field(max_length=200)
-    status: ProspectStatus = Field(default=ProspectStatus.CREATED)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    # NO new LLM fields - enhancement tracked in-memory only
-```  
-
-## Configuration Management
-
-### Environment Variables Only
+### Environment Variables (AWS Credentials)
 ```bash
-# AWS Bedrock (existing pattern)
+# Required for Bedrock provider
 AWS_ACCESS_KEY_ID=xxx
-AWS_SECRET_ACCESS_KEY=xxx
+AWS_SECRET_ACCESS_KEY=xxx  
 AWS_DEFAULT_REGION=ap-southeast-2
-
-# LLM Feature Control (new)
-LLM_ENHANCEMENT_ENABLED=true
-
-# Model Settings (new, with defaults)
-BEDROCK_MODEL_ID=apac.anthropic.claude-sonnet-4-20250514-v1:0
-BEDROCK_TEMPERATURE=0.3
-BEDROCK_MAX_TOKENS=2000
-BEDROCK_TIMEOUT_SECONDS=30
 ```
 
-### Prompts as Code (No Database)
+## Updated Architecture Integration
+
+### Library Structure (Intelligence Middleware Added)
+```
+src/
+├── database/          # ✅ Existing - SQLite operations (unchanged)
+├── file_manager/      # ✅ Existing - Markdown templates (unchanged)  
+├── prospect_research/ # 🔄 ENHANCED - Replace manual logic with LLM calls
+├── mcp_server/        # 🔄 ENHANCED - Add LLM configuration parameters
+└── llm_enhancer/      # 🆕 NEW - Intelligence middleware module
+    ├── __init__.py
+    ├── client.py      # Bedrock client wrapper
+    ├── middleware.py  # Core intelligence processing
+    ├── analyzers.py   # Research and profile analyzers
+    └── cli.py         # Testing utilities
+```
+
+### Updated Tool Logic Flow
+```
+MCP Tool Request
+    ↓
+Sub-level Data Collection (Firecrawl, LinkedIn, etc.)
+    ↓
+Raw Data Aggregation
+    ↓
+LLM Intelligence Middleware (NEW)
+    ↓  
+Template-Ready Structured Data
+    ↓
+Markdown Generation (template filling)
+```
+
+## Replacement Strategy
+
+### Functions to Replace with LLM Intelligence
+
+#### Research Tool - Manual Data Preparation
 ```python
-# src/llm_enhancer/prompts.py
-"""Prompts stored as code, version controlled with git"""
+# CURRENT: Manual string manipulation (TO BE REPLACED)
+research_data["background"] = website_content[:1000] + "..."
+tech_indicators = ['Python', 'JavaScript', 'React', ...]
+found_tech = [tech for tech in tech_indicators if tech.lower() in website_content.lower()]
+research_data["tech_stack"] = found_tech
 
-RESEARCH_ENHANCEMENT_PROMPT = """
-You are a B2B sales intelligence analyst. Analyze the provided company research data 
-and generate sophisticated business insights.
-
-Focus on:
-1. Technology readiness assessment
-2. Digital transformation indicators  
-3. Competitive positioning analysis
-4. Specific pain points based on data signals
-
-Research data:
-{research_data}
-
-Generate enhanced insights in markdown format with clear sections.
-"""
-
-PROFILE_ENHANCEMENT_PROMPT = """
-You are a sales strategy expert. Based on the research data, create actionable 
-conversation strategies for sales outreach.
-
-Generate:
-1. Personalized conversation starters
-2. Decision maker approach strategies  
-3. Optimal timing recommendations
-4. Value proposition alignment
-
-Research data:
-{research_data}
-
-Format as conversation strategy in markdown.
-"""
-
-# Version control through git commits, not database
-PROMPT_VERSION = "1.0.0"  # Updated manually with changes
+# NEW: LLM intelligent analysis
+analyzed_data = await llm_middleware.analyze_research_data(
+    raw_data=all_collected_data,
+    template_fields=research_template_schema
+)
 ```
 
-## Data Flow (No Database Changes)
-
-### Simple Enhancement Pattern
+#### Profile Tool - Hardcoded Conversation Logic  
 ```python
-async def enhance_research_content(raw_research_data: dict) -> dict:
-    """Enhance research without changing database schema"""
-    
-    # 1. Check if enhancement enabled
-    if not os.getenv('LLM_ENHANCEMENT_ENABLED', 'false').lower() == 'true':
-        return raw_research_data  # Return original
-    
-    # 2. Try LLM enhancement
-    try:
-        enhanced_insights = await bedrock_client.enhance(
-            raw_research_data, 
-            RESEARCH_ENHANCEMENT_PROMPT
-        )
-        
-        # 3. Merge enhanced content with original
-        enhanced_data = raw_research_data.copy()
-        enhanced_data['ai_business_insights'] = enhanced_insights
-        enhanced_data['enhancement_status'] = 'enhanced'
-        
-        return enhanced_data
-    
-    except Exception as e:
-        # 4. Graceful fallback to original
-        logger.warning(f"LLM enhancement failed: {e}")
-        fallback_data = raw_research_data.copy()
-        fallback_data['enhancement_status'] = 'fallback'
-        return fallback_data
+# CURRENT: Rule-based conversation generation (TO BE REPLACED)
+def _generate_conversation_starter_1(parsed_data):
+    if 'ai' in pain_points[0].lower():
+        return "What's driving your current interest in AI initiatives?"
+    elif 'cloud' in pain_points[0].lower():
+        return "How are you approaching your cloud transformation?"
+    # ... hardcoded rules
+
+# NEW: LLM intelligent strategy generation
+conversation_strategy = await llm_middleware.generate_profile_strategy(
+    research_context=complete_research_data,
+    template_fields=profile_template_schema
+)
 ```
 
-### Template Integration (File-Based)
-```python
-# Modified template filling - no database changes needed
-def fill_research_template(research_data: dict) -> str:
-    """Fill template with enhanced or original content"""
-    
-    template = load_template('research_template.md')
-    
-    # Enhanced sections (if available)
-    if research_data.get('ai_business_insights'):
-        template_vars = {
-            **research_data,  # Original fields
-            'ai_insights': research_data['ai_business_insights'],
-            'enhancement_badge': '🤖 AI-Enhanced'
-        }
-    else:
-        # Original sections only
-        template_vars = {
-            **research_data,
-            'ai_insights': '*(Analysis in progress...)*',
-            'enhancement_badge': '📊 Standard Analysis'
-        }
-    
-    return template.format(**template_vars)
-```
-
-## Existing Database Schema (Unchanged)
-
-### Prospect Model (No Changes)
+### Database Schema (Unchanged)
 ```python
 # src/database/models.py - NO MODIFICATIONS NEEDED
 class Prospect(Base):
@@ -214,143 +212,71 @@ class Prospect(Base):
     status: ProspectStatus = Field(default=ProspectStatus.CREATED)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     
-    # NO new LLM tracking fields added
-    # Enhancement status tracked in-memory only during processing
+    # NO new LLM tracking fields - middleware operates in-memory
 ```
 
-### File Output (Existing Pattern)
+## Fallback Strategy
+
+### Graceful Degradation Pattern
+```python
+async def research_prospect_with_intelligence(company: str):
+    # 1. Collect raw data (existing sub-level tools)
+    raw_data = await collect_all_data_sources(company)
+    
+    # 2. Try LLM intelligence middleware
+    try:
+        if llm_enabled:
+            structured_data = await llm_middleware.analyze_research_data(raw_data)
+            enhancement_status = "ai_enhanced"
+        else:
+            structured_data = fallback_to_manual_processing(raw_data)
+            enhancement_status = "manual_processing"
+    except Exception as e:
+        logger.warning(f"LLM analysis failed: {e}")
+        structured_data = fallback_to_manual_processing(raw_data)
+        enhancement_status = "fallback_manual"
+    
+    # 3. Generate markdown using structured data
+    return generate_markdown_report(structured_data, enhancement_status)
+```
+
+### Enhanced Template Structure (Same Templates, Better Content)
 ```markdown
-<!-- Enhanced research template -->
-# Prospect Research: {company_name} {enhancement_badge}
+<!-- research_template.md - NO CHANGES to structure -->
+# Prospect Research Report: {company_name}
 
-## Company Overview
-{basic_company_info}
+## Company Background
+{background}                    <!-- LLM: Intelligent business summary -->
 
-## AI Business Intelligence Analysis
-{ai_insights}
+## Recent News  
+{recent_news}                   <!-- LLM: Relevant news analysis -->
 
 ## Technology Stack
-{tech_stack_info}
+{tech_stack}                    <!-- LLM: Tech infrastructure insights -->
 
-## Contact Information  
-{linkedin_info}
+## Key Decision Makers
+{decision_makers}               <!-- LLM: Leadership analysis -->
 
----
-*Research generated on {timestamp}*
-*Enhancement status: {enhancement_status}*
-```
-
-## Error Handling Strategy
-
-### Simple Fallback Logic
-```python
-class LLMEnhancer:
-    """Simple enhancement with graceful degradation"""
-    
-    async def enhance_or_fallback(self, content: dict, prompt_type: str) -> dict:
-        """Always returns content, enhanced or original"""
-        
-        # Feature flag check
-        if not self.is_enabled():
-            return self._add_status(content, 'disabled')
-        
-        # AWS credentials check  
-        if not self._has_aws_credentials():
-            logger.warning("AWS credentials not found, using original content")
-            return self._add_status(content, 'no_credentials')
-        
-        # Enhancement attempt
-        try:
-            enhanced = await self._call_bedrock(content, prompt_type)
-            return self._add_status(enhanced, 'enhanced')
-        
-        except TimeoutError:
-            logger.warning("LLM request timeout, using original content")
-            return self._add_status(content, 'timeout')
-        
-        except Exception as e:
-            logger.warning(f"LLM enhancement failed: {e}")
-            return self._add_status(content, 'error')
-    
-    def _add_status(self, content: dict, status: str) -> dict:
-        """Add status without modifying database"""
-        result = content.copy()
-        result['enhancement_status'] = status
-        return result
-```
-
-## Configuration Validation
-
-### Environment Setup Check
-```python
-# src/llm_enhancer/config.py
-"""Simple configuration validation"""
-
-import os
-from typing import Optional
-
-class LLMConfig:
-    """Simple config from environment variables only"""
-    
-    @property
-    def enabled(self) -> bool:
-        return os.getenv('LLM_ENHANCEMENT_ENABLED', 'false').lower() == 'true'
-    
-    @property
-    def model_id(self) -> str:
-        return os.getenv(
-            'BEDROCK_MODEL_ID', 
-            'apac.anthropic.claude-sonnet-4-20250514-v1:0'
-        )
-    
-    @property  
-    def temperature(self) -> float:
-        return float(os.getenv('BEDROCK_TEMPERATURE', '0.3'))
-    
-    @property
-    def max_tokens(self) -> int:
-        return int(os.getenv('BEDROCK_MAX_TOKENS', '2000'))
-    
-    @property
-    def timeout_seconds(self) -> int:
-        return int(os.getenv('BEDROCK_TIMEOUT_SECONDS', '30'))
-    
-    def validate(self) -> list[str]:
-        """Return list of validation errors, empty if valid"""
-        errors = []
-        
-        if self.enabled:
-            if not os.getenv('AWS_ACCESS_KEY_ID'):
-                errors.append("AWS_ACCESS_KEY_ID required when LLM enabled")
-            if not os.getenv('AWS_SECRET_ACCESS_KEY'):
-                errors.append("AWS_SECRET_ACCESS_KEY required when LLM enabled")
-            if not os.getenv('AWS_DEFAULT_REGION'):
-                errors.append("AWS_DEFAULT_REGION required when LLM enabled")
-        
-        if not 0.0 <= self.temperature <= 1.0:
-            errors.append("BEDROCK_TEMPERATURE must be between 0.0 and 1.0")
-        
-        if not 100 <= self.max_tokens <= 8000:
-            errors.append("BEDROCK_MAX_TOKENS must be between 100 and 8000")
-        
-        return errors
+## Identified Pain Points
+{pain_points}                   <!-- LLM: Business challenge identification -->
 ```
 
 ## Constitutional Compliance
 
-**Simplicity**: ✅ No database complexity, environment variables only  
-**Library-First**: ✅ `llm_enhancer` module with clear interface  
-**Test-First**: ✅ Contract tests for enhancement behavior  
-**No Database Changes**: ✅ Existing schema completely unchanged  
-**Graceful Degradation**: ✅ Always returns content, enhanced or original  
-**Version Control**: ✅ Prompts in Python files, tracked with git
+**Simplicity**: ✅ Clean middleware pattern, replace manual logic with AI analysis  
+**Library-First**: ✅ `llm_enhancer` intelligence middleware with clear interface  
+**Test-First**: ✅ Contract tests for AI vs manual processing behavior  
+**No Database Changes**: ✅ Existing schema unchanged, middleware operates in-memory  
+**Graceful Degradation**: ✅ Fallback to manual processing if LLM unavailable  
+**MCP Integration**: ✅ Server parameters control intelligence middleware
 
 ## Implementation Benefits
 
-1. **Zero Migration Risk**: No database schema changes
-2. **Simple Configuration**: Environment variables only
-3. **Easy Rollback**: Disable with single environment variable
-4. **Version Control**: Prompts managed like code
-5. **Testable**: In-memory enhancement logic easy to test
-6. **Performance**: No database queries for LLM configuration
-7. **Cost Control**: Simple to disable/enable without data migration
+1. **Intelligence Upgrade**: Replace hardcoded rules with AI analysis
+2. **Same Templates**: No template changes needed, just better content
+3. **Fallback Safety**: Manual processing available if LLM fails
+4. **Zero Migration Risk**: No database or template structural changes
+5. **Client Control**: MCP server parameters control AI features
+6. **Performance Improvement**: Better quality output with same performance targets
+7. **Maintainability**: Remove complex manual data preparation code
+````
