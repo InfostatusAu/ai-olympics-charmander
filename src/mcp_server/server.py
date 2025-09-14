@@ -2,13 +2,16 @@
 """
 MCP Server with tool registration for prospect research automation.
 Implements the Model Context Protocol to expose 4 specialized prospect research tools.
+Enhanced with complete data source integration and LLM intelligence middleware.
 """
 
 import asyncio
+import json
+import os
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import Resource, Tool, TextContent
-from .tools import research_prospect, create_profile, get_prospect_data, search_prospects
+from .tools import research_prospect, create_profile, get_prospect_data, search_prospects, initialize_tools_with_config
 
 # Import structured logging
 from src.logging_config import get_logger, OperationContext, setup_logging
@@ -352,6 +355,52 @@ async def main():
                                error_type=type(e).__name__,
                                error_message=str(e))
                 raise RuntimeError(f"Database initialization failed: {str(e)}")
+            
+            # Initialize tools with configuration from environment
+            try:
+                config_str = os.getenv('MCP_SERVER_CONFIG', '{}')
+                config = json.loads(config_str) if config_str else {}
+                
+                # Add default configuration if not provided
+                default_config = {
+                    'llm_enabled': True,
+                    'llm_provider': 'bedrock',
+                    'model_id': 'apac.anthropic.claude-sonnet-4-20250514-v1:0',
+                    'aws_region': 'ap-southeast-2',
+                    'temperature': 0.3,
+                    'max_tokens': 4000,
+                    'timeout_seconds': 60,
+                    'data_sources': {
+                        'firecrawl_enabled': True,
+                        'apollo_enabled': True,
+                        'serper_enabled': True,
+                        'playwright_enabled': True,
+                        'linkedin_auth': False,
+                        'job_boards_auth': False
+                    },
+                    'fallback_mode': 'graceful'
+                }
+                
+                # Merge with defaults
+                final_config = {**default_config, **config}
+                
+                logger.info("Initializing tools with complete configuration",
+                          operation="tools_init",
+                          llm_enabled=final_config['llm_enabled'],
+                          data_sources_count=len(final_config['data_sources']))
+                
+                initialize_tools_with_config(final_config)
+                
+                logger.info("Tools initialized successfully with enhanced capabilities",
+                          operation="tools_init",
+                          success=True)
+            except Exception as e:
+                logger.warning("Tools initialization failed, using defaults",
+                             operation="tools_init",
+                             error_type=type(e).__name__,
+                             error_message=str(e))
+                # Initialize with empty config as fallback
+                initialize_tools_with_config({})
             
             # Start the MCP server
             logger.info("Starting MCP server with stdio transport",

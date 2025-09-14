@@ -130,7 +130,7 @@ DATABASE_URL=sqlite:///data/database/prospects.db
 
 ## 🔧 **Connecting to MCP Clients**
 
-### **Claude Desktop Configuration**
+### **MCP Configuration for coding assistants**
 
 Add to your Claude Desktop `claude_desktop_config.json`:
 
