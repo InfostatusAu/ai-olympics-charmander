@@ -205,6 +205,47 @@ print(f'✅ Research generated: {result}')
 "
 ```
 
+## 🤖 Vibe-coding with AI Coding Assistant
+
+This project demonstrates **AI-First Development** using modern spec-driven workflows and AI coding assistants.
+
+### **Spec-Driven Development (SDD)**
+Built using **GitHub Spec-Kit** ([github.com/github/spec-kit](https://github.com/github/spec-kit)) with:
+- `.github/prompts/` - AI interaction templates
+- `.specify/` - Specification configurations  
+- `.github/instructions/` - GitHub Copilot Agent mode instructions
+- `specs/00x-feature-name/` - Feature specifications and task breakdowns
+
+### **Development Workflow**
+1. Read `PROJECT_OVERVIEW.md` for current status
+2. Check `specs/00x-feature-name/tasks.md` for task breakdown
+3. Follow constitutional TDD: Write failing tests first
+4. Use Serena MCP tools for codebase navigation (init and indexed codebase in `.serena/` folder)
+5. Commit each "small win" separately
+
+### **AI Coding Assistant Integration**
+Powerful request pattern for AI assistants (after configuring system instructions like `.github/instructions/system_instructions.instructions.md` and MCP servers in settings):
+
+```
+Hey, use context7 and serena tools during your work. Please solve tasks {task numbers} defined at {current spec's tasks.md}. Please commit your work and update tasks, project overview after each task - I want commit history to be transparent and granular. Use serena tools during your work.
+```
+
+**Personal Experience**: Claude Sonnet 4 followed these instructions 90% perfectly with excellent task completion, significantly outperforming other models when given proper system instructions and MCP tool access.
+
+### **Package Management**
+Modern Python dependency management with **UV**:
+- `pyproject.toml` - Project configuration and dependencies
+- `uv.lock` - Exact dependency versions for reproducible builds
+- Zero `requirements.txt` - UV handles everything automatically
+
+```bash
+# Development commands
+uv sync                    # Install dependencies
+uv add package-name        # Add new dependency  
+uv run python script.py   # Run with environment
+uv run pytest            # Run tests
+```
+
 ## 📊 Project Summary
 
 ### ✅ **What Works**
